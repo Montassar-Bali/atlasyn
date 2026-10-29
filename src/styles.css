@@ -491,16 +491,16 @@ a:focus-visible {
 
 .hero-scene > img {
   position: absolute;
-  right: -60px;
+  left: -40px;
   top: 50%;
   transform: translateY(-50%);
-  width: 110%;
-  max-width: 700px;
+  width: 115%;
+  max-width: 750px;
   height: auto;
   object-fit: cover;
   object-position: center;
-  mask-image: linear-gradient(to right, transparent 0%, black 15%, black 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 12%, black 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 100%);
   pointer-events: none;
 }
 
@@ -565,21 +565,21 @@ a:focus-visible {
 
 /* Revenue float card */
 .float-card--revenue {
-  top: 8%; right: 48%;
+  top: 6%; left: 2%;
   min-width: 150px;
   animation: float-card-1 6s ease-in-out infinite;
 }
 
 /* Customers float card */
 .float-card--customers {
-  bottom: 18%; left: 8%;
+  bottom: 12%; left: 0%;
   min-width: 160px;
   animation: float-card-2 7s ease-in-out infinite;
 }
 
 /* Profit float card */
 .float-card--profit {
-  top: 25%; right: 5%;
+  top: 8%; right: 2%;
   min-width: 150px;
   animation: float-card-3 8s ease-in-out infinite;
 }
