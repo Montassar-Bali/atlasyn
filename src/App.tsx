@@ -25,18 +25,26 @@ import {
   Download,
   FileText,
   LayoutDashboard,
+  LineChart,
   Menu,
+  Moon,
   Package2,
   Paperclip,
   Search,
   Send,
+  Settings,
   Share2,
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
+  Target,
+  TrendingUp,
   UploadCloud,
   Users,
   X,
+  Zap,
+  DollarSign,
+  Activity,
 } from 'lucide-react'
 import { anomalies, channelData, customers, expenses, inventory, products, revenueData, weeklyRevenue } from './data'
 import { downloadExecutiveReport } from './report'
@@ -49,13 +57,17 @@ type Page = 'overview' | 'analytics' | 'customers' | 'inventory' | 'reports'
 type MessageKind = 'profit' | 'churn' | 'actions' | 'inventory'
 type Message = { role: 'assistant' | 'user'; content: string; kind?: MessageKind }
 
-const navItems: { id: Page | 'copilot'; label: string; icon: typeof LayoutDashboard }[] = [
-  { id: 'overview', label: 'Command center', icon: LayoutDashboard },
+const sidebarNav: { id: Page | 'copilot' | 'revenue' | 'operations' | 'settings'; label: string; icon: typeof LayoutDashboard }[] = [
+  { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'analytics', label: 'Command Center', icon: Target },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
   { id: 'customers', label: 'Customers', icon: Users },
+  { id: 'revenue', label: 'Revenue', icon: DollarSign },
+  { id: 'operations', label: 'Operations', icon: Activity },
   { id: 'inventory', label: 'Inventory', icon: Boxes },
-  { id: 'copilot', label: 'AI Copilot', icon: Sparkles },
   { id: 'reports', label: 'Reports', icon: FileText },
+  { id: 'copilot', label: 'AI Insights', icon: Sparkles },
+  { id: 'settings', label: 'Settings', icon: Settings },
 ]
 
 const pageNames: Record<Page, string> = {
@@ -73,11 +85,11 @@ const priorityItems = [
 ]
 
 const healthSystems = [
-  { label: 'Revenue', score: 91, factor: '14.2% monthly growth', color: '#2F6F6D' },
-  { label: 'Customers', score: 76, factor: '17 accounts require attention', color: '#17243A' },
-  { label: 'Inventory', score: 88, factor: '92% lines in healthy range', color: '#2F6F6D' },
-  { label: 'Cash flow', score: 71, factor: '4.2% above operating plan', color: '#B7792B' },
-  { label: 'Operations', score: 84, factor: '6.4× stock turnover', color: '#465366' },
+  { label: 'Revenue', score: 91, factor: '14.2% monthly growth', color: '#2C956A' },
+  { label: 'Customers', score: 76, factor: '17 accounts require attention', color: '#7C5CFC' },
+  { label: 'Inventory', score: 88, factor: '92% lines in healthy range', color: '#2C956A' },
+  { label: 'Cash flow', score: 71, factor: '4.2% above operating plan', color: '#B79A70' },
+  { label: 'Operations', score: 84, factor: '6.4× stock turnover', color: '#2F6F6D' },
 ]
 
 /* ═══════════════════════════════════════════════════════════════
@@ -156,32 +168,47 @@ function DateControl({ value, onChange }: { value: string; onChange: (value: str
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Navigation
+   Sidebar Navigation (New Premium Layout)
    ═══════════════════════════════════════════════════════════════ */
 
-function NavigationRail({ page, onNavigate, onCopilot }: { page: Page; onNavigate: (page: Page) => void; onCopilot: () => void }) {
+function Sidebar({ page, onNavigate, onCopilot }: { page: Page; onNavigate: (page: Page) => void; onCopilot: () => void }) {
   return (
-    <aside className="nav-rail" aria-label="Primary navigation">
-      <button className="rail-brand" onClick={() => onNavigate('overview')} aria-label="ATLASYN command center">
-        <BrandLockup compact />
-      </button>
-      <nav>
-        {navItems.map(({ id, label, icon: Icon }) => (
+    <aside className="sidebar" aria-label="Primary navigation">
+      <div className="sidebar-brand">
+        <BrandLockup />
+      </div>
+      <nav className="sidebar-nav">
+        {sidebarNav.map(({ id, label, icon: Icon }) => (
           <button
-            key={id}
-            className={id !== 'copilot' && page === id ? 'active' : ''}
-            aria-label={label}
-            aria-current={id !== 'copilot' && page === id ? 'page' : undefined}
-            onClick={() => id === 'copilot' ? onCopilot() : onNavigate(id)}
-            data-label={label}
+            key={label}
+            className={id !== 'copilot' && id !== 'revenue' && id !== 'operations' && id !== 'settings' && page === id ? 'active' : ''}
+            aria-current={id !== 'copilot' && id !== 'revenue' && id !== 'operations' && id !== 'settings' && page === id ? 'page' : undefined}
+            onClick={() => {
+              if (id === 'copilot') onCopilot()
+              else if (id === 'revenue' || id === 'operations' || id === 'settings') onNavigate('analytics')
+              else onNavigate(id)
+            }}
           >
-            {id === 'copilot' ? <StatusDot /> : <Icon size={18} strokeWidth={1.7} />}
+            {id === 'copilot' ? <Sparkles size={18} strokeWidth={1.7} /> : <Icon size={18} strokeWidth={1.7} />}
+            {label}
           </button>
         ))}
       </nav>
-      <div className="rail-foot">
-        <span className="live-pulse" title="Live data" />
-        <span className="rail-avatar">AB</span>
+
+      {/* Promo card */}
+      <div className="sidebar-promo">
+        <h3>Turn data into growth.</h3>
+        <p>Smarter insights for a stronger tomorrow.</p>
+        <button aria-label="Learn more"><ArrowRight size={16} /></button>
+      </div>
+
+      {/* User */}
+      <div className="sidebar-user">
+        <span className="sidebar-avatar">AB</span>
+        <div className="sidebar-user-info">
+          <strong>Amine</strong>
+          <span>Admin</span>
+        </div>
       </div>
     </aside>
   )
@@ -215,13 +242,18 @@ function MobileNavigation({ open, page, onClose, onNavigate, onCopilot }: { open
         </header>
         <p>Nexa Trade / workspace</p>
         <nav>
-          {navItems.map(({ id, label, icon: Icon }) => (
+          {sidebarNav.map(({ id, label, icon: Icon }) => (
             <button
-              key={id}
-              className={id !== 'copilot' && page === id ? 'active' : ''}
-              onClick={() => { if (id === 'copilot') onCopilot(); else onNavigate(id); onClose() }}
+              key={label}
+              className={id !== 'copilot' && id !== 'revenue' && id !== 'operations' && id !== 'settings' && page === id ? 'active' : ''}
+              onClick={() => {
+                if (id === 'copilot') onCopilot()
+                else if (id === 'revenue' || id === 'operations' || id === 'settings') onNavigate('analytics')
+                else onNavigate(id)
+                onClose()
+              }}
             >
-              {id === 'copilot' ? <StatusDot /> : <Icon size={18} />}
+              {id === 'copilot' ? <Sparkles size={18} /> : <Icon size={18} />}
               <span>{label}</span>
               <ChevronRight size={14} />
             </button>
@@ -233,30 +265,40 @@ function MobileNavigation({ open, page, onClose, onNavigate, onCopilot }: { open
   )
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   Top Header (Redesigned)
+   ═══════════════════════════════════════════════════════════════ */
+
 function TopHeader({ page, dateRange, mobileOpen, notificationsOpen, onDateChange, onMenu, onCopilot, onNotifications }: {
   page: Page; dateRange: string; mobileOpen: boolean; notificationsOpen: boolean;
   onDateChange: (value: string) => void; onMenu: () => void; onCopilot: () => void; onNotifications: () => void
 }) {
   return (
     <header className="top-header">
-      <div className="header-context">
+      <div className="header-left">
         <button className="mobile-menu-button" onClick={onMenu} aria-label="Open navigation" aria-expanded={mobileOpen} aria-controls="mobile-navigation">
           <Menu size={18} />
         </button>
-        <span className="workspace-label">NT / 01</span>
-        <span className="header-separator" />
-        <strong>{pageNames[page]}</strong>
-        <span className="source-badge"><i /> 4 sources live</span>
-      </div>
-      <div className="header-actions">
-        {page === 'overview' && <DateControl value={dateRange} onChange={onDateChange} />}
-        <button className="ask-insight" onClick={onCopilot}>
-          <StatusDot />
-          <span>Ask Insight</span>
+        <div className="header-breadcrumb">
+          <Search size={14} />
+          <span>/ {pageNames[page]}</span>
+        </div>
+        <label className="header-search">
+          <Search size={15} />
+          <input placeholder="Search anything..." aria-label="Search" />
           <kbd>⌘ K</kbd>
+        </label>
+      </div>
+      <div className="header-right">
+        <DateControl value={dateRange} onChange={onDateChange} />
+        <button className="ask-insight-btn" onClick={onCopilot}>
+          <Sparkles size={15} /> Ask Insight
         </button>
         <button className="header-icon notification-trigger" onClick={onNotifications} aria-label="Open notifications" aria-expanded={notificationsOpen}>
-          <Bell size={17} /><i />
+          <Bell size={17} /><span className="notification-dot" />
+        </button>
+        <button className="header-icon" aria-label="Toggle theme">
+          <Moon size={17} />
         </button>
       </div>
     </header>
@@ -264,18 +306,51 @@ function TopHeader({ page, dateRange, mobileOpen, notificationsOpen, onDateChang
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Overview Dashboard
+   Floating Analytics Cards (Hero)
    ═══════════════════════════════════════════════════════════════ */
 
-function ExecutiveMetric({ label, value, movement, negative = false }: { label: string; value: string; movement: string; negative?: boolean }) {
+function FloatingCards() {
   return (
-    <div className="exec-metric">
-      <span>{label}</span>
-      <strong>{value}</strong>
-      <small className={negative ? 'negative-text' : 'positive-text'}>{movement}</small>
+    <div className="floating-cards">
+      {/* Revenue Card */}
+      <div className="float-card float-card--revenue">
+        <span className="float-card-label">Revenue</span>
+        <span className="float-card-change"><TrendingUp size={12} /> +14.2%</span>
+        <div className="float-card-mini-chart">
+          <i style={{ height: '40%' }} />
+          <i style={{ height: '55%' }} />
+          <i style={{ height: '45%' }} />
+          <i style={{ height: '65%' }} />
+          <i style={{ height: '60%' }} />
+          <i style={{ height: '80%' }} />
+          <i style={{ height: '95%' }} />
+        </div>
+      </div>
+
+      {/* Customers Card */}
+      <div className="float-card float-card--customers">
+        <span className="float-card-label">Customers</span>
+        <span className="float-card-value">1,284</span>
+        <span className="float-card-change"><TrendingUp size={12} /> +98 this month</span>
+      </div>
+
+      {/* Profit Margin Card */}
+      <div className="float-card float-card--profit">
+        <span className="float-card-label">Profit Margin</span>
+        <span className="float-card-value">26.9%</span>
+        <div className="float-card-mini-line">
+          <svg viewBox="0 0 100 30">
+            <path d="M0 25 C15 22 25 18 35 20 S55 10 70 12 S85 5 100 3" />
+          </svg>
+        </div>
+      </div>
     </div>
   )
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Overview Dashboard (Redesigned)
+   ═══════════════════════════════════════════════════════════════ */
 
 function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
   dateRange: string; onNavigate: (page: Page) => void; onCopilot: () => void; onExport: () => void
@@ -315,36 +390,102 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
 
   return (
     <main className="dashboard" ref={dashRef}>
-      {/* Greeting */}
-      <div className="dashboard-greeting reveal" data-delay="0">
-        <h1>Good morning, <em>Amine.</em></h1>
-        <p>Revenue is accelerating, but retention and campaign efficiency need decisions today.</p>
-        <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
-          <button className="primary-action" onClick={onExport}><Download size={15} /> Export brief</button>
-          <button className="text-action" onClick={onCopilot}><StatusDot /> Ask a question</button>
+      {/* Hero Section */}
+      <section className="hero-section reveal" data-delay="0">
+        <div className="hero-content">
+          <div className="hero-live-badge">
+            <span className="live-dot" />
+            Live · 4 sources connected
+          </div>
+          <h1>Good morning, <em>Amine.</em></h1>
+          <p>Revenue is accelerating, but retention and campaign efficiency need decisions today.</p>
+          <div className="hero-actions">
+            <button className="primary-action" onClick={onExport}><Download size={15} /> Export brief</button>
+            <button className="text-action" onClick={onCopilot}><Sparkles size={15} /> Ask a question</button>
+          </div>
+        </div>
+        <div className="hero-scene">
+          <img src="/hero-avatar.jpg" alt="ATLASYN Intelligence" />
+          <FloatingCards />
+        </div>
+      </section>
+
+      {/* Priority Alert */}
+      <div className="priority-alert reveal" data-delay="1">
+        <AlertTriangle size={18} />
+        <div className="priority-alert-content">
+          <span>Priority · {topPriority.urgency}</span>
+          <strong>{topPriority.title} — {topPriority.impact}</strong>
+        </div>
+        <button onClick={() => onNavigate(topPriority.page)}>{topPriority.action} <ArrowRight size={13} /></button>
+        <button className="alert-close" aria-label="Dismiss alert"><X size={14} /></button>
+      </div>
+
+      {/* KPI Metric Cards */}
+      <div className="kpi-grid reveal" data-delay="2">
+        <div className="kpi-card">
+          <div className="kpi-header">
+            <span><LineChart size={14} /> Net revenue</span>
+            <span className="kpi-badge positive">+14.2%</span>
+          </div>
+          <strong className="kpi-value">{metrics.revenue.split(' ')[0]} <small>TND</small></strong>
+          <span className="kpi-subtitle">↗ 14.2% vs previous</span>
+          <div className="kpi-sparkline">
+            <svg viewBox="0 0 120 32">
+              <path className="area" d="M0 28 L15 24 L30 26 L45 20 L60 22 L75 16 L90 18 L105 10 L120 8 L120 32 L0 32 Z" fill="rgba(44,149,106,0.08)" />
+              <path className="line" d="M0 28 L15 24 L30 26 L45 20 L60 22 L75 16 L90 18 L105 10 L120 8" stroke="#2C956A" />
+            </svg>
+          </div>
+        </div>
+
+        <div className="kpi-card">
+          <div className="kpi-header">
+            <span><DollarSign size={14} /> Gross profit</span>
+            <span className="kpi-badge neutral">+6.7%</span>
+          </div>
+          <strong className="kpi-value">{metrics.profit.split(' ')[0]} <small>TND</small></strong>
+          <span className="kpi-subtitle">↗ 6.7% · 26.9% margin</span>
+          <div className="kpi-sparkline">
+            <svg viewBox="0 0 120 32">
+              <path className="area" d="M0 26 L20 22 L40 24 L60 18 L80 20 L100 14 L120 12 L120 32 L0 32 Z" fill="rgba(183,154,112,0.08)" />
+              <path className="line" d="M0 26 L20 22 L40 24 L60 18 L80 20 L100 14 L120 12" stroke="#B79A70" />
+            </svg>
+          </div>
+        </div>
+
+        <div className="kpi-card">
+          <div className="kpi-header">
+            <span><Users size={14} /> Active customers</span>
+            <span className="kpi-badge positive">+98</span>
+          </div>
+          <strong className="kpi-value">{metrics.customers}</strong>
+          <span className="kpi-subtitle">↗ 98 added this month</span>
+          <div className="kpi-sparkline">
+            <svg viewBox="0 0 120 32">
+              <path className="area" d="M0 30 L15 28 L30 24 L45 26 L60 20 L75 22 L90 16 L105 14 L120 10 L120 32 L0 32 Z" fill="rgba(124,92,252,0.08)" />
+              <path className="line" d="M0 30 L15 28 L30 24 L45 26 L60 20 L75 22 L90 16 L105 14 L120 10" stroke="#7C5CFC" />
+            </svg>
+          </div>
+        </div>
+
+        <div className="kpi-card">
+          <div className="kpi-header">
+            <span><Zap size={14} /> Operating expense</span>
+            <span className="kpi-badge negative">+4.2%</span>
+          </div>
+          <strong className="kpi-value">{metrics.expenses.split(' ')[0]} <small>TND</small></strong>
+          <span className="kpi-subtitle">↗ 4.2% over plan</span>
+          <div className="kpi-sparkline">
+            <svg viewBox="0 0 120 32">
+              <path className="area" d="M0 24 L20 22 L40 20 L60 18 L80 16 L100 12 L120 10 L120 32 L0 32 Z" fill="rgba(231,107,104,0.08)" />
+              <path className="line" d="M0 24 L20 22 L40 20 L60 18 L80 16 L100 12 L120 10" stroke="#E76B68" />
+            </svg>
+          </div>
         </div>
       </div>
 
-      {/* Priority Alert */}
-      <div className={`priority-ribbon ${topPriority.tone} reveal`} data-delay="1">
-        <AlertTriangle size={18} />
-        <p>
-          <span>Priority · {topPriority.urgency}</span>
-          <strong>{topPriority.title} — {topPriority.impact}</strong>
-        </p>
-        <button onClick={() => onNavigate(topPriority.page)}>{topPriority.action} <ArrowUpRight size={13} /></button>
-      </div>
-
-      {/* Executive Metrics */}
-      <div className="metric-strip reveal" data-delay="2" aria-label="Executive metrics">
-        <ExecutiveMetric label="Net revenue" value={metrics.revenue} movement="↗ 14.2% vs previous" />
-        <ExecutiveMetric label="Gross profit" value={metrics.profit} movement="↗ 6.7% · 26.9% margin" />
-        <ExecutiveMetric label="Active customers" value={metrics.customers} movement="↗ 98 added this month" />
-        <ExecutiveMetric label="Operating expense" value={metrics.expenses} movement="↗ 4.2% over plan" negative />
-      </div>
-
       {/* Revenue + Health Grid */}
-      <div className="dashboard-grid reveal" data-delay="3">
+      <div className="dashboard-content reveal" data-delay="3">
         {/* Revenue Chart */}
         <div className="revenue-panel">
           <div className="revenue-panel-header">
@@ -352,9 +493,11 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
               <SectionLabel index="02">Revenue forecast</SectionLabel>
               <h2>Actual vs projected revenue</h2>
             </div>
-            <div className="chart-legend">
-              <span><i className="actual" /> Actual</span>
-              <span><i className="forecast" /> Forecast</span>
+            <div className="chart-controls">
+              <div className="chart-legend">
+                <span><i className="actual" /> Actual</span>
+                <span><i className="forecast" /> Forecast</span>
+              </div>
             </div>
           </div>
 
@@ -362,12 +505,12 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="Revenue rises from 94k TND in April to a forecast 171.2k TND in December">
               <defs>
                 <linearGradient id="actual-fill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#2F6F6D" stopOpacity=".12" />
-                  <stop offset="1" stopColor="#2F6F6D" stopOpacity="0" />
+                  <stop offset="0" stopColor="#171923" stopOpacity=".06" />
+                  <stop offset="1" stopColor="#171923" stopOpacity="0" />
                 </linearGradient>
                 <linearGradient id="forecast-fill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#C4A66A" stopOpacity=".1" />
-                  <stop offset="1" stopColor="#C4A66A" stopOpacity="0" />
+                  <stop offset="0" stopColor="#B79A70" stopOpacity=".08" />
+                  <stop offset="1" stopColor="#B79A70" stopOpacity="0" />
                 </linearGradient>
               </defs>
               {/* Grid lines */}
@@ -415,6 +558,11 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
               <span>Model confidence</span>
               <em>87%</em>
             </div>
+            <div className="forecast-actions">
+              <button className="ghost-action" onClick={() => onNavigate('analytics')}>
+                <LineChart size={14} /> View detailed analysis <ArrowRight size={13} />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -427,7 +575,8 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
             </div>
             <div className="health-score">
               <strong>82</strong><small>/100</small>
-              <em>Healthy</em>
+              <span className="health-dot" />
+              <span className="health-label">Healthy</span>
             </div>
           </div>
           <div className="system-list">
@@ -440,44 +589,15 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
                 <i style={{ background: item.color }} />
                 <span>{item.label}</span>
                 <strong>{item.score}</strong>
+                <ChevronRight size={14} />
               </button>
             ))}
           </div>
-          <div className="system-factor">
-            <strong>Contributing signal:</strong> {system.factor}
+          <div className="health-signal">
+            <TrendingUp size={14} />
+            Contributing signal: {system.factor}
           </div>
         </div>
-      </div>
-
-      {/* Priority Actions */}
-      <div className="actions-section reveal" data-delay="4">
-        <h2>Priority decisions</h2>
-        {priorityItems.map((item, index) => (
-          <div className="action-card" key={item.title}>
-            <span className={`action-number ${item.tone}`}>0{index + 1}</span>
-            <div className="action-body">
-              <small>{item.type}</small>
-              <h3>{item.title}</h3>
-              <p>{item.evidence}</p>
-              <dl>
-                <div><dt>Cause</dt><dd>{item.cause}</dd></div>
-                <div><dt>Urgency</dt><dd>{item.urgency}</dd></div>
-              </dl>
-            </div>
-            <span className="action-impact">{item.impact}</span>
-            <button onClick={() => onNavigate(item.page)}>
-              {item.action} <ArrowUpRight size={13} />
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {/* Quick Links */}
-      <div className="quick-links reveal" data-delay="5">
-        <button onClick={() => onNavigate('analytics')}><BarChart3 size={14} /> Performance analytics</button>
-        <button onClick={() => onNavigate('customers')}><Users size={14} /> Customer intelligence</button>
-        <button onClick={() => onNavigate('inventory')}><Boxes size={14} /> Inventory planning</button>
-        <button onClick={onCopilot}><Sparkles size={14} /> Ask AI Copilot</button>
       </div>
     </main>
   )
@@ -933,7 +1053,7 @@ function ReportsPage({ onGenerate, onUpload, onShare }: { onGenerate: () => void
               <strong>{fileName || 'Stage a document'}</strong>
               <span>{fileName ? 'Ready for processing connector' : 'PDF, CSV or XLSX · up to 10 MB'}</span>
             </button>
-            <p className="security-note"><ShieldCheck size={12} /> Files remain local in this frontend prototype.</p>
+            <p className="security-note"><ShieldCheck size={12} />Files remain local in this frontend prototype.</p>
           </section>
           <section className="report-history">
             <SectionLabel index="ARCHIVE / 03">Recent reports</SectionLabel>
@@ -1223,7 +1343,7 @@ export default function App() {
     <div className={`app-shell ${copilotOpen ? 'copilot-active' : ''}`}>
       <a className="skip-link" href="#primary-content">Skip to main content</a>
       {booting && <BootSequence onComplete={completeBoot} />}
-      <NavigationRail page={page} onNavigate={navigate} onCopilot={() => setCopilotOpen(true)} />
+      <Sidebar page={page} onNavigate={navigate} onCopilot={() => setCopilotOpen(true)} />
       <MobileNavigation open={mobileOpen} page={page} onClose={closeMobile} onNavigate={navigate} onCopilot={() => setCopilotOpen(true)} />
       <div className="app-main" id="primary-content" tabIndex={-1}>
         <TopHeader
