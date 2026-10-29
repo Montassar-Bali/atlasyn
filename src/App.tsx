@@ -48,6 +48,7 @@ import {
 } from 'lucide-react'
 import { anomalies, channelData, customers, expenses, inventory, products, revenueData, weeklyRevenue } from './data'
 import { downloadExecutiveReport } from './report'
+import { PwaAnnouncementModal, isRunningInPwa } from './PwaAnnouncementModal'
 
 /* ═══════════════════════════════════════════════════════════════
    Types
@@ -271,9 +272,28 @@ function MobileNavigation({ open, page, onClose, onNavigate, onCopilot }: { open
    Top Header (Redesigned)
    ═══════════════════════════════════════════════════════════════ */
 
-function TopHeader({ page, dateRange, mobileOpen, notificationsOpen, onDateChange, onMenu, onCopilot, onNotifications }: {
-  page: Page; dateRange: string; mobileOpen: boolean; notificationsOpen: boolean;
-  onDateChange: (value: string) => void; onMenu: () => void; onCopilot: () => void; onNotifications: () => void
+function TopHeader({
+  page,
+  dateRange,
+  mobileOpen,
+  notificationsOpen,
+  showPwaBadge,
+  onDateChange,
+  onMenu,
+  onCopilot,
+  onNotifications,
+  onPwaClick,
+}: {
+  page: Page
+  dateRange: string
+  mobileOpen: boolean
+  notificationsOpen: boolean
+  showPwaBadge?: boolean
+  onDateChange: (value: string) => void
+  onMenu: () => void
+  onCopilot: () => void
+  onNotifications: () => void
+  onPwaClick?: () => void
 }) {
   return (
     <header className="top-header">
@@ -288,6 +308,12 @@ function TopHeader({ page, dateRange, mobileOpen, notificationsOpen, onDateChang
         </label>
       </div>
       <div className="header-right">
+        {showPwaBadge && (
+          <button className="header-pwa-badge" onClick={onPwaClick} title="Atlasyn v1.2 PWA App available">
+            <span className="header-pwa-dot" />
+            <span>v1.2 App</span>
+          </button>
+        )}
         <DateControl value={dateRange} onChange={onDateChange} />
         <button className="ask-insight-btn" onClick={onCopilot}>
           <Sparkles size={15} /> Ask Insight
@@ -1670,12 +1696,18 @@ export default function App() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [toast, setToast] = useState('')
+  const [pwaModalOpen, setPwaModalOpen] = useState(false)
+  const [isPwa, setIsPwa] = useState(false)
   const [booting, setBooting] = useState(() => {
     try { return sessionStorage.getItem('atlasyn-boot-seen') !== '1' } catch { return true }
   })
 
   const closeCopilot = useCallback(() => setCopilotOpen(false), [])
   const closeMobile = useCallback(() => setMobileOpen(false), [])
+
+  useEffect(() => {
+    setIsPwa(isRunningInPwa())
+  }, [])
 
   useEffect(() => {
     function keydown(event: KeyboardEvent) {
@@ -1720,10 +1752,12 @@ export default function App() {
           dateRange={dateRange}
           mobileOpen={mobileOpen}
           notificationsOpen={notificationsOpen}
+          showPwaBadge={!isPwa}
           onDateChange={setDateRange}
           onMenu={() => setMobileOpen(true)}
           onCopilot={() => setCopilotOpen(true)}
           onNotifications={() => setNotificationsOpen((v) => !v)}
+          onPwaClick={() => setPwaModalOpen(true)}
         />
         {page === 'overview' && <OverviewDashboard dateRange={dateRange} onNavigate={navigate} onCopilot={() => setCopilotOpen(true)} onExport={() => { void exportReport() }} />}
         {page === 'command-center' && <CommandCenterPage dateRange={dateRange} onNavigate={navigate} onCopilot={() => setCopilotOpen(true)} />}
@@ -1737,6 +1771,7 @@ export default function App() {
       </div>
       <NotificationPanel open={notificationsOpen} onClose={() => setNotificationsOpen(false)} onToast={setToast} />
       <Copilot open={copilotOpen} onClose={closeCopilot} dateRange={dateRange} onToast={setToast} />
+      <PwaAnnouncementModal forceOpen={pwaModalOpen} onClose={() => setPwaModalOpen(false)} />
       {toast && <Toast message={toast} onClose={() => setToast('')} />}
     </div>
   )

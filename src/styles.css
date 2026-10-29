@@ -1914,3 +1914,662 @@ dd { margin: 0; color: var(--ink); font-size: var(--text-xs); font-weight: 600; 
     padding-bottom: calc(var(--sp-4) + env(safe-area-inset-bottom));
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   ATLASYN v1.2 PWA 3D Announcement & Install Modal
+   ═══════════════════════════════════════════════════════════════ */
+
+.pwa-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  background: rgba(10, 14, 23, 0.78);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  animation: pwa-backdrop-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pwa-backdrop-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.pwa-modal-wrapper {
+  perspective: 1200px;
+  width: 100%;
+  max-width: 580px;
+  animation: pwa-modal-drop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+}
+
+@keyframes pwa-modal-drop {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.pwa-3d-card {
+  position: relative;
+  border-radius: 24px;
+  background: linear-gradient(155deg, rgba(23, 30, 44, 0.97) 0%, rgba(14, 18, 28, 0.98) 100%);
+  border: 1px solid rgba(183, 154, 112, 0.28);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 35px 80px -15px rgba(0, 0, 0, 0.65),
+    0 0 70px -10px rgba(47, 111, 109, 0.3),
+    0 0 40px -10px rgba(183, 154, 112, 0.2);
+  color: #FFFFFF;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
+  will-change: transform;
+}
+
+.pwa-card-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: overlay;
+  transition: opacity 0.3s ease;
+}
+
+.pwa-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 10;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.pwa-close-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  transform: scale(1.08) rotate(90deg);
+}
+
+.pwa-card-content {
+  position: relative;
+  z-index: 3;
+  padding: 36px 36px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transform-style: preserve-3d;
+}
+
+/* ── 3D Holographic App Icon Stage ── */
+.pwa-hologram-stage {
+  position: relative;
+  width: 140px;
+  height: 120px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+
+.pwa-hologram-glow {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(47, 111, 109, 0.5) 0%, rgba(183, 154, 112, 0.25) 50%, transparent 70%);
+  filter: blur(20px);
+  pointer-events: none;
+  animation: pwa-glow-pulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes pwa-glow-pulse {
+  0% { transform: scale(0.85); opacity: 0.6; }
+  100% { transform: scale(1.15); opacity: 0.95; }
+}
+
+.pwa-orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.pwa-orbit-ring--outer {
+  width: 130px;
+  height: 60px;
+  border: 1.5px dashed rgba(183, 154, 112, 0.45);
+  transform: rotateX(68deg) rotateZ(0deg);
+  animation: pwa-orbit-1 12s linear infinite;
+}
+
+.pwa-orbit-ring--inner {
+  width: 105px;
+  height: 48px;
+  border: 1px solid rgba(47, 111, 109, 0.6);
+  box-shadow: 0 0 12px rgba(47, 111, 109, 0.4);
+  transform: rotateX(65deg) rotateZ(35deg);
+  animation: pwa-orbit-2 9s linear infinite reverse;
+}
+
+@keyframes pwa-orbit-1 {
+  0% { transform: rotateX(68deg) rotateZ(0deg); }
+  100% { transform: rotateX(68deg) rotateZ(360deg); }
+}
+
+@keyframes pwa-orbit-2 {
+  0% { transform: rotateX(65deg) rotateZ(360deg); }
+  100% { transform: rotateX(65deg) rotateZ(0deg); }
+}
+
+/* 3D App Icon Badge */
+.pwa-3d-app-badge {
+  position: relative;
+  z-index: 4;
+  animation: pwa-levitate 4s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes pwa-levitate {
+  0%, 100% { transform: translateY(0) translateZ(35px) rotateY(-3deg); }
+  50% { transform: translateY(-8px) translateZ(45px) rotateY(3deg); }
+}
+
+.pwa-badge-face {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #1e2638 0%, #121722 100%);
+  border: 1.5px solid rgba(183, 154, 112, 0.45);
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.5),
+    0 0 25px rgba(47, 111, 109, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.pwa-badge-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.pwa-badge-reflection {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.pwa-badge-glow {
+  position: absolute;
+  inset: -4px;
+  border-radius: 24px;
+  background: radial-gradient(circle, rgba(183, 154, 112, 0.3) 0%, transparent 70%);
+  z-index: -1;
+}
+
+.pwa-version-pill {
+  position: absolute;
+  bottom: -4px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(18, 24, 36, 0.95);
+  border: 1px solid rgba(183, 154, 112, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold-light);
+  letter-spacing: 0.04em;
+  transform: translateZ(40px);
+}
+
+.pwa-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+  animation: live-breathe 2s infinite;
+}
+
+/* ── Typography ── */
+.pwa-announcement-header {
+  margin-bottom: 22px;
+  transform: translateZ(25px);
+}
+
+.pwa-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.pwa-sparkle-icon {
+  color: var(--gold);
+  animation: pwa-sparkle-spin 3s ease-in-out infinite;
+}
+
+@keyframes pwa-sparkle-spin {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.15) rotate(15deg); }
+}
+
+.pwa-announcement-header h2 {
+  margin: 0 0 10px;
+  font: 700 clamp(22px, 3vw, 27px) / 1.2 var(--font-display);
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+}
+
+.pwa-announcement-header h2 em {
+  font-style: normal;
+  background: linear-gradient(135deg, #E6D2B5 0%, #B79A70 50%, #C4A66A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pwa-announcement-header p {
+  margin: 0 auto;
+  max-width: 460px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ── Perks Grid ── */
+.pwa-perks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 26px;
+  transform: translateZ(20px);
+}
+
+.pwa-perk-card {
+  padding: 14px 10px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+.pwa-perk-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(183, 154, 112, 0.3);
+  transform: translateY(-2px);
+}
+
+.pwa-perk-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pwa-perk-icon--teal {
+  background: rgba(47, 111, 109, 0.25);
+  color: #5ED1CF;
+  border: 1px solid rgba(47, 111, 109, 0.4);
+}
+.pwa-perk-icon--gold {
+  background: rgba(183, 154, 112, 0.2);
+  color: #DFC094;
+  border: 1px solid rgba(183, 154, 112, 0.35);
+}
+.pwa-perk-icon--purple {
+  background: rgba(124, 92, 252, 0.2);
+  color: #A992FF;
+  border: 1px solid rgba(124, 92, 252, 0.35);
+}
+
+.pwa-perk-card strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-bottom: 2px;
+}
+
+.pwa-perk-card span {
+  display: block;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.35;
+}
+
+/* ── Actions Row ── */
+.pwa-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  transform: translateZ(30px);
+}
+
+.pwa-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+}
+
+.pwa-btn--primary {
+  background: linear-gradient(135deg, #C4A66A 0%, #B79A70 50%, #9F8257 100%);
+  color: #11151E;
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 18px rgba(183, 154, 112, 0.35);
+}
+.pwa-btn--primary:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 24px rgba(183, 154, 112, 0.5);
+  filter: brightness(1.06);
+}
+.pwa-btn--primary:active {
+  transform: translateY(0);
+}
+
+.pwa-btn--primary:hover .pwa-arrow-slide {
+  transform: translateX(3px);
+}
+.pwa-arrow-slide {
+  transition: transform 0.2s ease;
+}
+
+.pwa-btn--ghost {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.pwa-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+.pwa-footer-hint {
+  margin-top: 16px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.02em;
+}
+
+/* ════════════ VIEW 2: STEP-BY-STEP GUIDE STYLES ════════════ */
+.pwa-card-content--guide {
+  text-align: left;
+  align-items: stretch;
+}
+
+.pwa-guide-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.pwa-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-top: 2px;
+}
+.pwa-back-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+}
+
+.pwa-guide-titles h2 {
+  margin: 0 0 4px;
+  font: 700 20px / 1.2 var(--font-display);
+  color: #FFFFFF;
+}
+
+.pwa-guide-titles p {
+  margin: 0;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* Platform Tabs */
+.pwa-platform-tabs {
+  display: flex;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 20px;
+}
+
+.pwa-tab-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.pwa-tab-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.05);
+}
+.pwa-tab-btn.active {
+  background: rgba(183, 154, 112, 0.2);
+  color: var(--gold-light);
+  border: 1px solid rgba(183, 154, 112, 0.35);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Steps List */
+.pwa-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.pwa-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: background 0.2s ease;
+}
+.pwa-step-item:hover {
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.pwa-step-number {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal) 0%, #1c4544 100%);
+  border: 1px solid rgba(94, 209, 207, 0.4);
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.pwa-step-body {
+  flex: 1;
+}
+
+.pwa-step-action-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold-light);
+  margin-bottom: 4px;
+}
+
+.pwa-step-body p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.pwa-step-body strong {
+  color: #FFFFFF;
+}
+
+.pwa-direct-install-box {
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.pwa-btn--pulse {
+  width: 100%;
+  animation: pwa-pulse-btn 2.5s infinite;
+}
+
+@keyframes pwa-pulse-btn {
+  0%, 100% { box-shadow: 0 4px 18px rgba(183, 154, 112, 0.35); }
+  50% { box-shadow: 0 4px 28px rgba(183, 154, 112, 0.65); }
+}
+
+.pwa-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(44, 149, 106, 0.15);
+  border: 1px solid rgba(44, 149, 106, 0.35);
+  color: #4ADE80;
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* Header Install App pill button */
+.header-pwa-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, rgba(183, 154, 112, 0.15) 0%, rgba(47, 111, 109, 0.15) 100%);
+  border: 1px solid rgba(183, 154, 112, 0.35);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.header-pwa-badge:hover {
+  background: linear-gradient(135deg, rgba(183, 154, 112, 0.25) 0%, rgba(47, 111, 109, 0.25) 100%);
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
+.header-pwa-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 6px var(--gold);
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 600px) {
+  .pwa-card-content {
+    padding: 24px 20px 20px;
+  }
+  .pwa-perks-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .pwa-perk-card {
+    flex-direction: row;
+    text-align: left;
+    padding: 10px 12px;
+  }
+  .pwa-actions-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pwa-actions-row .pwa-btn {
+    width: 100%;
+  }
+  .pwa-platform-tabs {
+    flex-wrap: wrap;
+  }
+  .pwa-tab-btn {
+    flex: 1 1 45%;
+    font-size: 11px;
+    padding: 6px;
+  }
+}
+
