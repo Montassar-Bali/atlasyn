@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Apple,
   ArrowLeft,
@@ -7,12 +7,13 @@ import {
   CheckCircle2,
   Compass,
   Download,
-  Laptop,
+  Home,
+  Layout,
   Monitor,
   PlusSquare,
   Share,
+  ShieldCheck,
   Smartphone,
-  Sparkles,
   X,
   Zap,
 } from 'lucide-react'
@@ -53,8 +54,6 @@ export function PwaAnnouncementModal({ forceOpen, onClose }: PwaAnnouncementModa
   const [activeTab, setActiveTab] = useState<PlatformTab>(detectDefaultPlatform())
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [installedSuccess, setInstalledSuccess] = useState(false)
-  const [tilt, setTilt] = useState({ x: 0, y: 0, glareX: 50, glareY: 50 })
-  const cardRef = useRef<HTMLDivElement>(null)
 
   // Listen for beforeinstallprompt event (Chromium-based browsers)
   useEffect(() => {
@@ -83,7 +82,7 @@ export function PwaAnnouncementModal({ forceOpen, onClose }: PwaAnnouncementModa
       return
     }
 
-    // Delay showing until 1.8s after initial render for a smooth, high-impact entrance
+    // Delay showing until 1.8s after initial render for a smooth entrance
     const timer = setTimeout(() => {
       setIsOpen(true)
     }, 1800)
@@ -96,23 +95,6 @@ export function PwaAnnouncementModal({ forceOpen, onClose }: PwaAnnouncementModa
     setIsOpen(false)
     sessionStorage.setItem('atlasyn_pwa_v1_2_dismissed', 'true')
     onClose?.()
-  }
-
-  // 3D Parallax Tilt Handler
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
-    const rect = cardRef.current.getBoundingClientRect()
-    const x = e.clientX - rect.left - rect.width / 2
-    const y = e.clientY - rect.top - rect.height / 2
-    const rotateX = (-y / (rect.height / 2)) * 8
-    const rotateY = (x / (rect.width / 2)) * 8
-    const glareX = ((e.clientX - rect.left) / rect.width) * 100
-    const glareY = ((e.clientY - rect.top) / rect.height) * 100
-    setTilt({ x: rotateX, y: rotateY, glareX, glareY })
-  }
-
-  const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0, glareX: 50, glareY: 50 })
   }
 
   // Primary action: trigger browser prompt if available, and flip to instructions
@@ -153,361 +135,307 @@ export function PwaAnnouncementModal({ forceOpen, onClose }: PwaAnnouncementModa
       aria-labelledby="pwa-modal-title"
     >
       <div className="pwa-modal-wrapper">
-        <div
-          ref={cardRef}
-          className={`pwa-3d-card ${view === 'guide' ? 'pwa-3d-card--flipped' : ''}`}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-          style={{
-            transform: `perspective(1200px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-          }}
-        >
-          {/* Ambient 3D Glare Light */}
-          <div
-            className="pwa-card-glare"
-            style={{
-              background: `radial-gradient(circle 350px at ${tilt.glareX}% ${tilt.glareY}%, rgba(255, 255, 255, 0.12), transparent 70%)`,
-            }}
-          />
-
-          {/* Close button */}
-          <button className="pwa-close-btn" onClick={handleClose} aria-label="Dismiss PWA update">
-            <X size={18} />
+        <div className="pwa-reference-card">
+          {/* Close button in top-right */}
+          <button
+            className="pwa-clean-close-btn"
+            onClick={handleClose}
+            aria-label="Close Announcement"
+          >
+            <X size={17} />
           </button>
 
-          {/* ════════════ VIEW 1: 3D ANNOUNCEMENT ════════════ */}
           {view === 'announcement' ? (
-            <div className="pwa-card-content">
-              {/* 3D Holographic App Icon Stage */}
-              <div className="pwa-hologram-stage">
-                <div className="pwa-orbit-ring pwa-orbit-ring--outer" />
-                <div className="pwa-orbit-ring pwa-orbit-ring--inner" />
-                <div className="pwa-hologram-glow" />
-
-                {/* 3D Isometric App Cube / Badge */}
-                <div className="pwa-3d-app-badge">
-                  <div className="pwa-badge-face pwa-badge-face--front">
-                    <img src="/atlasyn-logo.png" alt="Atlasyn Icon" className="pwa-badge-icon" />
-                    <div className="pwa-badge-reflection" />
+            /* ════════════ VIEW 1: EXACT REFERENCE ANNOUNCEMENT ════════════ */
+            <div className="pwa-split-container">
+              {/* Left Column: Typography, Value Pillars, CTA */}
+              <div className="pwa-content-column">
+                {/* Badges */}
+                <div className="pwa-badges-row">
+                  <div className="pwa-whats-new-badge">
+                    <span className="pwa-green-dot" />
+                    <span>WHAT'S NEW</span>
                   </div>
-                  <div className="pwa-badge-glow" />
+                  <div className="pwa-version-tag">v1.2</div>
                 </div>
 
-                {/* Release Pill Tag */}
-                <div className="pwa-version-pill">
-                  <span className="pwa-pulse-dot" />
-                  <span>v1.2 Official Release</span>
-                </div>
-              </div>
-
-              {/* Text Header */}
-              <div className="pwa-announcement-header">
-                <div className="pwa-eyebrow">
-                  <Sparkles size={14} className="pwa-sparkle-icon" />
-                  <span>NATIVE PWA EXPERIENCE</span>
-                </div>
-                <h2 id="pwa-modal-title">
-                  Atlasyn Insight is now available as a <em>PWA App</em>
+                {/* Main Heading */}
+                <h2 id="pwa-modal-title" className="pwa-reference-heading">
+                  Atlasyn Insight<br />
+                  is now <strong>available</strong><br />
+                  as a <span className="pwa-gold-highlight">PWA App</span>
                 </h2>
-                <p>
-                  Elevate your executive workflow. Install Atlasyn v1.2 directly to your desktop or mobile device for an ultra-fast, zero-distraction experience.
+
+                {/* Subtitle */}
+                <p className="pwa-reference-desc">
+                  Get a faster, more focused experience. Install <strong>Atlasyn Insight</strong> on your device and access it instantly, even offline.
                 </p>
-              </div>
 
-              {/* 3 Value Pillars */}
-              <div className="pwa-perks-grid">
-                <div className="pwa-perk-card">
-                  <div className="pwa-perk-icon pwa-perk-icon--teal">
-                    <Zap size={18} />
+                {/* 3 Feature Rows */}
+                <div className="pwa-feature-rows">
+                  <div className="pwa-feature-row">
+                    <div className="pwa-feature-icon-box">
+                      <Zap size={17} className="text-amber-600" />
+                    </div>
+                    <div className="pwa-feature-texts">
+                      <strong>Instant Access</strong>
+                      <span>Open the app directly from your device without a browser.</span>
+                    </div>
                   </div>
-                  <div>
-                    <strong>Offline Intelligence</strong>
-                    <span>Instant boot without waiting for network loads</span>
+
+                  <div className="pwa-feature-row">
+                    <div className="pwa-feature-icon-box">
+                      <Layout size={17} className="text-amber-600" />
+                    </div>
+                    <div className="pwa-feature-texts">
+                      <strong>Clean Workspace</strong>
+                      <span>A dedicated, distraction-free experience.</span>
+                    </div>
+                  </div>
+
+                  <div className="pwa-feature-row">
+                    <div className="pwa-feature-icon-box">
+                      <Home size={17} className="text-amber-600" />
+                    </div>
+                    <div className="pwa-feature-texts">
+                      <strong>Dock & Home Screen</strong>
+                      <span>Install it on your desktop or mobile device for one-tap access.</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="pwa-perk-card">
-                  <div className="pwa-perk-icon pwa-perk-icon--gold">
-                    <Laptop size={18} />
-                  </div>
-                  <div>
-                    <strong>Standalone Window</strong>
-                    <span>Pure fullscreen workspace free of browser tabs</span>
-                  </div>
+                {/* Action Buttons Row */}
+                <div className="pwa-buttons-row">
+                  <button
+                    className="pwa-btn-install-primary"
+                    onClick={handleAddToHomeScreen}
+                  >
+                    <Download size={16} />
+                    <span>Add to Home Screen</span>
+                    <ArrowRight size={15} />
+                  </button>
+
+                  <button
+                    className="pwa-btn-maybe-later"
+                    onClick={handleClose}
+                  >
+                    Maybe Later
+                  </button>
                 </div>
 
-                <div className="pwa-perk-card">
-                  <div className="pwa-perk-icon pwa-perk-icon--purple">
-                    <Smartphone size={18} />
-                  </div>
-                  <div>
-                    <strong>Dock & Home Screen</strong>
-                    <span>One-tap access with desktop keyboard shortcuts</span>
-                  </div>
+                {/* Security & Convenience Footer */}
+                <div className="pwa-reference-footer">
+                  <ShieldCheck size={14} className="pwa-shield-icon" />
+                  <span>Free update · Installs in seconds · No App Store required</span>
                 </div>
               </div>
 
-              {/* Modal Actions */}
-              <div className="pwa-actions-row">
-                <button
-                  className="pwa-btn pwa-btn--primary pwa-btn--glow"
-                  onClick={handleAddToHomeScreen}
-                >
-                  <PlusSquare size={17} />
-                  <span>Add to Home Screen</span>
-                  <ArrowRight size={15} className="pwa-arrow-slide" />
-                </button>
-
-                <button
-                  className="pwa-btn pwa-btn--ghost"
-                  onClick={handleClose}
-                >
-                  Continue in Browser
-                </button>
-              </div>
-
-              <div className="pwa-footer-hint">
-                <span>Free update · Installs in 3 seconds · No App Store required</span>
+              {/* Right Column: 3D Laptop & iPhone Mockup on Desk */}
+              <div className="pwa-visual-column">
+                <img
+                  src="/pwa-mockup-clean.png"
+                  alt="Atlasyn Insight Laptop and Phone Preview"
+                  className="pwa-mockup-image"
+                />
               </div>
             </div>
           ) : (
-            /* ════════════ VIEW 2: STEP-BY-STEP INSTRUCTIONS ════════════ */
-            <div className="pwa-card-content pwa-card-content--guide">
-              <div className="pwa-guide-header">
+            /* ════════════ VIEW 2: STEP-BY-STEP INSTRUCTIONS GUIDE ════════════ */
+            <div className="pwa-guide-view">
+              <div className="pwa-guide-topbar">
                 <button
-                  className="pwa-back-btn"
+                  className="pwa-guide-back-btn"
                   onClick={() => setView('announcement')}
-                  aria-label="Back to announcement"
                 >
                   <ArrowLeft size={16} />
-                  <span>Back</span>
+                  <span>Back to Overview</span>
                 </button>
-                <div className="pwa-guide-titles">
-                  <h2>How to Install Atlasyn v1.2</h2>
-                  <p>Select your device below to see exact 3-step instructions</p>
+                <div className="pwa-guide-heading">
+                  <h3>How to Install Atlasyn v1.2</h3>
+                  <p>Choose your platform below for simple 3-step instructions</p>
                 </div>
               </div>
 
-              {/* Platform Selector Tabs */}
-              <div className="pwa-platform-tabs" role="tablist">
+              {/* Device Selector Tabs */}
+              <div className="pwa-platform-tabs">
                 <button
-                  className={`pwa-tab-btn ${activeTab === 'ios' ? 'active' : ''}`}
+                  className={`pwa-tab-button ${activeTab === 'ios' ? 'active' : ''}`}
                   onClick={() => setActiveTab('ios')}
-                  role="tab"
-                  aria-selected={activeTab === 'ios'}
                 >
                   <Apple size={15} />
                   <span>iPhone / iPad</span>
                 </button>
                 <button
-                  className={`pwa-tab-btn ${activeTab === 'chrome' ? 'active' : ''}`}
+                  className={`pwa-tab-button ${activeTab === 'chrome' ? 'active' : ''}`}
                   onClick={() => setActiveTab('chrome')}
-                  role="tab"
-                  aria-selected={activeTab === 'chrome'}
                 >
                   <Monitor size={15} />
                   <span>Chrome / Edge</span>
                 </button>
                 <button
-                  className={`pwa-tab-btn ${activeTab === 'android' ? 'active' : ''}`}
+                  className={`pwa-tab-button ${activeTab === 'android' ? 'active' : ''}`}
                   onClick={() => setActiveTab('android')}
-                  role="tab"
-                  aria-selected={activeTab === 'android'}
                 >
                   <Smartphone size={15} />
                   <span>Android</span>
                 </button>
                 <button
-                  className={`pwa-tab-btn ${activeTab === 'mac' ? 'active' : ''}`}
+                  className={`pwa-tab-button ${activeTab === 'mac' ? 'active' : ''}`}
                   onClick={() => setActiveTab('mac')}
-                  role="tab"
-                  aria-selected={activeTab === 'mac'}
                 >
                   <Compass size={15} />
                   <span>Mac Safari</span>
                 </button>
               </div>
 
-              {/* Platform Specific Steps */}
-              <div className="pwa-steps-container">
+              {/* Steps List */}
+              <div className="pwa-guide-steps-card">
                 {activeTab === 'ios' && (
-                  <div className="pwa-steps-list">
-                    <div className="pwa-step-item">
-                      <div className="pwa-step-number">1</div>
-                      <div className="pwa-step-body">
-                        <div className="pwa-step-action-tag">
-                          <Share size={15} />
+                  <div className="pwa-steps-grid">
+                    <div className="pwa-step-card">
+                      <div className="pwa-step-num">1</div>
+                      <div className="pwa-step-info">
+                        <div className="pwa-action-badge">
+                          <Share size={14} />
                           <span>Tap Share</span>
                         </div>
-                        <p>
-                          In Apple Safari, tap the <strong>Share</strong> button (the square with an arrow pointing upward) in the bottom toolbar.
-                        </p>
+                        <p>In Safari, tap the <strong>Share</strong> icon (square with upward arrow) at the bottom toolbar.</p>
                       </div>
                     </div>
-
-                    <div className="pwa-step-item">
-                      <div className="pwa-step-number">2</div>
-                      <div className="pwa-step-body">
-                        <div className="pwa-step-action-tag">
-                          <PlusSquare size={15} />
+                    <div className="pwa-step-card">
+                      <div className="pwa-step-num">2</div>
+                      <div className="pwa-step-info">
+                        <div className="pwa-action-badge">
+                          <PlusSquare size={14} />
                           <span>Add to Home Screen</span>
                         </div>
-                        <p>
-                          Scroll down the share sheet and tap <strong>"Add to Home Screen"</strong> with the square plus icon.
-                        </p>
+                        <p>Scroll down the share options and tap <strong>"Add to Home Screen"</strong>.</p>
                       </div>
                     </div>
-
-                    <div className="pwa-step-item">
-                      <div className="pwa-step-number">3</div>
-                      <div className="pwa-step-body">
-                        <div className="pwa-step-action-tag">
-                          <CheckCircle2 size={15} />
+                    <div className="pwa-step-card">
+                      <div className="pwa-step-num">3</div>
+                      <div className="pwa-step-info">
+                        <div className="pwa-action-badge">
+                          <CheckCircle2 size={14} />
                           <span>Tap "Add"</span>
                         </div>
-                        <p>
-                          Tap <strong>"Add"</strong> in the top-right corner. ATLASYN Insight will appear on your home screen and run in standalone fullscreen mode!
-                        </p>
+                        <p>Tap <strong>"Add"</strong> in the top-right. Atlasyn will install as a standalone native app!</p>
                       </div>
                     </div>
                   </div>
                 )}
 
                 {activeTab === 'chrome' && (
-                  <div className="pwa-steps-list">
-                    <div className="pwa-step-item">
-                      <div className="pwa-step-number">1</div>
-                      <div className="pwa-step-body">
-                        <div className="pwa-step-action-tag">
-                          <Download size={15} />
-                          <span>Look at Address Bar</span>
+                  <div className="pwa-steps-grid">
+                    <div className="pwa-step-card">
+                      <div className="pwa-step-num">1</div>
+                      <div className="pwa-step-info">
+                        <div className="pwa-action-badge">
+                          <Download size={14} />
+                          <span>Address Bar</span>
                         </div>
-                        <p>
-                          Look at the right side of your browser URL address bar for the <strong>Install</strong> icon (computer or ⊕ icon).
-                        </p>
+                        <p>Look at the right side of the address bar for the <strong>Install</strong> icon (computer ⊕).</p>
                       </div>
                     </div>
-
-                    <div className="pwa-step-item">
-                      <div className="pwa-step-number">2</div>
-                      <div className="pwa-step-body">
-                        <div className="pwa-step-action-tag">
-                          <Monitor size={15} />
+                    <div className="pwa-step-card">
+                      <div className="pwa-step-num">2</div>
+                      <div className="pwa-step-info">
+                        <div className="pwa-action-badge">
+                          <Monitor size={14} />
                           <span>Click Install</span>
                         </div>
-                        <p>
-                          Click the icon, or open the browser menu (<strong>⋮</strong> or <strong>…</strong>) and click <strong>"Install ATLASYN Insight..."</strong>.
-                        </p>
+                        <p>Click the icon or open browser menu (⋮) and select <strong>"Install ATLASYN Insight..."</strong>.</p>
                       </div>
                     </div>
-
-                    <div className="pwa-step-item">
-                      <div className="pwa-step-number">3</div>
-                      <div className="pwa-step-body">
-                        <div className="pwa-step-action-tag">
-                          <CheckCircle2 size={15} />
-                          <span>Pin to Dock / Taskbar</span>
+                    <div className="pwa-step-card">
+                      <div className="pwa-step-num">3</div>
+                      <div className="pwa-step-info">
+                        <div className="pwa-action-badge">
+                          <CheckCircle2 size={14} />
+                          <span>Confirm & Pin</span>
                         </div>
-                        <p>
-                          Confirm <strong>"Install"</strong>. Atlasyn v1.2 will immediately launch in its own native desktop window with high-performance offline caching!
-                        </p>
+                        <p>Click <strong>"Install"</strong> to launch Atlasyn in a distraction-free window with offline cache.</p>
                       </div>
                     </div>
                   </div>
                 )}
 
                 {activeTab === 'android' && (
-                  <div className="pwa-steps-list">
-                    <div className="pwa-step-item">
-                      <div className="pwa-step-number">1</div>
-                      <div className="pwa-step-body">
-                        <div className="pwa-step-action-tag">
-                          <Share size={15} />
-                          <span>Open Menu (⋮)</span>
+                  <div className="pwa-steps-grid">
+                    <div className="pwa-step-card">
+                      <div className="pwa-step-num">1</div>
+                      <div className="pwa-step-info">
+                        <div className="pwa-action-badge">
+                          <Share size={14} />
+                          <span>Menu (⋮)</span>
                         </div>
-                        <p>
-                          In Chrome or your Android browser, tap the <strong>three vertical dots (⋮)</strong> in the upper right corner.
-                        </p>
+                        <p>Tap the <strong>three vertical dots (⋮)</strong> in the top-right corner of Chrome.</p>
                       </div>
                     </div>
-
-                    <div className="pwa-step-item">
-                      <div className="pwa-step-number">2</div>
-                      <div className="pwa-step-body">
-                        <div className="pwa-step-action-tag">
-                          <PlusSquare size={15} />
+                    <div className="pwa-step-card">
+                      <div className="pwa-step-num">2</div>
+                      <div className="pwa-step-info">
+                        <div className="pwa-action-badge">
+                          <PlusSquare size={14} />
                           <span>Install app</span>
                         </div>
-                        <p>
-                          Tap <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong> from the dropdown list.
-                        </p>
+                        <p>Tap <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong>.</p>
                       </div>
                     </div>
-
-                    <div className="pwa-step-item">
-                      <div className="pwa-step-number">3</div>
-                      <div className="pwa-step-body">
-                        <div className="pwa-step-action-tag">
-                          <CheckCircle2 size={15} />
-                          <span>Confirm Installation</span>
+                    <div className="pwa-step-card">
+                      <div className="pwa-step-num">3</div>
+                      <div className="pwa-step-info">
+                        <div className="pwa-action-badge">
+                          <CheckCircle2 size={14} />
+                          <span>Done</span>
                         </div>
-                        <p>
-                          Tap <strong>"Install"</strong> on the popup. Atlasyn v1.2 is now installed in your app drawer with native push support!
-                        </p>
+                        <p>Confirm <strong>"Install"</strong>. Atlasyn is now in your app drawer with full offline access.</p>
                       </div>
                     </div>
                   </div>
                 )}
 
                 {activeTab === 'mac' && (
-                  <div className="pwa-steps-list">
-                    <div className="pwa-step-item">
-                      <div className="pwa-step-number">1</div>
-                      <div className="pwa-step-body">
-                        <div className="pwa-step-action-tag">
-                          <Share size={15} />
-                          <span>Share or File Menu</span>
+                  <div className="pwa-steps-grid">
+                    <div className="pwa-step-card">
+                      <div className="pwa-step-num">1</div>
+                      <div className="pwa-step-info">
+                        <div className="pwa-action-badge">
+                          <Share size={14} />
+                          <span>Safari Menu</span>
                         </div>
-                        <p>
-                          In Safari on macOS Sonoma or later, click the <strong>Share</strong> button in the toolbar, or select <strong>File</strong> in the top menu bar.
-                        </p>
+                        <p>In Safari (macOS Sonoma+), click <strong>File</strong> in the top menu or the <strong>Share</strong> button.</p>
                       </div>
                     </div>
-
-                    <div className="pwa-step-item">
-                      <div className="pwa-step-number">2</div>
-                      <div className="pwa-step-body">
-                        <div className="pwa-step-action-tag">
-                          <PlusSquare size={15} />
+                    <div className="pwa-step-card">
+                      <div className="pwa-step-num">2</div>
+                      <div className="pwa-step-info">
+                        <div className="pwa-action-badge">
+                          <PlusSquare size={14} />
                           <span>Add to Dock</span>
                         </div>
-                        <p>
-                          Choose <strong>"Add to Dock"</strong> from the menu options.
-                        </p>
+                        <p>Select <strong>"Add to Dock"</strong> from the menu options.</p>
                       </div>
                     </div>
-
-                    <div className="pwa-step-item">
-                      <div className="pwa-step-number">3</div>
-                      <div className="pwa-step-body">
-                        <div className="pwa-step-action-tag">
-                          <CheckCircle2 size={15} />
+                    <div className="pwa-step-card">
+                      <div className="pwa-step-num">3</div>
+                      <div className="pwa-step-info">
+                        <div className="pwa-action-badge">
+                          <CheckCircle2 size={14} />
                           <span>Launch from Dock</span>
                         </div>
-                        <p>
-                          Click <strong>"Add"</strong>. ATLASYN will now exist as an isolated macOS application in your Dock with notification support!
-                        </p>
+                        <p>Click <strong>"Add"</strong>. Atlasyn is now an isolated macOS app with dock badge alerts.</p>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Direct Install prompt button if available */}
+              {/* Direct 1-Click Install Button if supported */}
               {deferredPrompt && (
-                <div className="pwa-direct-install-box">
+                <div className="pwa-direct-install-banner">
                   <button
-                    className="pwa-btn pwa-btn--primary pwa-btn--pulse"
+                    className="pwa-btn-install-primary"
                     onClick={async () => {
                       try {
                         await deferredPrompt.prompt()
@@ -516,9 +444,7 @@ export function PwaAnnouncementModal({ forceOpen, onClose }: PwaAnnouncementModa
                           setInstalledSuccess(true)
                           setTimeout(handleClose, 2000)
                         }
-                      } catch {
-                        // ignore
-                      }
+                      } catch {}
                     }}
                   >
                     <Download size={16} />
@@ -528,15 +454,15 @@ export function PwaAnnouncementModal({ forceOpen, onClose }: PwaAnnouncementModa
               )}
 
               {installedSuccess && (
-                <div className="pwa-success-banner">
+                <div className="pwa-success-alert">
                   <Check size={16} />
-                  <span>Installation initiated! Atlasyn v1.2 is ready on your device.</span>
+                  <span>Installation started! Atlasyn Insight v1.2 is being added to your device.</span>
                 </div>
               )}
 
-              {/* Bottom Guide Actions */}
-              <div className="pwa-actions-row">
-                <button className="pwa-btn pwa-btn--primary" onClick={handleClose}>
+              {/* Bottom Done Action */}
+              <div className="pwa-guide-footer-actions">
+                <button className="pwa-btn-install-primary" onClick={handleClose}>
                   <Check size={16} />
                   <span>Got It, I'll Add It</span>
                 </button>
