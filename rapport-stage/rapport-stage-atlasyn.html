@@ -1,0 +1,1025 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rapport de stage — ATLASYN Insight</title>
+  <link rel="stylesheet" href="report.css" />
+</head>
+<body>
+<main class="report-body">
+
+  <section class="cover">
+    <div class="cover-top">
+      <div class="cover-brand">
+        <img src="../public/atlasyn-logo.png" alt="Logo ATLASYN" />
+        <div><strong>ATLASYN</strong><span>INSIGHT</span></div>
+      </div>
+      <div class="cover-school">
+        <strong class="placeholder">[NOM DE L’ÉTABLISSEMENT]</strong><br />
+        <span class="placeholder">[DÉPARTEMENT / FILIÈRE]</span><br />
+        Année universitaire <span class="placeholder">[2025–2026]</span>
+      </div>
+    </div>
+    <div class="cover-main">
+      <span class="cover-kicker">Rapport de stage</span>
+      <h1>Conception et développement d’<em>ATLASYN Insight</em></h1>
+      <p class="cover-subtitle">Prototype SaaS d’intelligence décisionnelle pour le pilotage des entreprises tunisiennes</p>
+    </div>
+    <div class="cover-meta">
+      <div class="meta-item"><span>Réalisé par</span><strong class="placeholder">[VOTRE NOM COMPLET]</strong></div>
+      <div class="meta-item"><span>Organisme d’accueil</span><strong class="placeholder">[NOM DE L’ORGANISME]</strong></div>
+      <div class="meta-item"><span>Encadrant professionnel</span><strong class="placeholder">[NOM ET FONCTION]</strong></div>
+      <div class="meta-item"><span>Encadrant académique</span><strong class="placeholder">[NOM ET GRADE]</strong></div>
+      <div class="meta-item"><span>Période</span><strong class="placeholder">[DATE DE DÉBUT — DATE DE FIN]</strong></div>
+      <div class="meta-item"><span>Formation</span><strong class="placeholder">[CLASSE / NIVEAU / FILIÈRE]</strong></div>
+    </div>
+  </section>
+
+  <section class="formal-cover">
+    <img src="../public/atlasyn-logo.png" alt="Logo ATLASYN" />
+    <div class="institution">
+      République Tunisienne<br />
+      <strong class="placeholder">[MINISTÈRE OU UNIVERSITÉ, SI REQUIS]</strong><br />
+      <strong class="placeholder">[NOM DE L’ÉTABLISSEMENT]</strong><br />
+      <span class="placeholder">[DÉPARTEMENT / FILIÈRE]</span>
+    </div>
+    <h1>Rapport de stage</h1>
+    <div class="project-name">ATLASYN Insight</div>
+    <p style="max-width:145mm;text-align:center;margin-top:4mm;">Conception d’une plateforme d’intelligence décisionnelle adaptée au contexte des entreprises tunisiennes</p>
+    <dl class="formal-grid">
+      <div><dt>Étudiant(e)</dt><dd><span class="placeholder">[VOTRE NOM COMPLET]</span></dd></div>
+      <div><dt>Matricule</dt><dd><span class="placeholder">[VOTRE MATRICULE]</span></dd></div>
+      <div><dt>Type de stage</dt><dd><span class="placeholder">[STAGE D’ÉTÉ / PFE / INITIATION]</span></dd></div>
+      <div><dt>Organisme d’accueil</dt><dd><span class="placeholder">[NOM DE L’ORGANISME]</span></dd></div>
+      <div><dt>Période</dt><dd><span class="placeholder">[DATE DE DÉBUT — DATE DE FIN]</span></dd></div>
+      <div><dt>Encadrant professionnel</dt><dd><span class="placeholder">[NOM ET FONCTION]</span></dd></div>
+      <div><dt>Encadrant académique</dt><dd><span class="placeholder">[NOM ET GRADE]</span></dd></div>
+    </dl>
+  </section>
+
+  <section class="front-section">
+    <div class="front-title">Remerciements <span>03</span></div>
+    <p class="lead">Au terme de ce stage, je tiens à exprimer ma profonde reconnaissance à toutes les personnes qui ont contribué, directement ou indirectement, à la réalisation de ce travail.</p>
+    <p>Je remercie tout particulièrement Monsieur/Madame <strong class="placeholder">[NOM DE L’ENCADRANT PROFESSIONNEL]</strong>, <span class="placeholder">[FONCTION]</span> au sein de <strong class="placeholder">[NOM DE L’ORGANISME D’ACCUEIL]</strong>, pour son accueil, sa disponibilité et ses conseils. Son accompagnement m’a permis de mieux comprendre les enjeux liés à la conception d’une solution numérique destinée au pilotage des activités d’une entreprise.</p>
+    <p>J’adresse également mes sincères remerciements à Monsieur/Madame <strong class="placeholder">[NOM DE L’ENCADRANT ACADÉMIQUE]</strong>, enseignant(e) à <strong class="placeholder">[NOM DE L’ÉTABLISSEMENT]</strong>, pour son suivi, ses orientations méthodologiques et ses remarques constructives tout au long de cette expérience.</p>
+    <p>Je remercie l’ensemble des membres de <strong class="placeholder">[NOM DE L’ÉQUIPE OU DU SERVICE]</strong> pour leur disponibilité, la qualité de nos échanges et les connaissances professionnelles qu’ils ont partagées avec moi.</p>
+    <p>Enfin, je remercie ma famille, mes proches et toutes les personnes qui m’ont encouragé durant ma formation et pendant la préparation de ce rapport.</p>
+    <div class="callout warning" style="margin-top:20mm;">
+      <strong>Personnalisation requise avant remise</strong>
+      <p>Remplacer tous les champs jaunes par les informations réelles et adapter ces remerciements aux personnes qui ont effectivement encadré le stage.</p>
+    </div>
+  </section>
+
+  <section class="front-section">
+    <div class="front-title">Résumé <span>04</span></div>
+    <p class="lead">Dans un environnement économique où les entreprises produisent des volumes croissants de données commerciales et opérationnelles, la capacité à transformer rapidement ces informations en décisions compréhensibles constitue un enjeu important.</p>
+    <p>Le présent travail porte sur la conception et le développement d’<strong>ATLASYN Insight</strong>, un prototype front-end de plateforme SaaS d’intelligence décisionnelle adapté au contexte des entreprises tunisiennes. L’objectif consiste à réunir, dans une interface cohérente, les principaux indicateurs nécessaires au pilotage d’une activité&nbsp;: santé globale de l’entreprise, évolution et projection du chiffre d’affaires, risques associés aux clients, alertes de stock, notifications, rapports exécutifs et assistant décisionnel.</p>
+    <p>Le prototype a été réalisé avec <strong>React, TypeScript et Vite</strong>. Il propose un centre de commande exécutif, des espaces dédiés à l’analyse de la performance, des clients et des stocks, des filtres interactifs, un module de rapports PDF et une interface de Copilot. Une attention particulière a été accordée à la lisibilité, à l’adaptation aux différentes tailles d’écran, à l’accessibilité et à la représentation de données exprimées en dinars tunisiens.</p>
+    <p>Dans sa version actuelle, ATLASYN Insight utilise des données de démonstration réalistes mais fictives. La solution ne comporte pas encore de backend connecté aux systèmes d’une entreprise, de base persistante ni de modèle prédictif entraîné. Les prévisions, alertes et réponses du Copilot illustrent donc les usages envisagés et valident l’expérience utilisateur. Le résultat constitue une base fonctionnelle pour de futures intégrations de données, de services analytiques et de mécanismes d’intelligence artificielle gouvernés.</p>
+    <div class="keywords"><strong>Mots-clés :</strong> intelligence décisionnelle, tableau de bord, SaaS, React, TypeScript, entreprise tunisienne, expérience utilisateur, aide à la décision.</div>
+  </section>
+
+  <section class="front-section" lang="en">
+    <div class="front-title">Abstract <span>05</span></div>
+    <p class="lead">As companies generate increasing amounts of commercial and operational data, transforming this information into clear and timely decisions has become a significant challenge.</p>
+    <p>This work presents the design and development of <strong>ATLASYN Insight</strong>, a front-end prototype of a business-intelligence SaaS platform adapted to the needs of Tunisian companies. The project gathers the main indicators required for business monitoring within one coherent interface: overall business health, revenue trends and projections, customer risk, inventory alerts, notifications, executive reports, and a decision-support assistant.</p>
+    <p>The prototype was developed using <strong>React, TypeScript, and Vite</strong>. It includes an executive command center, dedicated performance, customer, and inventory workspaces, interactive filters, a reporting module, and a Copilot interface. Particular attention was given to readability, responsive behavior, accessibility, and the presentation of financial data in Tunisian dinars.</p>
+    <p>ATLASYN Insight currently relies on realistic but fictional demonstration data. It is not connected to a production backend, a persistent enterprise database, or trained and validated predictive models. The displayed forecasts, alerts, and Copilot responses illustrate intended product scenarios rather than production-grade artificial-intelligence results. The implemented prototype provides a functional foundation for future data integrations, analytical services, and governed AI capabilities.</p>
+    <div class="keywords"><strong>Keywords:</strong> business intelligence, dashboard, SaaS, React, TypeScript, Tunisian business, user experience, decision support.</div>
+  </section>
+
+  <section class="front-section toc">
+    <div class="front-title">Table des matières <span>06</span></div>
+    <div class="toc-group">
+      <div class="toc-row"><span class="toc-text">Remerciements</span><span class="toc-page">3</span></div>
+      <div class="toc-row"><span class="toc-text">Résumé</span><span class="toc-page">4</span></div>
+      <div class="toc-row"><span class="toc-text">Abstract</span><span class="toc-page">5</span></div>
+      <div class="toc-row"><span class="toc-text">Liste des figures, tableaux et abréviations</span><span class="toc-page">8</span></div>
+      <div class="toc-row"><span class="toc-text">Introduction générale</span><span class="toc-page">9</span></div>
+    </div>
+    <div class="toc-group">
+      <div class="toc-row"><span class="toc-text">1. Cadre général du projet</span><span class="toc-page">11</span></div>
+      <div class="toc-row level-2"><span class="toc-text">1.1 Présentation de l’organisme d’accueil</span><span class="toc-page">12</span></div>
+      <div class="toc-row level-2"><span class="toc-text">1.2 Contexte et objectifs du stage</span><span class="toc-page">12</span></div>
+      <div class="toc-row level-2"><span class="toc-text">1.3 Étude de l’existant et problématique</span><span class="toc-page">13</span></div>
+      <div class="toc-row level-2"><span class="toc-text">1.4 Solution proposée et méthodologie</span><span class="toc-page">14</span></div>
+    </div>
+    <div class="toc-group">
+      <div class="toc-row"><span class="toc-text">2. Analyse et spécification des besoins</span><span class="toc-page">15</span></div>
+      <div class="toc-row level-2"><span class="toc-text">2.1 Acteurs et exigences fonctionnelles</span><span class="toc-page">16</span></div>
+      <div class="toc-row level-2"><span class="toc-text">2.2 Cas d’utilisation et règles métier</span><span class="toc-page">19</span></div>
+      <div class="toc-row level-2"><span class="toc-text">2.3 Exigences non fonctionnelles</span><span class="toc-page">19</span></div>
+    </div>
+    <div class="toc-group">
+      <div class="toc-row"><span class="toc-text">3. Conception technique</span><span class="toc-page">21</span></div>
+      <div class="toc-row level-2"><span class="toc-text">3.1 Architecture, composants et données</span><span class="toc-page">22</span></div>
+      <div class="toc-row level-2"><span class="toc-text">3.2 Copilot, reporting et documents</span><span class="toc-page">24</span></div>
+      <div class="toc-row level-2"><span class="toc-text">3.3 Design system, accessibilité et sécurité</span><span class="toc-page">25</span></div>
+    </div>
+  </section>
+
+  <section class="front-section toc">
+    <div class="front-title">Table des matières <span>07</span></div>
+    <div class="toc-group">
+      <div class="toc-row"><span class="toc-text">4. Réalisation d’ATLASYN Insight</span><span class="toc-page">26</span></div>
+      <div class="toc-row level-2"><span class="toc-text">4.1 Environnement et organisation du code</span><span class="toc-page">27</span></div>
+      <div class="toc-row level-2"><span class="toc-text">4.2 Command Center et Analytics</span><span class="toc-page">28</span></div>
+      <div class="toc-row level-2"><span class="toc-text">4.3 Customers et Inventory</span><span class="toc-page">29</span></div>
+      <div class="toc-row level-2"><span class="toc-text">4.4 Copilot, rapports et notifications</span><span class="toc-page">31</span></div>
+      <div class="toc-row level-2"><span class="toc-text">4.5 Responsive, accessibilité et performance</span><span class="toc-page">34</span></div>
+    </div>
+    <div class="toc-group">
+      <div class="toc-row"><span class="toc-text">5. Tests, difficultés, bilan et perspectives</span><span class="toc-page">35</span></div>
+      <div class="toc-row level-2"><span class="toc-text">5.1 Stratégie et résultats de validation</span><span class="toc-page">36</span></div>
+      <div class="toc-row level-2"><span class="toc-text">5.2 Difficultés et solutions</span><span class="toc-page">38</span></div>
+      <div class="toc-row level-2"><span class="toc-text">5.3 Bilan, limites et architecture cible</span><span class="toc-page">39</span></div>
+    </div>
+    <div class="toc-group">
+      <div class="toc-row"><span class="toc-text">Conclusion générale</span><span class="toc-page">41</span></div>
+      <div class="toc-row"><span class="toc-text">Bibliographie et webographie</span><span class="toc-page">43</span></div>
+      <div class="toc-row"><span class="toc-text">Glossaire</span><span class="toc-page">45</span></div>
+      <div class="toc-row"><span class="toc-text">Annexes</span><span class="toc-page">47</span></div>
+    </div>
+    <div class="callout warning" style="margin-top:14mm;"><strong>Note d’édition</strong><p>Les numéros seront vérifiés après personnalisation finale, car l’ajout du contenu réel sur l’organisme d’accueil peut modifier la pagination.</p></div>
+  </section>
+
+  <section class="front-section list-pages">
+    <div class="front-title">Listes <span>08</span></div>
+    <h2 style="margin-top:0;">Liste des figures</h2>
+    <div class="toc-row level-2"><span class="toc-text">Figure 2.1 — Cas d’utilisation général du prototype</span><span class="toc-page">17</span></div>
+    <div class="toc-row level-2"><span class="toc-text">Figure 3.1 — Architecture logique de la version réalisée</span><span class="toc-page">22</span></div>
+    <div class="toc-row level-2"><span class="toc-text">Figure 3.2 — Séquence du Copilot simulé</span><span class="toc-page">24</span></div>
+    <div class="toc-row level-2"><span class="toc-text">Figure 3.3 — Frontière entre prototype et architecture cible</span><span class="toc-page">25</span></div>
+    <div class="toc-row level-2"><span class="toc-text">Figure 4.1 — Centre de commande exécutif</span><span class="toc-page">28</span></div>
+    <div class="toc-row level-2"><span class="toc-text">Figure 4.2 — Analyse de la performance</span><span class="toc-page">29</span></div>
+    <div class="toc-row level-2"><span class="toc-text">Figure 4.3 — Intelligence client</span><span class="toc-page">30</span></div>
+    <div class="toc-row level-2"><span class="toc-text">Figure 4.4 — Intelligence d’inventaire</span><span class="toc-page">31</span></div>
+    <div class="toc-row level-2"><span class="toc-text">Figure 4.5 — Réponse explicable du Copilot</span><span class="toc-page">32</span></div>
+    <div class="toc-row level-2"><span class="toc-text">Figure 4.6 — Prévisualisation et contrôles du rapport</span><span class="toc-page">33</span></div>
+    <div class="toc-row level-2"><span class="toc-text">Figure 4.7 — Notifications et anomalies</span><span class="toc-page">33</span></div>
+    <div class="toc-row level-2"><span class="toc-text">Figure 4.8 — Adaptation mobile et navigation</span><span class="toc-page">34</span></div>
+    <div class="toc-row level-2"><span class="toc-text">Figure 5.1 — État vide après recherche sans résultat</span><span class="toc-page">37</span></div>
+
+    <h2>Liste des tableaux</h2>
+    <p>Tableaux 1.1 Planning indicatif ; 2.1 Acteurs ; 2.2 Règles métier ; 3.1 Technologies ; 5.1 Scénarios de test ; 5.2 Bilan fonctionnel ; 5.3 Feuille de route.</p>
+
+    <h2>Principales abréviations</h2>
+    <dl class="abbrev-grid">
+      <dt>BI</dt><dd>Business Intelligence — intelligence décisionnelle</dd>
+      <dt>CRM</dt><dd>Customer Relationship Management</dd>
+      <dt>ERP</dt><dd>Enterprise Resource Planning</dd>
+      <dt>IA / AI</dt><dd>Intelligence artificielle / Artificial Intelligence</dd>
+      <dt>KPI</dt><dd>Key Performance Indicator</dd>
+      <dt>LLM</dt><dd>Large Language Model</dd>
+      <dt>RAG</dt><dd>Retrieval-Augmented Generation</dd>
+      <dt>SPA</dt><dd>Single Page Application</dd>
+      <dt>SKU</dt><dd>Stock Keeping Unit</dd>
+      <dt>TND</dt><dd>Dinar tunisien</dd>
+      <dt>UML</dt><dd>Unified Modeling Language</dd>
+      <dt>UX</dt><dd>User Experience</dd>
+    </dl>
+  </section>
+
+  <section id="introduction">
+    <h1>Introduction générale</h1>
+    <p class="chapter-intro">Cette introduction situe le projet dans le contexte de la transformation numérique des entreprises et précise la frontière entre le prototype d’expérience utilisateur réalisé et la future plateforme de production.</p>
+    <p>La transformation numérique ne consiste plus uniquement à dématérialiser des documents ou à remplacer certaines opérations manuelles. Elle concerne également la manière dont une organisation observe son activité, identifie ses difficultés et prend ses décisions. Les ventes, les interactions avec les clients, les mouvements de stock et les opérations financières génèrent quotidiennement des informations utiles. Cependant, la présence de données ne garantit pas leur exploitation efficace.</p>
+    <p>Dans de nombreuses petites et moyennes entreprises, les informations nécessaires au pilotage sont réparties entre plusieurs fichiers, applications et personnes. Le responsable commercial peut suivre les ventes dans un tableur, tandis que la situation des stocks est tenue dans un autre outil et que les informations relatives aux clients restent dispersées. Cette fragmentation ralentit la production des rapports, rend les comparaisons difficiles et augmente le risque d’erreur. Elle limite également la capacité des décideurs à détecter rapidement une baisse d’activité, un client important susceptible de partir ou un produit proche de la rupture.</p>
+    <p>Les solutions de Business Intelligence permettent de centraliser les données et de les présenter sous forme d’indicateurs, de graphiques et de rapports. Leur adoption peut toutefois être freinée par leur complexité, leur coût, leur caractère très générique ou la nécessité de disposer de compétences spécialisées. Une interface destinée à un dirigeant ne doit pas seulement afficher une grande quantité de données. Elle doit faire ressortir les informations prioritaires, expliquer leur signification et faciliter le passage de l’observation à l’action.</p>
+    <p>C’est dans ce contexte que s’inscrit <strong>ATLASYN Insight</strong>. L’idée consiste à concevoir une expérience d’intelligence décisionnelle adaptée à des entreprises tunisiennes, avec une attention particulière à la clarté, à la monnaie locale et à des scénarios proches de leurs activités. La plateforme envisagée regroupe un centre de commande exécutif, le suivi des revenus, une estimation de la santé de l’entreprise, l’identification des clients présentant un risque, la surveillance des stocks, la génération de rapports et un assistant conversationnel orienté vers l’aide à la décision.</p>
+    <div class="problem-statement">Comment concevoir une interface d’intelligence décisionnelle claire, crédible et responsive permettant à un dirigeant de consulter ses principaux indicateurs, de détecter des situations prioritaires et d’explorer les éléments qui les justifient, sans multiplier les outils ni complexifier son travail quotidien&nbsp;?</div>
+    <p>Pour répondre à cette problématique, le travail réalisé poursuit plusieurs objectifs. Le premier est d’étudier les besoins associés au pilotage global d’une entreprise et de sélectionner les informations les plus importantes. Le deuxième consiste à organiser ces informations dans une architecture fonctionnelle cohérente. Le troisième objectif est de développer un prototype interactif permettant de tester les parcours essentiels&nbsp;: consultation des indicateurs, filtrage des clients et produits, ouverture des notifications, utilisation du Copilot et préparation de rapports. Enfin, l’expérience doit rester lisible sur ordinateur, tablette et téléphone.</p>
+    <p>Le projet a été mené sous la forme d’une démarche progressive. Une première phase a été consacrée au cadrage, à l’étude de l’existant et à la définition des utilisateurs cibles. Les besoins ont ensuite été structurés et hiérarchisés. Plusieurs choix d’interface ont été explorés avant de retenir une identité visuelle adaptée à un outil professionnel. Le développement a été effectué par modules, avec des vérifications régulières de la navigation, des interactions, du responsive design et de la qualité technique.</p>
+    <div class="callout risk"><strong>Périmètre réel du livrable</strong><p>ATLASYN Insight est actuellement un prototype front-end utilisant des données fictives. Les connecteurs, le backend, la persistance, l’authentification et les modèles d’IA réels ne font pas partie de cette version. Le prototype valide l’organisation fonctionnelle, l’interface et les interactions nécessaires à une solution future.</p></div>
+    <p>Le rapport est organisé en cinq chapitres. Le premier présente le cadre du stage, l’étude de l’existant, la problématique et la démarche adoptée. Le deuxième définit les besoins fonctionnels et non fonctionnels. Le troisième expose la conception de la solution et ses choix d’architecture. Le quatrième décrit la réalisation technique. Enfin, le cinquième présente la validation, les difficultés rencontrées, le bilan et les perspectives d’évolution.</p>
+  </section>
+
+  <section class="chapter-opener">
+    <div class="chapter-number">01</div>
+    <div class="eyebrow">Contexte et démarche</div>
+    <h1>Cadre général du projet</h1>
+    <p>Présentation de l’environnement du stage, analyse des pratiques existantes, définition du problème et positionnement d’ATLASYN Insight.</p>
+  </section>
+
+  <section id="chapter-1">
+    <h1>1. Cadre général du projet</h1>
+    <h2>1.1 Présentation de l’organisme d’accueil</h2>
+    <p>Le stage a été réalisé au sein de <strong class="placeholder">[NOM DE L’ORGANISME D’ACCUEIL]</strong>, une structure <span class="placeholder">[FORME JURIDIQUE OU TYPE D’ORGANISATION]</span> créée en <span class="placeholder">[ANNÉE]</span> et située à <span class="placeholder">[VILLE, PAYS]</span>. Elle exerce principalement dans le domaine de <span class="placeholder">[SECTEUR D’ACTIVITÉ]</span> et propose <span class="placeholder">[PRINCIPAUX PRODUITS OU SERVICES]</span> à une clientèle composée de <span class="placeholder">[TYPE DE CLIENTS]</span>.</p>
+    <p>L’organisme s’appuie sur une équipe regroupant <span class="placeholder">[PRÉSENTATION SYNTHÉTIQUE DES SERVICES OU DÉPARTEMENTS]</span>. Son activité repose notamment sur <span class="placeholder">[PROCESSUS OU COMPÉTENCES PRINCIPALES]</span>. Dans le cadre de sa stratégie de développement, l’entreprise accorde une attention particulière à <span class="placeholder">[TRANSFORMATION NUMÉRIQUE, DATA, INNOVATION OU AUTRE AXE RÉEL]</span>.</p>
+    <p>Le stage s’est déroulé au sein de <strong class="placeholder">[NOM DU SERVICE OU DE L’ÉQUIPE]</strong>, sous la supervision de <span class="placeholder">[NOM ET FONCTION DE L’ENCADRANT]</span>. Cette équipe a pour mission de <span class="placeholder">[MISSIONS RÉELLES DU SERVICE]</span>. Son environnement a permis d’aborder le projet à la fois sous l’angle de la conception produit, de l’expérience utilisateur et du développement d’une application web.</p>
+    <div class="callout warning"><strong>Contenu à remplacer par des informations vérifiées</strong><p>Cette section ne reprend volontairement aucune information de l’entreprise figurant dans le rapport de référence. Ajouter ici l’historique, l’activité, l’organigramme et le logo de votre propre organisme, avec son autorisation.</p></div>
+
+    <h2>1.2 Contexte et objectifs du stage</h2>
+    <p>Le stage, réalisé du <span class="placeholder">[DATE DE DÉBUT]</span> au <span class="placeholder">[DATE DE FIN]</span>, s’inscrit dans le cadre de <span class="placeholder">[TYPE DE STAGE OU DIPLÔME]</span> à <span class="placeholder">[NOM DE L’ÉTABLISSEMENT]</span>. La mission principale consistait à concevoir et développer le prototype d’une plateforme d’aide au pilotage destinée aux responsables d’entreprise.</p>
+    <p>L’idée initiale partait d’un constat simple&nbsp;: les décideurs ne manquent pas nécessairement d’informations, mais ils manquent souvent d’une vue unifiée et immédiatement exploitable. Un chiffre d’affaires global ne suffit pas à comprendre l’état d’une activité. Il doit être rapproché de son évolution, des comportements clients, des produits disponibles et des risques susceptibles d’affecter les prochaines périodes.</p>
+    <p>Le projet devait donc proposer une interface capable de présenter différents niveaux de lecture. Le premier fournit une synthèse exécutive. Le deuxième permet de comprendre les facteurs associés à un indicateur. Le troisième facilite l’accès à une action, comme examiner un client à risque, préparer une commande de réapprovisionnement ou produire un rapport.</p>
+    <p>Les objectifs opérationnels retenus étaient les suivants&nbsp;:</p>
+    <ul>
+      <li>analyser les besoins des profils utilisateurs visés&nbsp;;</li>
+      <li>définir une architecture fonctionnelle cohérente&nbsp;;</li>
+      <li>concevoir une identité visuelle professionnelle et lisible&nbsp;;</li>
+      <li>développer une application front-end responsive&nbsp;;</li>
+      <li>créer des interactions réalistes pour les principaux modules&nbsp;;</li>
+      <li>présenter des scénarios d’analyse à partir de données tunisiennes fictives&nbsp;;</li>
+      <li>préparer une base technique pouvant recevoir ultérieurement un backend et des services analytiques&nbsp;;</li>
+      <li>vérifier le fonctionnement du prototype sur plusieurs formats d’écran.</li>
+    </ul>
+    <p>La mission ne comprenait pas le développement d’un système d’information complet. L’authentification réelle, la gestion des autorisations, la connexion aux logiciels métiers, la persistance des données et l’entraînement de modèles d’intelligence artificielle restent des travaux futurs.</p>
+
+    <h2>1.3 Étude de l’existant</h2>
+    <p>Avant de concevoir ATLASYN Insight, il était nécessaire d’examiner les méthodes habituellement utilisées pour suivre l’activité d’une entreprise. Dans un environnement peu centralisé, les responsables s’appuient fréquemment sur des tableurs, des exports issus de logiciels de caisse ou de gestion, des documents transmis par courrier électronique et des rapports préparés manuellement.</p>
+    <p>Le tableur constitue une solution souple et accessible. Il permet de réaliser rapidement des calculs, d’organiser des données et de produire des graphiques. Lorsque plusieurs personnes manipulent différentes versions d’un même fichier, la mise à jour devient cependant difficile à contrôler. Les informations peuvent être dupliquées, les formules modifiées par erreur et les indicateurs calculés selon des règles différentes. La préparation d’un rapport périodique exige alors des opérations répétitives de collecte, de nettoyage et de consolidation.</p>
+    <p>Les logiciels spécialisés apportent une meilleure structuration, mais ils restent souvent organisés par domaine. Un outil de caisse enregistre les transactions, un CRM suit la relation commerciale et une solution de gestion de stock contrôle les quantités disponibles. Cette répartition répond aux besoins opérationnels de chaque service, sans fournir systématiquement une lecture transversale destinée à la direction.</p>
+    <p>Les plateformes généralistes de Business Intelligence proposent des fonctions puissantes de connexion, de transformation et de visualisation. Elles peuvent néanmoins nécessiter un travail important de configuration ainsi qu’une connaissance approfondie des données. Lorsqu’un tableau de bord est conçu comme une juxtaposition de nombreux graphiques, l’utilisateur peut également avoir du mal à identifier l’information exigeant une intervention immédiate.</p>
+
+    <h3>1.3.1 Limites identifiées</h3>
+    <p>L’étude fait apparaître quatre limites principales. La première concerne la <strong>fragmentation de l’information</strong>. Les revenus, les clients et les stocks sont consultés séparément alors qu’ils peuvent être liés. Une rupture de stock peut, par exemple, provoquer une baisse de vente et dégrader la relation avec certains clients.</p>
+    <p>La deuxième limite est liée au <strong>temps d’interprétation</strong>. Un indicateur signale qu’une situation évolue, mais n’explique pas toujours pourquoi ni quelle action pourrait être envisagée. La troisième concerne la <strong>hiérarchisation des priorités</strong>. Plusieurs alertes sont souvent présentées au même niveau, sans distinguer clairement leur urgence, leur impact potentiel ou la qualité de leurs données.</p>
+    <p>Enfin, la quatrième limite porte sur <strong>l’accessibilité de l’outil</strong>. Une solution utile au dirigeant doit rester compréhensible sans exiger une expertise avancée en analyse de données. Elle doit fonctionner sur les équipements réellement utilisés et présenter les montants dans un format adapté au contexte de l’entreprise.</p>
+
+    <h2>1.4 Problématique détaillée</h2>
+    <p>La conception d’ATLASYN Insight soulève plusieurs difficultés. La première consiste à rassembler des informations issues de domaines différents sans surcharger l’écran. Une interface trop simplifiée risque de masquer les éléments nécessaires à l’analyse, tandis qu’une interface trop dense devient difficile à consulter.</p>
+    <p>La deuxième difficulté concerne la confiance. Une recommandation ne doit pas être présentée comme une certitude lorsqu’elle repose sur des données limitées ou simulées. L’utilisateur doit pouvoir distinguer l’indicateur observé, son interprétation et l’action proposée. Cette exigence devient encore plus importante lorsqu’une fonction est présentée comme assistée par intelligence artificielle.</p>
+    <p>La troisième difficulté consiste à conserver une expérience cohérente sur plusieurs appareils. Sur un grand écran, il est possible d’afficher simultanément plusieurs dimensions de l’activité. Sur mobile, les informations doivent être réorganisées selon leur priorité sans supprimer les actions essentielles.</p>
+    <div class="problem-statement">Comment réaliser un prototype front-end qui transforme plusieurs catégories de données d’entreprise en une expérience de pilotage claire, hiérarchisée et explicable, tout en restant adapté au contexte tunisien et honnête sur les limites de ses fonctions analytiques&nbsp;?</div>
+
+    <h2>1.5 Solution proposée</h2>
+    <p>ATLASYN Insight a été imaginé comme un espace décisionnel organisé autour de plusieurs modules complémentaires. Le <strong>Command Center</strong> constitue le point d’entrée. Il présente une synthèse de l’activité, des indicateurs principaux, une projection de revenus, un score global de santé et des décisions prioritaires.</p>
+    <p>L’espace <strong>Analytics</strong> approfondit l’évolution du chiffre d’affaires, les canaux de vente, les produits, la marge et les dépenses. Le module <strong>Customers</strong> regroupe les informations relatives aux clients et met en évidence les relations sensibles dans le jeu de démonstration. Le module <strong>Inventory</strong> offre une lecture synthétique du stock et présente des recommandations illustratives de réapprovisionnement.</p>
+    <p>Le <strong>Copilot</strong> constitue une interface conversationnelle d’aide à la décision. L’utilisateur pose une question puis consulte une réponse structurée comportant une explication, des sources simulées, un calcul et un impact estimé. Dans la version réalisée, les réponses sont sélectionnées localement selon des mots-clés et ne proviennent pas d’un modèle distant.</p>
+    <p>Enfin, l’espace <strong>Reports</strong> permet de prévisualiser et de télécharger un rapport exécutif. Il inclut également le parcours d’ajout d’un document de contexte. Le fichier est seulement préparé dans l’interface&nbsp;: aucun traitement ni transfert serveur n’est effectué.</p>
+
+    <h2>1.6 Démarche méthodologique</h2>
+    <p>Le projet a suivi une démarche itérative inspirée des pratiques agiles, sans prétendre reproduire l’ensemble du cadre Scrum. Ce choix est adapté à un prototype dont les besoins visuels et fonctionnels doivent être affinés progressivement.</p>
+    <p>La première étape a consisté à définir le problème, les profils utilisateurs et le périmètre. Les fonctions ont ensuite été classées selon leur importance pour un parcours exécutif. Une deuxième étape a porté sur l’architecture de l’information. Les contenus ont été répartis entre Command Center, Analytics, Customers, Inventory et Reports. Les relations entre ces espaces, le Copilot et les notifications ont également été définies.</p>
+    <p>La troisième étape concernait la conception de l’interface. Plusieurs pistes visuelles ont été évaluées. Une première exploration immersive et tridimensionnelle a démontré des possibilités techniques, mais présentait un risque de lecture trop futuriste pour un logiciel de gestion. La direction «&nbsp;Quiet Intelligence&nbsp;» a finalement privilégié des surfaces claires, une typographie lisible, des accents sobres et des animations courtes.</p>
+    <p>Le développement a progressé module par module. Après chaque intégration, les parcours principaux ont été vérifiés afin d’identifier les incohérences de navigation, les contrôles inactifs ou les problèmes de mise en page. Les vues ont finalement été adaptées aux formats desktop, tablette et mobile.</p>
+
+    <table class="gantt">
+      <caption class="caption"><strong>Tableau 1.1 —</strong> Planning indicatif à adapter au journal réel du stage</caption>
+      <thead><tr><th>Phase</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>S6</th></tr></thead>
+      <tbody>
+        <tr><td>Cadrage et audit</td><td class="active">●</td><td class="soft"></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>Spécification</td><td class="soft"></td><td class="active">●</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>UX et design system</td><td></td><td class="active">●</td><td class="active">●</td><td></td><td></td><td></td></tr>
+        <tr><td>Dashboard et Analytics</td><td></td><td></td><td class="active">●</td><td class="soft"></td><td></td><td></td></tr>
+        <tr><td>Customers et Inventory</td><td></td><td></td><td></td><td class="active">●</td><td></td><td></td></tr>
+        <tr><td>Copilot et Reports</td><td></td><td></td><td></td><td class="soft"></td><td class="active">●</td><td></td></tr>
+        <tr><td>Tests et documentation</td><td></td><td></td><td></td><td></td><td class="soft"></td><td class="active">●</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warning"><strong>À confirmer</strong><p>Ce planning sur six semaines est une proposition cohérente avec le dépôt, mais il doit être remplacé par les dates et activités réellement consignées pendant le stage.</p></div>
+
+    <h2>1.7 Conclusion</h2>
+    <p>Ce chapitre a présenté le cadre du projet et les raisons ayant conduit à la conception d’ATLASYN Insight. L’étude de l’existant met en évidence les difficultés liées à la dispersion des informations, au temps nécessaire pour les interpréter et au manque de hiérarchisation des actions. La solution proposée répond à ces difficultés par un prototype front-end unifié, centré sur la lisibilité et l’aide à la décision.</p>
+    <p>Le périmètre a également été clarifié&nbsp;: la version actuelle valide l’expérience utilisateur et l’organisation fonctionnelle à partir de données fictives. Elle ne constitue pas encore une plateforme connectée à des données réelles ni un système d’intelligence artificielle déployé. Le chapitre suivant détaille les acteurs, besoins et contraintes qui ont guidé sa conception.</p>
+  </section>
+
+  <section class="chapter-opener">
+    <div class="chapter-number">02</div>
+    <div class="eyebrow">Besoins et périmètre</div>
+    <h1>Analyse et spécification</h1>
+    <p>Identification des acteurs, formalisation des parcours, exigences fonctionnelles et non fonctionnelles, règles métier et critères de confiance.</p>
+  </section>
+
+  <section id="chapter-2">
+    <h1>2. Analyse et spécification des besoins</h1>
+    <p class="chapter-intro">La valeur d’une plateforme décisionnelle repose moins sur le volume d’informations affichées que sur sa capacité à transformer des signaux dispersés en décisions compréhensibles, hiérarchisées et réalisables.</p>
+
+    <h2>2.1 Problématique fonctionnelle</h2>
+    <p>Dans de nombreuses entreprises, les informations utiles à la direction sont réparties entre plusieurs applications&nbsp;: logiciel comptable, ERP, CRM, feuilles de calcul, outil de gestion de stock et rapports périodiques. Cette fragmentation entraîne plusieurs difficultés. Un responsable peut connaître l’évolution du chiffre d’affaires sans comprendre immédiatement son effet sur la marge. Une baisse de fréquence d’achat peut rester invisible jusqu’à la perte effective du client. Une accélération de la demande peut également provoquer une rupture de stock avant que le service des achats ne réagisse.</p>
+    <p>ATLASYN Insight cherche à produire une lecture transversale de ces signaux. Le tableau de bord ne présente donc pas uniquement des valeurs isolées. Il met en relation la progression du revenu avec les dépenses, un risque d’attrition avec la valeur du client et une projection de demande avec le stock disponible. Les anomalies les plus importantes sont synthétisées sous forme de décisions prioritaires comportant une preuve, une cause probable, une échéance et un impact financier estimé.</p>
+
+    <h2>2.2 Identification des acteurs</h2>
+    <p>Le prototype cible plusieurs profils métiers. Les rôles ne sont pas encore protégés par une authentification ou des droits distincts, mais leur identification prépare l’évolution vers une plateforme multi-utilisateur.</p>
+    <table>
+      <caption class="caption"><strong>Tableau 2.1 —</strong> Acteurs et responsabilités</caption>
+      <thead><tr><th>Acteur</th><th>Responsabilité principale</th><th>Fonctions attendues</th></tr></thead>
+      <tbody>
+        <tr><td>Décideur / dirigeant</td><td>Piloter la performance globale</td><td>Consulter la santé, examiner les priorités, interroger le Copilot et exporter une synthèse</td></tr>
+        <tr><td>Analyste finance</td><td>Comprendre les variations</td><td>Comparer revenu et objectif, analyser canaux, produits, marge et dépenses</td></tr>
+        <tr><td>Responsable commercial</td><td>Prévenir l’attrition</td><td>Rechercher les clients, filtrer les risques, consulter les facteurs et préparer une action</td></tr>
+        <tr><td>Responsable stock / achats</td><td>Maintenir la disponibilité</td><td>Filtrer les références, comparer stock et demande, préparer un réapprovisionnement</td></tr>
+        <tr><td>Responsable reporting</td><td>Diffuser une information cohérente</td><td>Générer le PDF, préparer un document et partager un lien</td></tr>
+        <tr><td>Administrateur futur</td><td>Sécuriser et superviser</td><td>Gérer utilisateurs, rôles, connecteurs, journaux et politiques de conservation</td></tr>
+        <tr><td>Systèmes externes futurs</td><td>Alimenter la plateforme</td><td>Fournir les données ERP, CRM, finance et inventaire</td></tr>
+      </tbody>
+    </table>
+
+    <div class="diagram">
+      <div class="diagram-title">Figure 2.1 · Cas d’utilisation général du prototype</div>
+      <div class="usecase-wrap">
+        <div>
+          <div class="actor"><div class="actor-symbol"></div><strong>Décideur</strong></div>
+          <div class="actor" style="margin-top:12mm;"><div class="actor-symbol"></div><strong>Responsable métier</strong></div>
+        </div>
+        <div class="system-boundary">
+          <strong>ATLASYN INSIGHT</strong>
+          <div class="usecases">
+            <span>Consulter les KPI</span><span>Changer la période</span>
+            <span>Inspecter les prévisions</span><span>Examiner un risque client</span>
+            <span>Analyser le stock</span><span>Interroger le Copilot</span>
+            <span>Consulter les alertes</span><span>Générer un rapport</span>
+            <span>Préparer un document</span><span>Partager une synthèse</span>
+          </div>
+        </div>
+        <div>
+          <div class="actor"><div class="actor-symbol"></div><strong>Administrateur futur</strong></div>
+          <div class="diagram-box future" style="margin-top:12mm;"><strong>Sources simulées</strong><span>ERP · CRM · Finance · Inventaire</span></div>
+        </div>
+      </div>
+      <div class="caption"><strong>Figure 2.1 —</strong> Les sources externes sont indiquées comme simulées dans la version actuelle.</div>
+    </div>
+
+    <h2>2.3 Exigences fonctionnelles</h2>
+    <h3>2.3.1 Navigation et contexte</h3>
+    <p>L’utilisateur doit pouvoir accéder aux espaces Command Center, Analytics, Customers, Inventory et Reports depuis une navigation persistante. Le Copilot constitue une fonction transversale disponible depuis toutes les pages. Sur grand écran, la navigation prend la forme d’un rail latéral compact. Sur écran étroit, elle devient un panneau mobile afin de préserver la surface utile.</p>
+    <p>Le changement de page doit replacer la vue en haut du contenu, fermer les panneaux devenus inutiles et signaler la vue active à la fois visuellement et aux technologies d’assistance. Le raccourci <code>Ctrl+K</code> ou <code>Cmd+K</code> ouvre rapidement le Copilot.</p>
+
+    <h3>2.3.2 Centre de commande</h3>
+    <p>Le Command Center doit fournir une vue synthétique de l’activité. Il comporte le revenu net, le bénéfice brut, le nombre de clients actifs, les dépenses opérationnelles et un score de santé fixé à 82/100 dans le jeu de démonstration. Ce score est décomposé en cinq domaines&nbsp;: revenu, clients, inventaire, trésorerie et opérations. Chaque domaine est sélectionnable afin d’afficher son principal facteur explicatif.</p>
+    <p>Le tableau de bord présente également une projection mensuelle du revenu. Les valeurs réelles et prévisionnelles doivent être clairement distinguées. Une zone de confiance accompagne la projection et chaque point peut être sélectionné au clavier ou à la souris. L’infobulle précise la période, le montant, le statut réel ou prévisionnel et la provenance supposée.</p>
+    <p>Trois décisions prioritaires complètent la synthèse&nbsp;: risque de fidélisation, anomalie de coût marketing et opportunité liée au terminal Smart POS. Chaque décision comporte une justification, une cause, une urgence, un impact financier et un accès à l’espace concerné.</p>
+
+    <h3>2.3.3 Analyse de la performance</h3>
+    <p>L’espace Analytics doit permettre d’étudier les facteurs de performance. Il présente le revenu quotidien comparé à l’objectif, la contribution des canaux de vente, la croissance et la marge par produit ainsi que l’évolution des principales familles de dépenses. Le sélecteur de période propose les trente derniers jours, le dernier trimestre et l’année en cours.</p>
+    <p>Dans l’état actuel, le choix de période modifie les indicateurs du centre de commande et le contexte transmis au Copilot. L’application future devra étendre ce filtrage à toutes les séries analytiques. L’utilisateur peut exporter une synthèse ou demander au Copilot d’expliquer un signal.</p>
+
+    <h3>2.3.4 Intelligence client</h3>
+    <p>L’espace Customers doit identifier les relations nécessitant une intervention. L’utilisateur peut rechercher un client par nom et activer un filtre limitant la liste aux risques supérieurs ou égaux à 75&nbsp;%. La sélection d’une ligne met à jour une fiche détaillée sans rechargement.</p>
+    <p>Cette fiche affiche la valeur du client, la date relative du dernier achat, la probabilité d’attrition, la fenêtre recommandée et trois facteurs explicatifs&nbsp;: récence d’achat, fréquence des commandes et sentiment du support. Lorsqu’aucun résultat ne correspond, une vue vide explique comment modifier les critères. Le responsable peut ouvrir le Copilot pour préparer une stratégie de contact.</p>
+
+    <h3>2.3.5 Intelligence d’inventaire</h3>
+    <p>L’espace Inventory doit permettre une recherche par produit ou SKU. Trois filtres sont disponibles&nbsp;: toutes les références, références nécessitant une action et références saines. La sélection d’un produit affiche le stock disponible, la demande prévue à trente jours, le nombre de jours de couverture, la quantité recommandée et la date souhaitée de commande.</p>
+    <p>Le statut est toujours affiché en texte en complément de la couleur. Pour une référence nécessitant un achat, l’utilisateur peut créer un brouillon de commande. Dans le prototype, cette action produit seulement une confirmation visuelle et ne transmet aucune commande à un fournisseur.</p>
+
+    <h3>2.3.6 Copilot décisionnel</h3>
+    <p>Le Copilot doit être accessible depuis l’en-tête, la navigation, les pages métier et le raccourci clavier. Il se présente sous forme d’un panneau modal conservant l’historique tant que l’application n’est pas rechargée. L’utilisateur peut saisir une question ou choisir une suggestion.</p>
+    <p>Pendant l’analyse, un état d’attente indique les domaines consultés. Une réponse enrichie comporte un résumé, un impact financier estimé, le calcul utilisé, une recommandation et les sources supposées. Elle peut être copiée et évaluée comme utile.</p>
+    <div class="callout risk"><strong>Transparence sur l’IA</strong><p>La version développée ne génère pas ses réponses avec un LLM. Une fonction classe la question par mots-clés et sélectionne une réponse préparée. Le but est de valider l’expérience conversationnelle, pas de revendiquer une capacité prédictive réelle.</p></div>
+
+    <h3>2.3.7 Notifications, rapports et documents</h3>
+    <p>L’utilisateur doit pouvoir ouvrir une liste d’anomalies, sélectionner un signal pour le marquer à examiner ou ajouter tous les signaux à une file de revue simulée. Les opérations terminées sont confirmées par une notification temporaire, tandis que les erreurs de génération ou de copie donnent lieu à un message compréhensible.</p>
+    <p>L’espace Reports doit afficher un aperçu cohérent avec le PDF généré. Le rapport contient les indicateurs essentiels, un résumé exécutif, trois actions prioritaires et une perspective assistée. L’utilisateur peut sélectionner ou déposer un fichier PDF, CSV ou XLSX. Dans le prototype, seul le nom du fichier est conservé localement&nbsp;; aucun contenu n’est lu ou transmis.</p>
+
+    <h2>2.4 Cas d’utilisation principaux</h2>
+    <h3>UC-01 — Examiner la situation générale</h3>
+    <p>Le décideur ouvre l’application et accède au Command Center. Le système affiche la période, les indicateurs, la projection et les décisions prioritaires. Le décideur sélectionne un domaine de santé ou un point du graphique pour obtenir un détail. Il peut ensuite ouvrir la page métier correspondante ou exporter le rapport. Le résultat attendu est une compréhension rapide des principaux écarts et un chemin clair vers l’action.</p>
+
+    <h3>UC-02 — Traiter un risque client</h3>
+    <p>Le responsable commercial ouvre Customers, recherche un compte ou applique le filtre de risque élevé, puis sélectionne le client concerné. Le système affiche son exposition financière, sa récence et les facteurs de risque. L’utilisateur ouvre ensuite le Copilot pour demander une stratégie de rétention. Dans une version connectée, cette stratégie pourrait être transmise au CRM après validation humaine.</p>
+
+    <h3>UC-03 — Préparer un réapprovisionnement</h3>
+    <p>Le responsable stock filtre les références nécessitant une action et sélectionne un produit. Le système compare la disponibilité à la demande prévue, présente une couverture et propose une quantité. L’utilisateur confirme la création d’un brouillon. Une évolution devra soumettre ce brouillon à un service d’achat sécurisé avec journalisation.</p>
+
+    <h3>UC-04 — Interroger le Copilot</h3>
+    <p>L’utilisateur ouvre le Copilot, formule une question et valide son envoi. La question est ajoutée à la conversation, puis un état d’analyse apparaît. Le routeur local identifie le domaine et retourne une réponse structurée. L’utilisateur peut copier la réponse, donner son avis ou poser une nouvelle question.</p>
+
+    <h3>UC-05 — Générer le rapport exécutif</h3>
+    <p>Le responsable clique sur «&nbsp;Generate PDF&nbsp;». Le module de rapport charge la bibliothèque PDF à la demande, récupère le logo, construit le document puis renvoie ses octets. Le navigateur crée une URL temporaire, déclenche le téléchargement et libère la ressource. En cas d’échec, un message informe l’utilisateur.</p>
+
+    <h2>2.5 Règles métier</h2>
+    <table>
+      <caption class="caption"><strong>Tableau 2.2 —</strong> Règles et critères de validation</caption>
+      <thead><tr><th>ID</th><th>Règle</th><th>Justification</th></tr></thead>
+      <tbody>
+        <tr><td>RG-01</td><td>Un client est «&nbsp;à risque élevé&nbsp;» si son score est ≥ 75&nbsp;%.</td><td>Seuil appliqué par le filtre du prototype</td></tr>
+        <tr><td>RG-02</td><td>Une référence «&nbsp;Needs action&nbsp;» possède un statut différent de Healthy.</td><td>Regroupement Critical, Low et Watch</td></tr>
+        <tr><td>RG-03</td><td>Une commande est proposée uniquement si <code>reorder &gt; 0</code>.</td><td>Évite une action inutile sur un stock sain</td></tr>
+        <tr><td>RG-04</td><td>Une question vide ou envoyée pendant l’analyse est refusée.</td><td>Préserve la cohérence conversationnelle</td></tr>
+        <tr><td>RG-05</td><td>Le PDF contient logo, indicateurs, résumé et trois priorités.</td><td>Garantit une synthèse minimale</td></tr>
+        <tr><td>RG-06</td><td>Un fichier déposé est seulement préparé localement.</td><td>Respecte la limite technique réelle</td></tr>
+        <tr><td>RG-07</td><td>Toute couleur de statut est accompagnée d’un texte ou d’une valeur.</td><td>Lisibilité et accessibilité</td></tr>
+        <tr><td>RG-08</td><td>Les scores et confiances restent qualifiés de démonstration.</td><td>Ne pas confondre prototype et modèle validé</td></tr>
+      </tbody>
+    </table>
+
+    <h2>2.6 Exigences non fonctionnelles</h2>
+    <h3>2.6.1 Performance</h3>
+    <p>Le premier affichage ne doit pas charger inutilement les modules coûteux. PDF-Lib est importé seulement au moment de l’export. Les animations de révélation reposent sur <code>IntersectionObserver</code> et les éléments ne sont plus observés après leur apparition. Les visualisations actives utilisent SVG et CSS, adaptés aux volumes réduits du prototype.</p>
+
+    <h3>2.6.2 Ergonomie, cohérence et contexte local</h3>
+    <p>L’interface doit présenter une hiérarchie stable entre contexte, mesure, interprétation et action. Un système de variables CSS centralise couleurs, espacements, rayons, ombres, durées et tailles. Les montants sont exprimés en TND et les exemples utilisent des entreprises et produits plausibles dans un contexte tunisien, sans prétendre représenter des organisations réelles.</p>
+
+    <h3>2.6.3 Accessibilité</h3>
+    <p>Le contenu doit rester utilisable au clavier. Les commandes possèdent des intitulés accessibles, les pages utilisent des repères sémantiques et un lien d’évitement conduit au contenu principal. Les panneaux modaux piègent le focus, se ferment avec Échap et rendent le focus au contrôle précédent. Les messages dynamiques utilisent <code>role="status"</code> ou <code>aria-live</code>. Le mode <code>prefers-reduced-motion</code> réduit les animations et un mode de contraste renforcé adapte les variables de bordure.</p>
+
+    <h3>2.6.4 Responsivité</h3>
+    <p>Le système doit fonctionner sur ordinateur, tablette et téléphone. Sous 1180 pixels, le rail latéral est remplacé par la navigation mobile. Les grilles se réorganisent, les panneaux se déplacent sous les listes et les actions conservent une taille adaptée au tactile. L’objectif est d’éviter tout défilement horizontal bloquant à 390 pixels.</p>
+
+    <h3>2.6.5 Maintenabilité, fiabilité et sécurité</h3>
+    <p>Le code doit être typé, organisé autour de composants réutilisables et compilable sans erreur TypeScript. Les données de démonstration, styles, génération de rapport et exploration 3D sont séparés. Les erreurs de génération, copie et stockage doivent être interceptées.</p>
+    <p>Le prototype ne doit pas prétendre assurer une sécurité serveur inexistante. Une version de production devra ajouter authentification, autorisation par rôle, isolation des organisations, chiffrement, validation côté serveur, journalisation, sauvegardes, contrôle des documents et politiques de confidentialité.</p>
+
+    <h2>2.7 Conclusion</h2>
+    <p>Cette analyse transforme une demande générale de tableau de bord intelligent en fonctions vérifiables. Elle montre également que la confiance dépend autant de la transparence des limites que de la richesse visuelle. La conception technique présentée au chapitre suivant traduit ces besoins en une architecture front-end modulaire tout en préparant l’intégration future de services métier réels.</p>
+  </section>
+
+  <section class="chapter-opener">
+    <div class="chapter-number">03</div>
+    <div class="eyebrow">Architecture et expérience</div>
+    <h1>Conception technique</h1>
+    <p>Structure de l’application React, circulation des données, modèle d’interaction, génération documentaire, accessibilité et frontière de sécurité.</p>
+  </section>
+
+  <section id="chapter-3">
+    <h1>3. Conception technique</h1>
+    <h2>3.1 Choix d’architecture</h2>
+    <p>ATLASYN Insight est développé sous la forme d’une <strong>Single Page Application</strong> avec React 18, TypeScript et Vite. React assure la composition de l’interface et la gestion des états interactifs. TypeScript formalise les structures manipulées et limite les erreurs liées aux propriétés absentes ou aux états incompatibles. Vite fournit le serveur de développement et la construction optimisée destinée au déploiement.</p>
+    <p>Le point d’entrée <code>main.tsx</code> monte le composant principal dans le DOM avec <code>React.StrictMode</code>. Le composant <code>App</code> joue le rôle de coordinateur&nbsp;: il conserve la page active, la période, l’ouverture du Copilot, de la navigation mobile et des notifications, le message temporaire et l’état de la séquence d’introduction.</p>
+    <p>Cette architecture est volontairement légère pour le prototype. Elle ne contient ni routeur, ni gestionnaire global d’état, ni couche réseau. Les transitions de page utilisent une union TypeScript <code>Page</code> et un état local. Ce choix accélère la validation de l’expérience, mais ne permet pas encore les URL profondes, l’historique de navigation ou le partage d’une vue métier précise.</p>
+
+    <div class="diagram">
+      <div class="diagram-title">Figure 3.1 · Architecture logique réalisée</div>
+      <div class="diagram-flow">
+        <div class="diagram-box accent"><strong>Utilisateur</strong><span>Clavier · souris · tactile</span></div>
+        <div class="diagram-arrow">→</div>
+        <div class="diagram-box primary"><strong>React App</strong><span>Shell · navigation · état partagé</span></div>
+        <div class="diagram-arrow">→</div>
+        <div class="diagram-box"><strong>Pages métier</strong><span>Overview · Analytics · Customers · Inventory · Reports</span></div>
+      </div>
+      <div class="diagram-flow" style="margin-top:4mm;">
+        <div class="diagram-box"><strong>data.ts</strong><span>Jeux fictifs en mémoire</span></div>
+        <div class="diagram-box"><strong>Copilot local</strong><span>Routeur par mots-clés</span></div>
+        <div class="diagram-box"><strong>report.ts</strong><span>PDF-Lib → Blob → téléchargement</span></div>
+        <div class="diagram-box future"><strong>API future</strong><span>Non implémentée</span></div>
+      </div>
+      <div class="caption"><strong>Figure 3.1 —</strong> Le prototype fonctionne entièrement dans le navigateur.</div>
+    </div>
+
+    <h2>3.2 Technologies retenues</h2>
+    <table>
+      <caption class="caption"><strong>Tableau 3.1 —</strong> Technologies de la version réalisée</caption>
+      <thead><tr><th>Élément</th><th>Technologie</th><th>Rôle</th></tr></thead>
+      <tbody>
+        <tr><td>Interface</td><td>React 18 / ReactDOM</td><td>Composition des vues et gestion des interactions</td></tr>
+        <tr><td>Typage</td><td>TypeScript 5.6 strict</td><td>Sécurisation des structures et contrats de composants</td></tr>
+        <tr><td>Construction</td><td>Vite 6</td><td>Développement local et bundle de production</td></tr>
+        <tr><td>Style</td><td>CSS personnalisé et variables</td><td>Design system, responsive et animations</td></tr>
+        <tr><td>Icônes</td><td>Lucide React</td><td>Pictogrammes homogènes</td></tr>
+        <tr><td>Visualisations actives</td><td>SVG et CSS</td><td>Courbes, barres, progressions et indicateurs</td></tr>
+        <tr><td>Documents</td><td>PDF-Lib</td><td>Création et téléchargement d’un rapport PDF</td></tr>
+        <tr><td>Session</td><td>Web Storage API</td><td>Introduction affichée une seule fois par session</td></tr>
+      </tbody>
+    </table>
+    <p>Le dépôt contient également Three.js, React Three Fiber, Drei, GSAP et Recharts. Ces bibliothèques ne participent pas toutes à l’interface active. Three.js et ses adaptateurs alimentent une exploration 3D isolée sous <code>src/experience</code>, tandis que GSAP et Recharts ne sont pas importés dans la version montée. Le statut de cette recherche est présenté séparément afin de ne pas confondre expérimentation et fonctionnalité livrée.</p>
+
+    <h2>3.3 Organisation des composants</h2>
+    <p>Le premier ensemble de composants correspond au cadre global&nbsp;: <code>NavigationRail</code>, <code>MobileNavigation</code>, <code>TopHeader</code>, <code>NotificationPanel</code>, <code>Toast</code> et <code>BootSequence</code>. Ils assurent la navigation, le contexte, les retours d’action et la première transition de session. La clé <code>atlasyn-boot-seen</code>, enregistrée dans <code>sessionStorage</code>, évite de répéter l’introduction pendant la même session.</p>
+    <p>Le deuxième ensemble regroupe les pages métier&nbsp;: <code>OverviewDashboard</code>, <code>AnalyticsPage</code>, <code>CustomersPage</code>, <code>InventoryPage</code> et <code>ReportsPage</code>. Elles reçoivent uniquement les actions nécessaires sous forme de propriétés. Le troisième ensemble contient des composants réutilisables tels que <code>BrandLockup</code>, <code>DateControl</code>, <code>SectionLabel</code>, <code>WorkspaceHeading</code> et <code>StatStrip</code>. Enfin, <code>data.ts</code> et <code>report.ts</code> isolent les données et le service documentaire.</p>
+
+    <div class="diagram">
+      <div class="diagram-title">Arbre simplifié des composants</div>
+      <div class="diagram-lanes">
+        <div class="diagram-lane-label">App</div><div class="diagram-lane-content"><div class="sequence"><span>NavigationRail</span><i>+</i><span>TopHeader</span><i>+</i><span>NotificationPanel</span><i>+</i><span>Copilot</span><i>+</i><span>Toast</span></div></div>
+        <div class="diagram-lane-label">Pages</div><div class="diagram-lane-content"><div class="sequence"><span>Overview</span><i>→</i><span>Analytics</span><i>→</i><span>Customers</span><i>→</i><span>Inventory</span><i>→</i><span>Reports</span></div></div>
+        <div class="diagram-lane-label">Services</div><div class="diagram-lane-content"><div class="sequence"><span>data.ts</span><i>+</i><span>report.ts</span><i>+</i><span>tokens.css</span><i>+</i><span>styles.css</span></div></div>
+      </div>
+    </div>
+
+    <h2>3.4 Gestion de l’état et modèle de données</h2>
+    <p>L’application suit un flux descendant. Les données statiques sont importées depuis <code>data.ts</code>. Chaque page applique ses transformations locales avant de rendre l’interface. Les interactions mettent à jour un état React, déclenchant le rendu des composants concernés.</p>
+    <p>Dans Customers, les états sont la recherche, le filtre de risque et le client sélectionné. La liste visible est obtenue en comparant le nom en minuscules et en appliquant le seuil de 75&nbsp;%. Dans Inventory, la recherche porte sur la concaténation du produit et du SKU, puis se combine au statut. Les fiches latérales reçoivent directement l’objet sélectionné.</p>
+    <p>Le Command Center utilise <code>useMemo</code> pour calculer quatre indicateurs selon la période. Les coordonnées du graphique sont produites à partir des valeurs réelles ou prévisionnelles. Deux chemins SVG représentent les séries, tandis que des boutons HTML superposés rendent chaque point accessible au clavier.</p>
+    <table>
+      <thead><tr><th>Entité</th><th>Attributs essentiels</th></tr></thead>
+      <tbody>
+        <tr><td>RevenuePoint</td><td>Mois, valeur réelle, valeur prévisionnelle</td></tr>
+        <tr><td>WeeklyPerformance</td><td>Jour, revenu, objectif</td></tr>
+        <tr><td>Customer</td><td>Nom, initiales, valeur, dernier achat, risque</td></tr>
+        <tr><td>InventoryItem</td><td>Produit, SKU, stock, demande, couverture, réapprovisionnement, statut</td></tr>
+        <tr><td>ProductPerformance</td><td>Produit, revenu, croissance, marge</td></tr>
+        <tr><td>Anomaly</td><td>Titre, détail, date relative, sévérité</td></tr>
+        <tr><td>CopilotMessage</td><td>Rôle, contenu, domaine éventuel</td></tr>
+        <tr><td>BusinessSystem</td><td>Identifiant, libellé, score, facteurs</td></tr>
+      </tbody>
+    </table>
+
+    <h2>3.5 Conception du Copilot</h2>
+    <p>Le composant possède quatre états principaux&nbsp;: fermé, prêt, en analyse et réponse affichée. À l’ouverture, le focus est placé dans le panneau. Un gestionnaire intercepte Tab et Maj+Tab afin de conserver la navigation dans la boîte de dialogue. Échap ferme le panneau et le focus est restauré.</p>
+    <p>Lors de la soumission, le texte est nettoyé avec <code>trim</code>. Une question vide ou une nouvelle demande pendant l’état <code>thinking</code> est refusée. Le message utilisateur est ajouté à l’historique, puis une temporisation de 820 millisecondes simule le traitement. La fonction <code>answerFor</code> analyse la chaîne en minuscules&nbsp;: les termes liés au bénéfice sélectionnent la réponse financière, ceux liés au churn la réponse client et ceux liés au stock la réponse d’approvisionnement.</p>
+    <p><code>CopilotAnswer</code> enrichit ensuite la réponse avec un impact, un calcul, une recommandation et plusieurs sources. Cette structure prépare une future intégration d’un modèle de langage en imposant un contrat de sortie plus contrôlable qu’un texte entièrement libre.</p>
+    <div class="diagram">
+      <div class="diagram-title">Figure 3.2 · Séquence réalisée dans le prototype</div>
+      <div class="diagram-lanes">
+        <div class="diagram-lane-label">Utilisateur</div><div class="diagram-lane-content"><div class="sequence"><span>Ouvre le Copilot</span><i>→</i><span>Pose une question</span><i>→</i><span>Consulte / copie</span></div></div>
+        <div class="diagram-lane-label">Interface</div><div class="diagram-lane-content"><div class="sequence"><span>Ajoute le message</span><i>→</i><span>Affiche “analyse”</span><i>→</i><span>Structure la réponse</span></div></div>
+        <div class="diagram-lane-label">Règles locales</div><div class="diagram-lane-content"><div class="sequence"><span>Normalise le texte</span><i>→</i><span>Détecte des mots-clés</span><i>→</i><span>Sélectionne une réponse</span></div></div>
+      </div>
+      <div class="caption"><strong>Figure 3.2 —</strong> Aucun appel réseau vers un service d’IA n’est effectué.</div>
+    </div>
+
+    <h2>3.6 Génération du rapport PDF</h2>
+    <p>La génération est isolée dans <code>report.ts</code>. La fonction <code>buildExecutiveReportPdf</code> importe dynamiquement PDF-Lib, crée un document de 612 × 792 points, intègre Helvetica et Helvetica Bold, puis charge le logo officiel. Elle dessine les surfaces, lignes, textes, indicateurs et actions avec une palette cohérente.</p>
+    <p>Les métadonnées du PDF — titre, auteur et sujet — sont définies avant la sérialisation. <code>downloadExecutiveReport</code> transforme les octets en <code>Blob</code>, crée une URL temporaire, déclenche un lien portant le nom <code>atlasyn-weekly-intelligence.pdf</code> et révoque ensuite l’URL. L’import dynamique évite de placer le moteur documentaire sur le chemin initial.</p>
+    <p>Le document actuel est une page fixe en anglais avec des valeurs inscrites dans le code. Une version de production devra générer ses sections depuis les filtres actifs, gérer plusieurs pages, la localisation, les ruptures de texte, l’horodatage serveur et une éventuelle classification de confidentialité.</p>
+
+    <h2>3.7 Préparation des documents</h2>
+    <p>La page Reports accepte les extensions PDF, CSV et XLSX par le sélecteur natif et par glisser-déposer. La fonction <code>stage</code> enregistre seulement le nom du fichier dans l’état React et déclenche une confirmation. Le Copilot possède une fonction similaire pour préparer une pièce jointe.</p>
+    <p>Cette conception valide l’ergonomie, mais ne constitue pas un traitement documentaire. Le navigateur ne vérifie pas réellement la taille maximale annoncée, n’analyse pas le contenu et ne transmet rien. L’architecture cible devra ajouter contrôle de type réel, limite de taille, analyse antivirus, stockage temporaire, extraction asynchrone, suivi d’état et suppression selon une politique de conservation.</p>
+
+    <h2>3.8 Design system et responsive</h2>
+    <p>Le fichier <code>tokens.css</code> centralise surfaces, textes, couleurs de marque, couleurs sémantiques, espacements, ombres, rayons, durées et dimensions globales. La direction «&nbsp;Quiet Intelligence&nbsp;» utilise un fond chaud <code>#F5F3EE</code>, des surfaces blanches, un bleu encre <code>#17243A</code>, un vert pétrole <code>#2F6F6D</code> et un accent sable <code>#C4A66A</code>. Le vert, l’ambre et le rouge restent réservés aux états sémantiques.</p>
+    <p><code>styles.css</code> définit les seuils de 1180, 940, 720 et 410 pixels. Sous 1180 pixels, le rail disparaît. Sous 940 pixels, les grilles principales passent en colonne. Sous 720 pixels, les listes deviennent des rangées tactiles et le Copilot occupe l’écran. Les animations d’entrée reposent principalement sur CSS et sur un hook <code>useReveal</code> utilisant <code>IntersectionObserver</code>.</p>
+
+    <h2>3.9 Accessibilité technique</h2>
+    <p>L’accessibilité est traitée comme une contrainte d’architecture. Le lien d’évitement cible le contenu principal. La navigation expose la page active avec <code>aria-current</code>. Les boutons de menu et de notifications utilisent <code>aria-expanded</code>. Les valeurs essentielles des graphiques restent disponibles dans des boutons portant un nom explicite.</p>
+    <p>Le Copilot utilise <code>role="dialog"</code>, <code>aria-modal</code> et un titre référencé. Ses messages se trouvent dans une région <code>aria-live="polite"</code>. Les états d’attente et notifications utilisent des rôles de statut. Les champs de recherche et sélecteurs ont des labels accessibles. Les risques sont exprimés par une couleur, un pourcentage et un libellé.</p>
+    <p>Ces mesures constituent une base et non une certification WCAG. Des vérifications restent nécessaires avec lecteurs d’écran, outils automatiques, mesures de contraste, contrôle de l’ordre de lecture et localisation française/arabe avec prise en charge RTL.</p>
+
+    <h2>3.10 Frontière de sécurité</h2>
+    <p>La frontière de confiance actuelle se limite au navigateur. Aucune authentification, autorisation, base de données ou API n’est présente. Toutes les valeurs se trouvent dans le bundle JavaScript et peuvent être consultées ou modifiées localement. Les intitulés «&nbsp;sources connectées&nbsp;» et «&nbsp;données live&nbsp;» constituent une simulation visuelle.</p>
+    <p>React échappe les chaînes rendues et le projet n’emploie pas d’injection HTML directe, mais cette protection ne remplace pas une validation serveur. Le sélecteur <code>accept</code> ne garantit pas le type réel d’un fichier. Copier l’URL ne fournit ni partage sécurisé ni contrôle d’accès.</p>
+    <div class="diagram">
+      <div class="diagram-title">Figure 3.3 · Frontière entre prototype et architecture cible</div>
+      <div class="diagram-flow">
+        <div class="diagram-box accent"><strong>Réalisé</strong><span>Navigateur · React · données démo · SVG · PDF local</span></div>
+        <div class="diagram-arrow">⇢</div>
+        <div class="diagram-box future"><strong>API sécurisée</strong><span>Authentification · rôles · validation · audit</span></div>
+        <div class="diagram-arrow">⇢</div>
+        <div class="diagram-box future"><strong>Services métier</strong><span>ERP · CRM · entrepôt · modèles · documents</span></div>
+      </div>
+      <div class="caption"><strong>Figure 3.3 —</strong> Les blocs pointillés correspondent aux travaux futurs.</div>
+    </div>
+
+    <h2>3.11 Architecture 3D expérimentale</h2>
+    <p>Le dépôt conserve une exploration nommée «&nbsp;Living Business Universe&nbsp;» sous <code>src/experience</code>. Elle comprend un noyau de santé, un paysage de revenus, un réseau client, un monde d’inventaire et une couche de priorités réalisés avec Three.js, React Three Fiber et Drei. Le contrôleur prévoit un chemin de caméra, des transitions entre scènes, un ratio de pixels borné, la désactivation des ombres sur appareils compacts, la visibilité de l’onglet et la réduction de mouvement.</p>
+    <p>Cependant, <code>App.tsx</code> n’importe actuellement pas <code>ExperienceCanvas</code>. Cette expérience n’est donc ni chargée ni affichée dans la version active. Le choix final a privilégié une interface sobre, plus adaptée à un usage professionnel et plus légère sur les machines ordinaires. Le module 3D doit être considéré comme une étude technique optionnelle, à réévaluer uniquement après des tests d’utilité, de lisibilité et de performance.</p>
+
+    <h2>3.12 Conclusion</h2>
+    <p>La conception retenue fournit une base front-end claire et modulaire. Elle sépare les données de démonstration, les pages métier, le Copilot, le générateur PDF, le système visuel et la recherche 3D. Cette organisation facilite l’évolution vers une architecture connectée. Le principal enjeu suivant consiste à remplacer les simulations par des services sécurisés et auditables, tout en conservant la lisibilité et la transparence du prototype.</p>
+  </section>
+
+  <section class="chapter-opener">
+    <div class="chapter-number">04</div>
+    <div class="eyebrow">Implémentation</div>
+    <h1>Réalisation d’ATLASYN Insight</h1>
+    <p>Construction de l’interface, visualisation des indicateurs, intelligence client et stock, Copilot simulé, rapport PDF et adaptation responsive.</p>
+  </section>
+
+  <section id="chapter-4">
+    <h1>4. Réalisation de la solution</h1>
+    <p class="chapter-intro">Le travail de réalisation transforme les besoins identifiés en un prototype fonctionnel où un responsable peut observer la situation, comprendre un signal, consulter ses preuves et engager une action simulée.</p>
+
+    <h2>4.1 Environnement de développement</h2>
+    <p>La version actuelle est une application monopage exécutée dans le navigateur. React 18 organise l’interface sous forme de composants, TypeScript 5.6 sécurise les contrats et Vite 6 fournit le serveur de développement ainsi que le bundle optimisé. La cible TypeScript est ES2020 et le mode strict est activé.</p>
+    <p>Le projet propose les commandes suivantes&nbsp;:</p>
+    <pre class="code">npm install        # installer les dépendances
+npm run dev        # démarrer le serveur de développement
+npm run typecheck  # vérifier les types TypeScript
+npm run build      # produire la version optimisée
+npm run preview    # prévisualiser le bundle de production</pre>
+    <p>La mise en forme est entièrement construite avec des variables CSS et des règles spécifiques. Ce choix apporte un contrôle précis sur la hiérarchie, les grilles responsives, les états de focus et les animations sans imposer l’apparence d’une bibliothèque de composants générique. Les pictogrammes proviennent de Lucide React. Les graphiques de la version active sont dessinés avec SVG et CSS, tandis que PDF-Lib génère le rapport dans le navigateur.</p>
+
+    <h2>4.2 Système visuel et navigation</h2>
+    <p>La direction retenue est appelée «&nbsp;Quiet Intelligence&nbsp;». Son objectif est de créer un espace calme, professionnel et adapté à un usage quotidien. Le fond principal est un beige très clair, les surfaces sont blanches, le texte utilise un bleu encre, et les accents sont portés par un vert pétrole et un sable discret. Les teintes verte, ambre et rouge sont réservées aux états sémantiques.</p>
+    <p>Sur ordinateur, la navigation prend la forme d’un rail fixe de 64 pixels placé à gauche. Il permet d’accéder aux cinq vues et au Copilot. L’élément actif est signalé par la couleur, le fond et une marque latérale. Une infobulle textuelle apparaît au survol ou au focus. La barre supérieure affiche l’espace de travail, la page courante, l’état des sources simulées, la période, l’accès au Copilot et les notifications.</p>
+    <p>Sur écran plus étroit, le rail disparaît au profit d’un menu latéral. Ce menu possède un nom accessible, enferme le focus lorsqu’il est ouvert, se ferme avec Échap et restitue le focus au contrôle précédent. Les mêmes destinations restent donc disponibles sans encombrer l’affichage mobile.</p>
+
+    <h2>4.3 Centre de commande exécutif</h2>
+    <p>Le Command Center répond à trois questions&nbsp;: quelle est la situation actuelle, quel signal mérite une attention immédiate et quelle action faut-il engager&nbsp;? Quatre indicateurs présentent le chiffre d’affaires net, le bénéfice brut, le nombre de clients actifs et les dépenses opérationnelles.</p>
+    <p>Le sélecteur de période propose les trente derniers jours, le dernier trimestre et l’année en cours. Un calcul mémorisé avec <code>useMemo</code> choisit le jeu de valeurs adapté. Par exemple, le chiffre d’affaires passe de 142&nbsp;500 TND sur trente jours à 375&nbsp;100 TND sur le trimestre et 1,12 million TND depuis le début de l’année. Dans une version connectée, la période deviendra un paramètre transmis au service analytique.</p>
+    <p>La courbe de revenus couvre avril à décembre. Les valeurs historiques vont jusqu’en septembre, tandis qu’octobre, novembre et décembre sont prévisionnels. Pour chaque point, l’abscisse est répartie régulièrement et l’ordonnée est normalisée dans l’espace du SVG. Deux chemins distincts représentent le réel et la projection, accompagnés d’une zone translucide matérialisant l’incertitude.</p>
+    <p>Chaque point est un véritable bouton HTML positionné au-dessus du SVG. Le survol, le focus ou le clic mettent à jour une infobulle contenant le mois, le statut réel ou prévisionnel, le montant et la provenance supposée. L’estimation d’octobre est de 155&nbsp;900 TND avec une confiance de démonstration de 87&nbsp;%.</p>
+    <p>Le score de santé est affiché à 82/100. Cinq systèmes peuvent être sélectionnés&nbsp;: Revenue, Customers, Inventory, Cash flow et Operations. Trois décisions prioritaires complètent la synthèse en suivant la structure «&nbsp;preuve → cause → urgence → impact → action&nbsp;».</p>
+    <figure class="figure">
+      <img src="assets/01-command-center.png" alt="Centre de commande ATLASYN Insight avec indicateurs, projection de revenu et santé métier" />
+      <figcaption class="caption"><strong>Figure 4.1 —</strong> Centre de commande exécutif&nbsp;: KPI, revenu réel/prévisionnel, santé et priorité.</figcaption>
+    </figure>
+
+    <h2>4.4 Espace Analytics</h2>
+    <p>La page Analytics approfondit les signaux de performance. Une première bande regroupe le panier moyen, la marge brute, le coût d’acquisition et l’écart budgétaire. Une note contextuelle indique si l’évolution est favorable ou défavorable.</p>
+    <p>Le revenu quotidien est comparé à la cible sur sept jours. Le code recherche la valeur maximale parmi toutes les observations et cibles, puis convertit chaque montant en hauteur relative. Les deux séries sont distinguées par leur style et une légende. La contribution par canal présente la vente directe, le commerce électronique, les partenaires et la marketplace. Chaque ligne associe montant, longueur proportionnelle et taux de croissance.</p>
+    <p>Deux panneaux complémentaires détaillent la performance de cinq produits et la variation de cinq catégories de dépenses. La période sélectionnée est partagée avec le reste de l’application, mais les séries détaillées demeurent statiques dans le prototype. L’utilisateur peut exporter le rapport ou demander au Copilot d’expliquer un signal.</p>
+    <figure class="figure">
+      <img src="assets/02-analytics.png" alt="Page Analytics avec indicateurs, histogramme quotidien, canaux de vente, produits et dépenses" />
+      <figcaption class="caption"><strong>Figure 4.2 —</strong> Analyse de la performance et comparaison du revenu à l’objectif.</figcaption>
+    </figure>
+
+    <h2>4.5 Intelligence client</h2>
+    <p>La page Customer Intelligence transforme une liste de comptes en file d’actions de rétention. Chaque objet contient un nom, des initiales, une valeur, une date relative de dernier achat et un score de risque. Le jeu comprend Carthage Distribution, Medina Retail Group, Sahara Logistics, North Coast Market et Olive &amp; Co.</p>
+    <p>Le filtrage combine deux conditions. Le nom, converti en minuscules, doit contenir le texte recherché. Si le filtre «&nbsp;High risk&nbsp;» est activé, le score doit également être supérieur ou égal à 75&nbsp;%. Lorsqu’aucune relation ne correspond, un état vide explique comment rétablir des résultats.</p>
+    <p>La sélection d’une ligne alimente la fiche latérale&nbsp;: valeur vie client, récence, fenêtre recommandée de 72 heures et facteurs de risque. Les barres représentent l’influence relative de la récence d’achat, de la fréquence de commande et du sentiment du support. Le bouton final ouvre le Copilot afin de préparer une stratégie.</p>
+    <figure class="figure">
+      <img src="assets/03-customers.png" alt="Module Customer Intelligence avec cinq relations, score de risque et fiche détaillée" />
+      <figcaption class="caption"><strong>Figure 4.3 —</strong> Recherche, sélection et facteurs explicatifs du risque client.</figcaption>
+    </figure>
+
+    <h2>4.6 Intelligence d’inventaire</h2>
+    <p>Le module Inventory Planning suit une logique comparable, adaptée aux produits. Chaque enregistrement comprend le produit, son SKU, le stock disponible, la demande estimée, les jours de couverture, la quantité recommandée et le statut opérationnel.</p>
+    <p>La recherche porte simultanément sur le nom et le SKU. Le filtre accepte toutes les lignes, uniquement celles nécessitant une action ou uniquement celles jugées saines. La sélection actualise le panneau de recommandation.</p>
+    <p>Le cas principal est le Smart POS Terminal&nbsp;: 184 unités disponibles, 510 unités de demande estimée sur trente jours, onze jours de couverture et une recommandation de 350 unités. Une jauge compare le stock à la demande et une courbe SVG suggère l’évolution sur six semaines. Le revenu présenté comme protégé atteint 12&nbsp;600 TND.</p>
+    <p>Le bouton «&nbsp;Create draft order&nbsp;» ne transmet pas de commande. Il produit un message de confirmation, ce qui permet de tester le feedback sans introduire de conséquence externe pendant le prototypage.</p>
+    <figure class="figure">
+      <img src="assets/04-inventory.png" alt="Module Inventory Planning avec stock, demande, statut et directive Smart POS" />
+      <figcaption class="caption"><strong>Figure 4.4 —</strong> Intelligence d’inventaire et recommandation de réapprovisionnement.</figcaption>
+    </figure>
+
+    <h2>4.7 Copilot décisionnel</h2>
+    <p>Le Copilot s’ouvre dans un panneau modal à droite sur ordinateur et en plein écran sur mobile. Il est accessible depuis plusieurs pages ou avec <code>Ctrl/Cmd+K</code>. Tant que l’application n’est pas rechargée, l’historique reste présent même si le panneau est fermé, car le composant demeure monté.</p>
+    <p>La logique simule une analyse conversationnelle à partir de mots-clés. Après nettoyage, le programme classe les termes liés au bénéfice, au churn ou au stock. Un délai de 820 millisecondes produit un état d’analyse visible. La réponse présente un impact financier, un calcul, une recommandation et des sources de démonstration. L’utilisateur peut copier la réponse, signaler son utilité ou joindre localement un document comme contexte.</p>
+    <p>Dans l’exemple ci-dessous, la question sur le bénéfice renvoie une explication liant Campaign X et les coûts logistiques, un mouvement de −8,7&nbsp;%, la formule utilisée et trois sources supposées. Cette interface valide le format d’une réponse explicable, mais elle ne mesure pas les performances d’un LLM puisqu’aucun modèle n’est exécuté.</p>
+    <figure class="figure">
+      <img src="assets/09-copilot-answer.png" alt="Copilot ATLASYN avec question sur la baisse du bénéfice, impact, calcul, recommandation et sources" />
+      <figcaption class="caption"><strong>Figure 4.5 —</strong> Réponse structurée et explicable du Copilot simulé.</figcaption>
+    </figure>
+
+    <h2>4.8 Rapports et documents</h2>
+    <p>La page Executive Reports affiche une prévisualisation du rapport hebdomadaire n°&nbsp;37 pour la période du 7 au 13 septembre 2026. Elle reprend trois indicateurs, un résumé, les priorités et une projection d’octobre.</p>
+    <p>Au déclenchement de l’export, PDF-Lib est importé dynamiquement. Le programme crée une page, incorpore les polices Helvetica, charge le logo officiel, applique la palette ATLASYN puis dessine l’en-tête, les indicateurs, le résumé, les priorités et l’outlook. Les octets sont convertis en Blob, associés à une URL temporaire et téléchargés sous le nom <code>atlasyn-weekly-intelligence.pdf</code>.</p>
+    <p>Le module permet aussi de copier l’adresse courante et de choisir ou déposer un fichier PDF, CSV ou XLSX. Dans cette version, seul le nom est conservé. Aucun transfert, parsing, OCR ni stockage n’a lieu.</p>
+    <figure class="figure">
+      <img src="assets/05-reports.png" alt="Page Executive Reports avec prévisualisation du rapport, téléchargement, partage et dépôt de document" />
+      <figcaption class="caption"><strong>Figure 4.6 —</strong> Prévisualisation éditoriale et contrôles du rapport exécutif.</figcaption>
+    </figure>
+
+    <h2>4.9 Notifications et retours d’action</h2>
+    <p>Le panneau de notifications expose trois anomalies&nbsp;: hausse de dépense marketing, facture inhabituelle et changement de vélocité de stock. Le clic marque le signal pour révision dans l’interface, tandis qu’une action globale ajoute tous les éléments à une file simulée.</p>
+    <p>Un composant Toast uniformise les retours. Il sert pour la copie, le feedback du Copilot, la préparation d’une commande, le dépôt d’un fichier et l’export. Le message disparaît après 3,6 secondes et peut être fermé. Les erreurs liées au presse-papiers ou au PDF ne restent donc pas silencieuses.</p>
+    <figure class="figure small">
+      <img src="assets/10-notifications.png" alt="Panneau de notifications contenant trois anomalies opérationnelles" />
+      <figcaption class="caption"><strong>Figure 4.7 —</strong> Notifications classées par sévérité et file de révision.</figcaption>
+    </figure>
+
+    <h2>4.10 Responsive et accessibilité</h2>
+    <p>Quatre niveaux structurent l’adaptation. Sous 1180 pixels, le rail fixe disparaît. Sous 940 pixels, les grilles principales passent en colonne. Sous 720 pixels, les listes deviennent des rangées adaptées au tactile, le Copilot occupe tout l’écran et les actions de l’en-tête sont condensées. Un dernier ajustement sous 410 pixels empile les contrôles les plus étroits.</p>
+    <p>Un lien d’évitement mène au contenu principal. Les zones utilisent les éléments <code>main</code>, <code>header</code>, <code>nav</code>, <code>aside</code> et <code>section</code>. Les contrôles disposent de noms accessibles et d’attributs tels que <code>aria-current</code>, <code>aria-expanded</code>, <code>aria-pressed</code>, <code>aria-modal</code> et <code>aria-live</code>. Le Copilot et le menu mobile piègent le focus et gèrent Échap. Les focus visibles sont normalisés.</p>
+    <p><code>prefers-reduced-motion</code> ramène la durée des animations à un minimum, tandis que <code>prefers-contrast: more</code> renforce les bordures et teintes secondaires. Ces mesures forment une base solide mais ne valent pas certification. Certaines listes utilisent des grilles de boutons plutôt que de vrais tableaux et plusieurs microtextes devront être revus lors d’un audit complet.</p>
+    <div class="mobile-pair">
+      <div><img src="assets/07-mobile-command-center.png" alt="Centre de commande sur écran mobile de 390 pixels" /><div class="caption">Vue principale à 390 px</div></div>
+      <div><img src="assets/08-mobile-navigation.png" alt="Menu mobile ATLASYN Insight" /><div class="caption">Navigation mobile avec focus enfermé</div></div>
+    </div>
+    <div class="caption"><strong>Figure 4.8 —</strong> Adaptation mobile du centre de commande et de la navigation.</div>
+
+    <h2>4.11 Performance et statut de la piste 3D</h2>
+    <p>La version active privilégie SVG et CSS, les calculs locaux simples et les états React ciblés. L’observateur d’intersection cesse de suivre un élément dès sa première apparition. PDF-Lib est chargé seulement au moment de l’export. Les transitions reposent surtout sur <code>opacity</code> et <code>transform</code>.</p>
+    <p>L’exploration 3D conservée dans <code>src/experience</code> prévoit plusieurs optimisations&nbsp;: ratio de pixels limité, ombres supprimées sur appareils compacts, boucle de rendu à la demande quand l’onglet est masqué et raycasting actif seulement pour la scène dominante. Néanmoins, cette couche n’est pas importée par l’application active et ne pèse donc pas sur son chemin courant. Elle doit rester décrite comme une étude séparée.</p>
+
+    <h2>4.12 Conclusion</h2>
+    <p>La réalisation aboutit à un prototype cohérent couvrant le parcours «&nbsp;observer, comprendre, prioriser, interroger et partager&nbsp;». Les modules emploient les mêmes données, le même langage visuel et les mêmes mécanismes de retour, donnant à ATLASYN Insight une identité plus forte qu’un assemblage de pages indépendantes.</p>
+    <p>Les choix React, TypeScript, SVG/CSS et PDF-Lib ont permis de construire une démonstration riche et responsive sans infrastructure serveur. Cette autonomie est utile pour la validation, mais définit aussi la limite principale&nbsp;: les sources, modèles et actions restent simulés.</p>
+  </section>
+
+  <section class="chapter-opener">
+    <div class="chapter-number">05</div>
+    <div class="eyebrow">Qualité et évolution</div>
+    <h1>Tests, difficultés et perspectives</h1>
+    <p>Validation statique et fonctionnelle, comportement responsive, difficultés de conception, bilan du prototype et feuille de route vers une plateforme de production.</p>
+  </section>
+
+  <section id="chapter-5">
+    <h1>5. Tests, difficultés, bilan et perspectives</h1>
+    <p class="chapter-intro">Une interface riche doit présenter des valeurs cohérentes, réagir correctement, rester lisible sur différents écrans et informer l’utilisateur lorsqu’une opération réussit ou échoue.</p>
+
+    <h2>5.1 Stratégie de validation</h2>
+    <p>La stratégie de qualité repose sur trois niveaux&nbsp;: contrôle statique TypeScript, génération du bundle de production et campagne de tests fonctionnels manuels dans le navigateur. Cette approche couvre les parcours critiques, mais ne remplace pas une suite automatisée de tests unitaires, d’intégration et de bout en bout.</p>
+    <p><code>npm run typecheck</code> exécute le compilateur sur les configurations référencées et vérifie les types sans produire de JavaScript. <code>npm run build</code> enchaîne <code>tsc -b</code> et <code>vite build</code>, transforme les modules, élimine le code non référencé et crée les ressources de livraison.</p>
+    <p>Un build sans erreur valide la compatibilité technique de la base, mais pas la justesse métier. Une valeur incorrecte peut être parfaitement typée, et une interface peut compiler tout en étant incompréhensible. Des scénarios ont donc été rejoués à la souris, au clavier et avec différentes dimensions de viewport.</p>
+
+    <h2>5.2 Tests fonctionnels manuels</h2>
+    <table>
+      <caption class="caption"><strong>Tableau 5.1 —</strong> Campagne de smoke tests</caption>
+      <thead><tr><th>ID</th><th>Scénario</th><th>Résultat attendu</th><th>Statut</th></tr></thead>
+      <tbody>
+        <tr><td>T01</td><td>Introduction de session</td><td>Disparaît après ≈1,6 s et ne revient pas dans la session</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T02</td><td>Navigation principale</td><td>Chaque vue s’ouvre, l’élément actif est signalé</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T03</td><td>Changement de période</td><td>Trois jeux de KPI sont disponibles</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T04</td><td>Courbe de revenus</td><td>Infobulle précise et distinction réel/prévision</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T05</td><td>Santé métier</td><td>Le signal explicatif suit le système sélectionné</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T06</td><td>Recherche et filtre clients</td><td>Liste filtrée et état vide si aucun résultat</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T07</td><td>Sélection client</td><td>Fiche mise à jour avec valeur, récence et risque</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T08</td><td>Recherche et statut inventaire</td><td>Les lignes correspondent aux critères</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T09</td><td>Directive de stock</td><td>350 unités pour Smart POS et toast adapté</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T10</td><td>Copilot</td><td>Analyse, réponse dédiée, impact, calcul et sources</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T11</td><td>Clavier dans les overlays</td><td>Focus enfermé, Échap ferme puis restaure</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T12</td><td>Notifications</td><td>Trois anomalies et retours d’action</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T13</td><td>Rapport PDF</td><td>Logo, titre, KPI et priorités téléchargeables</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T14</td><td>Dépôt documentaire</td><td>Nom du fichier préparé localement</td><td class="status-limit">Conforme au prototype</td></tr>
+        <tr><td>T15</td><td>Presse-papiers</td><td>Copie ou message si permission refusée</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T16</td><td>Responsive</td><td>1440, 1024, 768 et 390 px sans blocage</td><td class="status-pass">Conforme</td></tr>
+        <tr><td>T17</td><td>Mouvement réduit</td><td>Animations neutralisées et contenu visible</td><td class="status-pass">Conforme</td></tr>
+      </tbody>
+    </table>
+    <p>Un smoke test automatisé par le protocole de débogage du navigateur a également vérifié la recherche sans résultat, le filtre Healthy de l’inventaire, l’ouverture du dialogue Copilot, la production d’une réponse contenant trois sources et l’affichage des trois notifications. Aucune exception JavaScript n’a été relevée pendant cette exécution.</p>
+    <figure class="figure small">
+      <img src="assets/11-customer-empty-state.png" alt="État vide du module client après une recherche sans résultat" />
+      <figcaption class="caption"><strong>Figure 5.1 —</strong> État vide explicite après recherche client sans résultat.</figcaption>
+    </figure>
+
+    <h2>5.3 Validation responsive et accessibilité</h2>
+    <p>À 1440 pixels, le rail reste fixe et les panneaux sont affichés côte à côte. À 1024 pixels, le rail est remplacé par le menu mobile et les compositions commencent à se simplifier. À 768 pixels, les zones clients, inventaire et rapports passent en colonne. À 390 pixels, les listes changent de structure, les actions principales restent accessibles et le Copilot occupe la totalité de l’écran.</p>
+    <p>Les essais au clavier ont porté sur le lien d’évitement, les sélecteurs, les points du graphique, les listes interactives et les overlays. Le focus visible permet d’identifier le contrôle actif. La boucle du menu mobile et du Copilot évite qu’un utilisateur navigue accidentellement dans l’arrière-plan. Les annonces de statut rendent les retours perceptibles par une technologie d’assistance.</p>
+    <p>Ces vérifications restent exploratoires. Une recette complète devra utiliser plusieurs lecteurs d’écran, mesurer tous les contrastes, contrôler les cibles tactiles, analyser l’ordre de lecture et inclure des personnes concernées. Le prototype contient encore quelques microtextes et des listes tabulaires composées avec des grilles plutôt qu’avec l’élément <code>table</code>.</p>
+
+    <h2>5.4 Vérifications de performance</h2>
+    <p>La sobriété de la version active limite son coût. Les courbes sont tracées en SVG, les histogrammes reposent sur CSS et les données sont déjà en mémoire. L’ouverture d’une page ne déclenche ni requête métier ni traitement volumineux.</p>
+    <p>Le chargement différé de PDF-Lib évite d’intégrer le moteur documentaire au chemin initial. L’observateur de révélation cesse d’observer un élément après son affichage. Les opérations de filtrage portent sur cinq clients ou cinq produits et sont immédiates. Avec plusieurs milliers d’entrées, elles devront être paginées et exécutées côté serveur, ou virtualisées.</p>
+    <p>L’exploration 3D n’étant pas importée par l’application active, son moteur WebGL ne pénalise pas le chargement courant. Une future campagne devra établir des budgets mesurables&nbsp;: poids initial, Largest Contentful Paint, Interaction to Next Paint, mémoire, latence des requêtes et comportement sur un ordinateur professionnel d’entrée de gamme.</p>
+
+    <h2>5.5 Difficultés rencontrées et solutions</h2>
+    <h3>5.5.1 Équilibre entre innovation et crédibilité</h3>
+    <p>Une piste immersive et tridimensionnelle avait été développée pour représenter l’entreprise comme un univers vivant. Elle démontrait une ambition technique, mais son esthétique sombre et son coût graphique risquaient de rapprocher le produit d’une interface futuriste plutôt que d’un outil quotidien de gestion.</p>
+    <p>La solution a consisté à recentrer l’expérience sur «&nbsp;Quiet Intelligence&nbsp;»&nbsp;: palette claire et chaleureuse, surfaces mates, typographie lisible, mouvements courts et priorité donnée aux décisions. L’exploration 3D a été conservée dans un module séparé. Cette évolution illustre une leçon importante&nbsp;: l’innovation n’est utile que si elle renforce compréhension et confiance.</p>
+
+    <h3>5.5.2 Densité d’information et hiérarchie</h3>
+    <p>Le centre de commande devait réunir KPI, alerte, projection, santé et priorités. Une accumulation de cartes identiques aurait rendu les informations difficiles à hiérarchiser. La réalisation utilise plusieurs formes adaptées&nbsp;: bande d’indicateurs, ruban d’alerte, courbe, liste de systèmes et fiches décisionnelles.</p>
+    <p>Sur mobile, les tableaux multicolonnes devenaient illisibles. Les media queries transforment les lignes en compositions à deux niveaux, masquent seulement les colonnes secondaires et déplacent les détails dans la fiche sélectionnée. Cette adaptation conserve l’action essentielle au lieu de réduire mécaniquement toute l’interface.</p>
+
+    <h3>5.5.3 Graphique accessible sans dépendance lourde</h3>
+    <p>Un SVG offre une bonne qualité visuelle, mais ses points ne constituent pas naturellement des contrôles HTML. La solution combine un tracé SVG avec une couche de boutons positionnés selon les mêmes coordonnées. Les événements de souris, focus et clic convergent vers un état sélectionné. Cette approche réduit les dépendances et améliore l’accessibilité, au prix d’une synchronisation rigoureuse entre chemins et infobulle.</p>
+
+    <h3>5.5.4 Overlays utilisables au clavier</h3>
+    <p>Sans gestion dédiée, la touche Tab peut déplacer le focus sous un panneau. Le menu mobile et le Copilot enregistrent donc l’élément précédemment actif, focalisent leur première commande, interceptent Tab et Maj+Tab aux extrémités, gèrent Échap puis restaurent le focus. <code>requestAnimationFrame</code> laisse React terminer le rendu avant le placement du focus.</p>
+
+    <h3>5.5.5 Document autonome dans le navigateur</h3>
+    <p>PDF-Lib permet de créer un rapport sans serveur, mais impose de gérer le logo, les polices, le positionnement absolu et la durée de vie de l’URL de téléchargement. Une fonction dédiée construit le document, tandis qu’une seconde l’enveloppe dans un Blob, déclenche le lien temporaire et révoque l’URL. Les erreurs sont interceptées et traduites en message.</p>
+
+    <h3>5.5.6 Simuler l’IA sans induire en erreur</h3>
+    <p>Le prototype devait illustrer un Copilot sans infrastructure d’IA. Le risque était de présenter des réponses préparées comme le résultat d’un modèle réel. La solution technique est un routeur déterministe à mots-clés avec délai simulé. La solution éditoriale consiste à afficher sources, calcul et avertissement demandant de vérifier les décisions importantes. Cette simulation valide le parcours, mais ne mesure ni précision ni hallucination d’un modèle.</p>
+
+    <h3>5.5.7 Dette issue des expérimentations</h3>
+    <p>La coexistence de la version active et du dossier 3D crée une dette documentaire et technique. Le README décrit encore partiellement l’ancienne expérience et le manifeste contient des dépendances non utilisées. Il faudra soit retirer ces éléments, soit réintroduire l’expérience derrière un chargement réellement optionnel et une préférence utilisateur. Dans les deux cas, la documentation devra refléter exactement le livrable.</p>
+
+    <h2>5.6 Bilan fonctionnel et technique</h2>
+    <table>
+      <caption class="caption"><strong>Tableau 5.2 —</strong> Niveau d’atteinte des objectifs</caption>
+      <thead><tr><th>Objectif</th><th>Niveau atteint</th><th>Observation</th></tr></thead>
+      <tbody>
+        <tr><td>Vue exécutive unifiée</td><td class="status-pass">Atteint</td><td>KPI, santé, projection et priorités réunis</td></tr>
+        <tr><td>Analyse revenus/coûts</td><td class="status-pass">Atteint avec démo</td><td>Comparaisons, canaux, produits et dépenses</td></tr>
+        <tr><td>Risque client</td><td class="status-limit">Parcours validé</td><td>Scores et facteurs simulés, pas de modèle réel</td></tr>
+        <tr><td>Intelligence d’inventaire</td><td class="status-limit">Parcours validé</td><td>Recommandation sans connexion fournisseur</td></tr>
+        <tr><td>Copilot explicable</td><td class="status-limit">Prototype fonctionnel</td><td>Règles locales, sans LLM ni RAG</td></tr>
+        <tr><td>Rapport exécutif</td><td class="status-pass">Atteint côté client</td><td>PDF une page, non archivé</td></tr>
+        <tr><td>Traitement documentaire</td><td class="status-future">Amorçage</td><td>Nom préparé, aucun traitement</td></tr>
+        <tr><td>Responsive et clavier</td><td class="status-pass">Base solide</td><td>Audit formel à compléter</td></tr>
+        <tr><td>Production SaaS</td><td class="status-future">Hors périmètre</td><td>Backend, sécurité et exploitation à construire</td></tr>
+      </tbody>
+    </table>
+    <p>Sur le plan personnel, cette réalisation m’a permis de consolider la structuration d’une application React, le typage strict, la gestion des états et événements, les visualisations SVG, le responsive, l’accessibilité des dialogues, la génération de documents et la communication claire des limites d’un prototype. Elle m’a aussi appris qu’une interface décisionnelle s’évalue autant sur sa capacité à expliquer que sur son apparence.</p>
+
+    <h2>5.7 Limites actuelles</h2>
+    <ul>
+      <li>les données sont des constantes chargées depuis <code>data.ts</code>&nbsp;;</li>
+      <li>les quatre sources affichées ne correspondent pas à des intégrations réelles&nbsp;;</li>
+      <li>les scores de santé, churn, confiance et demande sont prédéfinis&nbsp;;</li>
+      <li>le Copilot applique des règles locales et ne communique avec aucun LLM&nbsp;;</li>
+      <li>les conversations, sélections et actions ne sont pas persistées&nbsp;;</li>
+      <li>le dépôt documentaire ne transfère ni n’analyse le fichier&nbsp;;</li>
+      <li>le brouillon de commande n’est ni enregistré ni envoyé&nbsp;;</li>
+      <li>le PDF est fixe, limité à une page et généré côté client&nbsp;;</li>
+      <li>les pages ne disposent pas d’URL propres&nbsp;;</li>
+      <li>l’interface est en anglais, sans i18n ni mode RTL&nbsp;;</li>
+      <li>aucune authentification, isolation multi-tenant ou autorisation n’est implémentée&nbsp;;</li>
+      <li>il n’existe pas encore de suite automatisée, pipeline CI/CD ou observabilité&nbsp;;</li>
+      <li>le module 3D et plusieurs dépendances restent dormants.</li>
+    </ul>
+    <p>Ces limites matérialisent la frontière entre une preuve de concept d’expérience utilisateur et un système d’information exploitable avec des données sensibles.</p>
+
+    <h2>5.8 Architecture cible de production</h2>
+    <h3>5.8.1 Présentation et sécurité</h3>
+    <p>Le frontend pourra être conservé, mais devra être découpé par domaines et complété par un routeur, des URL stables et une couche de requêtes. L’internationalisation couvrira français, arabe et anglais avec support RTL. Un backend exposera des contrats versionnés. L’identité reposera sur OpenID Connect ou OAuth&nbsp;2.0 avec authentification multifacteur, et une gestion par rôles séparera dirigeant, analyste, opérateur et administrateur.</p>
+    <p>Chaque requête portera un contexte de locataire afin d’isoler les entreprises. Les échanges seront chiffrés, les secrets stockés hors du code, les données sensibles protégées au repos et les décisions importantes inscrites dans un journal d’audit.</p>
+
+    <h3>5.8.2 Connecteurs et plateforme de données</h3>
+    <p>Des connecteurs extrairont ventes, factures, interactions CRM et mouvements de stock. Une file de messages rendra l’ingestion robuste. Les données brutes rejoindront une zone d’atterrissage, puis seront nettoyées, normalisées et historisées dans un entrepôt analytique. Des contrôles vérifieront doublons, devises, dates, valeurs manquantes et cohérence des référentiels.</p>
+
+    <h3>5.8.3 Modèles et Copilot gouverné</h3>
+    <p>Le risque de churn et la prévision de demande pourront être produits par des services analytiques dédiés. Les versions, variables, métriques de validation et dérive seront suivies. Le Copilot pourra combiner un LLM avec RAG et outils métier autorisés. Les montants devront toujours provenir de fonctions déterministes. Toute action ayant une conséquence — campagne, commande, partage externe — exigera une confirmation humaine et sera auditée.</p>
+
+    <h3>5.8.4 Documents, qualité et exploitation</h3>
+    <p>La chaîne documentaire cible comprendra validation de type et taille, antivirus, stockage chiffré, OCR, extraction structurée, contrôle humain et politique de conservation. Le reporting deviendra un service serveur capable de gérer plusieurs pages, la signature, l’archivage et des liens temporaires protégés.</p>
+    <p>Une stratégie de tests complète inclura Vitest et React Testing Library, tests de contrats, Playwright, axe, régression visuelle, essais de charge et analyses de sécurité. Un pipeline CI exécutera contrôle de types, formatage, tests, build et analyse de vulnérabilités. Journaux, métriques, traces et alertes suivront les erreurs, la latence des connecteurs, le coût du Copilot et la dérive des modèles.</p>
+
+    <table>
+      <caption class="caption"><strong>Tableau 5.3 —</strong> Feuille de route proposée</caption>
+      <thead><tr><th>Horizon</th><th>Priorités</th><th>Résultat attendu</th></tr></thead>
+      <tbody>
+        <tr><td>Court terme</td><td>Nettoyage, README, routeur, composants, tests et i18n initiale</td><td>Prototype consolidé et maintenable</td></tr>
+        <tr><td>Moyen terme</td><td>Authentification, API, base, connecteurs pilotes, upload sécurisé, rapport serveur</td><td>MVP testable avec une entreprise pilote</td></tr>
+        <tr><td>Long terme</td><td>Modèles réels, Copilot RAG gouverné, multi-tenant, audit, monitoring et CI/CD</td><td>Produit SaaS exploitable</td></tr>
+      </tbody>
+    </table>
+
+    <div class="diagram">
+      <div class="diagram-title">Architecture cible résumée</div>
+      <div class="diagram-flow">
+        <div class="diagram-box accent"><strong>Frontend</strong><span>React · i18n · routing · accessibilité</span></div>
+        <div class="diagram-arrow">→</div>
+        <div class="diagram-box primary"><strong>API ATLASYN</strong><span>Identité · rôles · tenant · audit</span></div>
+        <div class="diagram-arrow">→</div>
+        <div class="diagram-box"><strong>Data &amp; IA</strong><span>Entrepôt · modèles · RAG · documents</span></div>
+      </div>
+      <div class="diagram-flow" style="margin-top:3mm;">
+        <div class="diagram-box future"><strong>ERP</strong><span>Ventes et inventaire</span></div>
+        <div class="diagram-box future"><strong>CRM</strong><span>Clients et interactions</span></div>
+        <div class="diagram-box future"><strong>Finance</strong><span>Factures et dépenses</span></div>
+        <div class="diagram-box future"><strong>Observabilité</strong><span>Logs · traces · alertes</span></div>
+      </div>
+    </div>
+
+    <h2>5.9 Conclusion</h2>
+    <p>La campagne de validation montre qu’ATLASYN Insight constitue un prototype stable pour la démonstration de ses parcours essentiels. La navigation, les filtres, la sélection, le Copilot simulé, les notifications, le dépôt local et le rapport PDF forment une expérience cohérente sur ordinateur, tablette et mobile.</p>
+    <p>Les difficultés principales — équilibre entre innovation et sobriété, densité responsive, accessibilité des overlays, visualisation interactive, génération PDF et transparence sur l’IA — ont conduit à des solutions concrètes. Le bilan reste néanmoins celui d’un prototype front-end&nbsp;: la valeur métier réelle dépendra de la qualité des connecteurs, données, modèles, mécanismes de sécurité et processus d’exploitation.</p>
+  </section>
+
+  <section class="chapter-opener">
+    <div class="chapter-number">∴</div>
+    <div class="eyebrow">Synthèse</div>
+    <h1>Conclusion générale</h1>
+    <p>Bilan du travail réalisé, compétences mobilisées et positionnement d’ATLASYN Insight comme fondation d’un futur produit décisionnel.</p>
+  </section>
+
+  <section id="conclusion">
+    <h1>Conclusion générale</h1>
+    <p>Ce stage a permis de traiter une problématique représentative de la transformation numérique des entreprises&nbsp;: comment passer d’une accumulation de données dispersées à une expérience de pilotage lisible et orientée vers l’action&nbsp;? La réponse apportée prend la forme d’ATLASYN Insight, un prototype front-end qui rassemble les principaux signaux commerciaux, financiers, clients et logistiques dans un espace de travail cohérent.</p>
+    <p>Le Command Center offre une lecture synthétique de l’activité à travers quatre indicateurs, une projection mensuelle, un score de santé et trois décisions prioritaires. Analytics approfondit les revenus, canaux, produits et dépenses. Customers et Inventory ajoutent des fonctions de recherche, filtrage et sélection, puis relient chaque risque à une fiche explicative. Le Copilot expérimente un format de réponse orienté vers la preuve, le calcul, l’impact et la recommandation. Enfin, Reports transforme la synthèse en document PDF et prépare le parcours d’ajout de sources documentaires.</p>
+    <p>Le travail technique a mobilisé React, TypeScript, Vite, SVG, CSS responsive, PDF-Lib et les API du navigateur. Il a demandé de structurer des composants réutilisables, de gérer des états d’interaction, de concevoir des graphiques accessibles, de piéger correctement le focus dans les overlays, de restituer les erreurs et de garantir une mise en page cohérente jusqu’à 390 pixels. Une exploration 3D a également été développée puis volontairement laissée hors de l’interface active lorsque la sobriété et la crédibilité se sont révélées prioritaires.</p>
+    <p>La principale qualité du prototype est sa continuité fonctionnelle&nbsp;: un signal peut être observé, expliqué, exploré dans son module métier, interrogé dans le Copilot puis résumé dans un rapport. Cette continuité rend l’expérience plus utile qu’une collection de graphiques indépendants. La campagne de validation confirme le fonctionnement des parcours essentiels et l’absence d’erreur TypeScript ou JavaScript bloquante dans les scénarios vérifiés.</p>
+    <p>Le résultat doit néanmoins être évalué avec honnêteté. Les données sont fictives, les scores et prévisions sont prédéfinis, le Copilot est un routeur local à règles, les actions ne sont pas persistées et aucun backend sécurisé n’est connecté. La version actuelle constitue donc une preuve de concept fonctionnelle de l’expérience et non une plateforme prête à traiter des informations d’entreprise sensibles.</p>
+    <p>Le passage vers un produit exploitable demandera une architecture multi-tenant, des connecteurs ERP/CRM/finance, un entrepôt de données gouverné, des modèles validés, un Copilot avec RAG et garde-fous, un traitement documentaire sécurisé, un système de rôles, un journal d’audit, une couverture de tests automatisés et une observabilité complète. L’internationalisation en français, arabe et anglais renforcera également l’adaptation au marché tunisien et régional.</p>
+    <div class="conclusion-panel">
+      <h3>Apport principal</h3>
+      <p>ATLASYN Insight démontre qu’une interface d’intelligence décisionnelle peut rester ambitieuse tout en privilégiant la clarté, la confiance et l’action. Le prototype constitue une fondation crédible pour poursuivre l’intégration des données, de l’analyse et de l’intelligence artificielle dans un cadre gouverné.</p>
+    </div>
+    <p>Sur le plan personnel, ce projet m’a permis de rapprocher les connaissances académiques des contraintes concrètes d’un produit numérique&nbsp;: écouter un besoin, définir un périmètre, justifier des choix, accepter de retirer une piste visuelle lorsqu’elle nuit à l’usage, documenter les limites et vérifier chaque parcours. Cette expérience confirme mon intérêt pour la conception de systèmes interactifs qui transforment la technologie en valeur compréhensible pour leurs utilisateurs.</p>
+    <div class="signature-grid">
+      <div class="signature-box">Visa de l’encadrant professionnel<br /><span class="placeholder">[NOM / DATE / SIGNATURE]</span></div>
+      <div class="signature-box">Visa de l’encadrant académique<br /><span class="placeholder">[NOM / DATE / SIGNATURE]</span></div>
+    </div>
+  </section>
+
+  <section class="chapter-opener">
+    <div class="chapter-number">R</div>
+    <div class="eyebrow">Sources</div>
+    <h1>Bibliographie et webographie</h1>
+    <p>Documentation technique officielle et normes mobilisées pour la conception, le développement et l’évaluation du prototype.</p>
+  </section>
+
+  <section id="bibliography">
+    <h1>Bibliographie et webographie</h1>
+    <h2>Documentation de développement</h2>
+    <ol class="bibliography">
+      <li>React Team. <em>React Documentation — Learn React and API Reference</em>. Disponible sur&nbsp;: <a href="https://react.dev/learn">https://react.dev/learn</a> (consulté le 14 septembre 2026).</li>
+      <li>Microsoft. <em>TypeScript Documentation</em>. Disponible sur&nbsp;: <a href="https://www.typescriptlang.org/docs/">https://www.typescriptlang.org/docs/</a> (consulté le 14 septembre 2026).</li>
+      <li>Vite Team. <em>Getting Started — Vite Guide</em>. Disponible sur&nbsp;: <a href="https://vite.dev/guide/">https://vite.dev/guide/</a> (consulté le 14 septembre 2026).</li>
+      <li>Lucide Contributors. <em>Lucide React Guide</em>. Disponible sur&nbsp;: <a href="https://lucide.dev/guide/packages/lucide-react">https://lucide.dev/guide/packages/lucide-react</a> (consulté le 14 septembre 2026).</li>
+      <li>Andrew Dillon / Hopding. <em>PDF-Lib API Documentation</em>. Disponible sur&nbsp;: <a href="https://pdf-lib.js.org/docs/api/">https://pdf-lib.js.org/docs/api/</a> (consulté le 14 septembre 2026).</li>
+      <li>MDN Web Docs. <em>Intersection Observer API</em>. Disponible sur&nbsp;: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API</a> (consulté le 14 septembre 2026).</li>
+      <li>MDN Web Docs. <em>Web Storage API</em>. Disponible sur&nbsp;: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API">https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API</a> (consulté le 14 septembre 2026).</li>
+    </ol>
+
+    <h2>Accessibilité et standards</h2>
+    <ol class="bibliography">
+      <li>World Wide Web Consortium. <em>Web Content Accessibility Guidelines (WCAG) 2.2</em>, W3C Recommendation. Disponible sur&nbsp;: <a href="https://www.w3.org/TR/WCAG22/">https://www.w3.org/TR/WCAG22/</a> (consulté le 14 septembre 2026).</li>
+      <li>WAI-ARIA Working Group. <em>WAI-ARIA Authoring Practices Guide — Dialog Modal Pattern</em>. Disponible sur&nbsp;: <a href="https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/">https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/</a> (consulté le 14 septembre 2026).</li>
+      <li>Object Management Group. <em>Unified Modeling Language Specification</em>. Disponible sur&nbsp;: <a href="https://www.omg.org/spec/UML/">https://www.omg.org/spec/UML/</a> (consulté le 14 septembre 2026).</li>
+    </ol>
+
+    <h2>Exploration graphique optionnelle</h2>
+    <ol class="bibliography">
+      <li>Three.js Authors. <em>Three.js Documentation</em>. Disponible sur&nbsp;: <a href="https://threejs.org/docs/">https://threejs.org/docs/</a> (consulté le 14 septembre 2026).</li>
+      <li>Poimandres. <em>React Three Fiber Documentation</em>. Disponible sur&nbsp;: <a href="https://r3f.docs.pmnd.rs/">https://r3f.docs.pmnd.rs/</a> (consulté le 14 septembre 2026).</li>
+    </ol>
+
+    <h2>Sources internes du projet</h2>
+    <ol class="bibliography">
+      <li>ATLASYN Insight. <em>Code source du prototype</em>&nbsp;: <code>src/App.tsx</code>, <code>src/data.ts</code>, <code>src/report.ts</code>, <code>src/tokens.css</code> et <code>src/styles.css</code>, version locale auditée le 14 septembre 2026.</li>
+      <li>ATLASYN Insight. <em>Captures originales de l’application</em>, réalisées localement pour ce rapport aux formats 1440 × 1000 et 390 × 844 pixels.</li>
+    </ol>
+    <div class="callout warning"><strong>Avant dépôt</strong><p>Compléter cette bibliographie avec les ressources effectivement consultées pendant le stage et appliquer le style bibliographique demandé par l’établissement.</p></div>
+  </section>
+
+  <section class="chapter-opener">
+    <div class="chapter-number">G</div>
+    <div class="eyebrow">Terminologie</div>
+    <h1>Glossaire</h1>
+    <p>Définitions des concepts métier et techniques utilisés dans le rapport.</p>
+  </section>
+
+  <section id="glossary">
+    <h1>Glossaire</h1>
+    <dl class="abbrev-grid">
+      <dt>Business Intelligence</dt><dd>Ensemble des méthodes et outils permettant de transformer des données en informations utiles à la décision.</dd>
+      <dt>Churn</dt><dd>Perte d’un client ou probabilité qu’un client cesse sa relation commerciale avec l’entreprise.</dd>
+      <dt>Copilot</dt><dd>Interface conversationnelle destinée à assister l’utilisateur dans l’interprétation et la préparation d’une décision.</dd>
+      <dt>Design token</dt><dd>Variable centralisant une décision visuelle comme une couleur, un espacement, une taille ou une durée.</dd>
+      <dt>ERP</dt><dd>Système intégré gérant plusieurs fonctions opérationnelles de l’entreprise.</dd>
+      <dt>KPI</dt><dd>Mesure synthétique utilisée pour suivre un objectif ou une performance.</dd>
+      <dt>LLM</dt><dd>Modèle de langage de grande taille capable de produire et analyser du texte.</dd>
+      <dt>Multi-tenant</dt><dd>Architecture dans laquelle une même plateforme sert plusieurs organisations en isolant leurs données et droits.</dd>
+      <dt>RAG</dt><dd>Technique associant un modèle génératif à une recherche dans des sources contrôlées afin d’améliorer la pertinence et la traçabilité.</dd>
+      <dt>Responsive design</dt><dd>Conception adaptant la mise en page aux dimensions et capacités de l’appareil.</dd>
+      <dt>SKU</dt><dd>Référence unique utilisée pour identifier un article en stock.</dd>
+      <dt>Smoke test</dt><dd>Vérification rapide des fonctions essentielles d’une application après une modification ou une construction.</dd>
+      <dt>SVG</dt><dd>Format vectoriel utilisé ici pour dessiner les courbes et visualisations légères.</dd>
+      <dt>TND</dt><dd>Code de la monnaie tunisienne, le dinar tunisien.</dd>
+      <dt>WCAG</dt><dd>Recommandations internationales du W3C relatives à l’accessibilité du contenu web.</dd>
+    </dl>
+  </section>
+
+  <section class="chapter-opener">
+    <div class="chapter-number">A</div>
+    <div class="eyebrow">Compléments techniques</div>
+    <h1>Annexes</h1>
+    <p>Guide d’installation, matrice de données, principaux scénarios et checklist de personnalisation avant remise.</p>
+  </section>
+
+  <section id="appendices">
+    <h1>Annexe A — Installation et exécution</h1>
+    <h2>A.1 Prérequis</h2>
+    <ul>
+      <li>Node.js 18 ou version ultérieure&nbsp;;</li>
+      <li>npm&nbsp;;</li>
+      <li>un navigateur moderne prenant en charge ES2020&nbsp;;</li>
+      <li>le dossier complet du projet ATLASYN Insight.</li>
+    </ul>
+    <h2>A.2 Installation locale</h2>
+    <pre class="code">cd Atlasyn
+npm install
+npm run dev
+
+# ouvrir l’adresse affichée par Vite,
+# par exemple http://127.0.0.1:5173/</pre>
+    <h2>A.3 Validation et production</h2>
+    <pre class="code">npm run typecheck
+npm run build
+npm run preview</pre>
+    <p>La construction est placée dans <code>dist/</code>. Le déploiement d’un prototype statique peut être effectué sur un hébergement compatible SPA. Une version connectée exigera en plus les variables d’environnement, services et secrets du backend.</p>
+
+    <h1 class="page-break">Annexe B — Jeu de données de démonstration</h1>
+    <h2>B.1 Revenus mensuels</h2>
+    <table>
+      <thead><tr><th>Mois</th><th>Réel (k TND)</th><th>Prévision (k TND)</th></tr></thead>
+      <tbody>
+        <tr><td>Avril</td><td>94</td><td>—</td></tr><tr><td>Mai</td><td>101</td><td>—</td></tr>
+        <tr><td>Juin</td><td>112</td><td>—</td></tr><tr><td>Juillet</td><td>108</td><td>—</td></tr>
+        <tr><td>Août</td><td>124</td><td>—</td></tr><tr><td>Septembre</td><td>142,5</td><td>142,5</td></tr>
+        <tr><td>Octobre</td><td>—</td><td>155,9</td></tr><tr><td>Novembre</td><td>—</td><td>162,4</td></tr>
+        <tr><td>Décembre</td><td>—</td><td>171,2</td></tr>
+      </tbody>
+    </table>
+    <h2>B.2 Clients de démonstration</h2>
+    <table>
+      <thead><tr><th>Client fictif</th><th>Valeur</th><th>Dernier achat</th><th>Risque</th></tr></thead>
+      <tbody>
+        <tr><td>Carthage Distribution</td><td>12&nbsp;840 TND</td><td>48 jours</td><td>91&nbsp;%</td></tr>
+        <tr><td>Medina Retail Group</td><td>9&nbsp;620 TND</td><td>39 jours</td><td>84&nbsp;%</td></tr>
+        <tr><td>Sahara Logistics</td><td>7&nbsp;410 TND</td><td>31 jours</td><td>76&nbsp;%</td></tr>
+        <tr><td>North Coast Market</td><td>6&nbsp;380 TND</td><td>28 jours</td><td>69&nbsp;%</td></tr>
+        <tr><td>Olive &amp; Co.</td><td>4&nbsp;950 TND</td><td>24 jours</td><td>61&nbsp;%</td></tr>
+      </tbody>
+    </table>
+    <h2>B.3 Inventaire de démonstration</h2>
+    <table>
+      <thead><tr><th>Produit</th><th>SKU</th><th>Stock</th><th>Demande</th><th>Couverture</th><th>Statut</th></tr></thead>
+      <tbody>
+        <tr><td>Smart POS Terminal</td><td>POS-204</td><td>184</td><td>510</td><td>11 j</td><td>Critical</td></tr>
+        <tr><td>Barcode Scanner Pro</td><td>SCN-118</td><td>92</td><td>176</td><td>16 j</td><td>Low</td></tr>
+        <tr><td>Receipt Printer Mini</td><td>PRN-032</td><td>248</td><td>212</td><td>35 j</td><td>Healthy</td></tr>
+        <tr><td>Cash Drawer S2</td><td>CDR-091</td><td>71</td><td>84</td><td>25 j</td><td>Watch</td></tr>
+        <tr><td>Inventory Tablet 10</td><td>TAB-510</td><td>134</td><td>106</td><td>38 j</td><td>Healthy</td></tr>
+      </tbody>
+    </table>
+
+    <h1 class="page-break">Annexe C — Checklist avant remise</h1>
+    <table>
+      <thead><tr><th>Élément</th><th>Action requise</th><th>État</th></tr></thead>
+      <tbody>
+        <tr><td>Nom, matricule et classe</td><td>Remplacer les champs jaunes</td><td class="status-future">À compléter</td></tr>
+        <tr><td>Établissement</td><td>Ajouter le nom officiel et le logo autorisé</td><td class="status-future">À compléter</td></tr>
+        <tr><td>Organisme d’accueil</td><td>Ajouter historique, activité, adresse et organigramme réels</td><td class="status-future">À compléter</td></tr>
+        <tr><td>Encadrants</td><td>Ajouter noms, fonctions et grades exacts</td><td class="status-future">À compléter</td></tr>
+        <tr><td>Dates et durée</td><td>Reporter la période réelle du stage</td><td class="status-future">À compléter</td></tr>
+        <tr><td>Planning</td><td>Remplacer le planning indicatif par le journal réel</td><td class="status-future">À compléter</td></tr>
+        <tr><td>Méthode et outils</td><td>Conserver uniquement les outils réellement employés</td><td class="status-future">À vérifier</td></tr>
+        <tr><td>Tests</td><td>Rejouer la campagne après toute modification</td><td class="status-future">À vérifier</td></tr>
+        <tr><td>Confidentialité</td><td>Faire valider les captures et informations par l’organisme</td><td class="status-future">À vérifier</td></tr>
+        <tr><td>Pagination</td><td>Mettre à jour la table des matières après personnalisation</td><td class="status-future">À finaliser</td></tr>
+      </tbody>
+    </table>
+    <div class="callout risk"><strong>Déclaration d’originalité et d’exactitude</strong><p>Le rapport de votre ami a servi uniquement de référence de structure académique. Aucun texte, résultat, entreprise, diagramme ou capture de son document n’est repris. Avant remise, vous devez vérifier que chaque affirmation sur votre stage correspond à un travail réellement effectué.</p></div>
+
+    <h1 class="page-break">Annexe D — Fiche de validation</h1>
+    <p>Cette page peut être utilisée pendant une revue avec l’encadrant afin de consigner les corrections demandées.</p>
+    <table>
+      <thead><tr><th>Date</th><th>Section examinée</th><th>Remarque</th><th>Correction effectuée</th></tr></thead>
+      <tbody>
+        <tr><td style="height:15mm;"></td><td></td><td></td><td></td></tr>
+        <tr><td style="height:15mm;"></td><td></td><td></td><td></td></tr>
+        <tr><td style="height:15mm;"></td><td></td><td></td><td></td></tr>
+        <tr><td style="height:15mm;"></td><td></td><td></td><td></td></tr>
+        <tr><td style="height:15mm;"></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+    <div class="signature-grid">
+      <div class="signature-box">Étudiant(e)<br /><span class="placeholder">[NOM / SIGNATURE]</span></div>
+      <div class="signature-box">Encadrant(e)<br /><span class="placeholder">[NOM / SIGNATURE]</span></div>
+    </div>
+    <p class="footer-note">Fin du rapport — ATLASYN Insight</p>
+  </section>
+
+</main>
+</body>
+</html>
