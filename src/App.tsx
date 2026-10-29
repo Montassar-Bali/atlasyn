@@ -27,7 +27,7 @@ import {
   LayoutDashboard,
   LineChart,
   Menu,
-  Moon,
+
   Package2,
   Paperclip,
   Search,
@@ -53,13 +53,13 @@ import { downloadExecutiveReport } from './report'
    Types
    ═══════════════════════════════════════════════════════════════ */
 
-type Page = 'overview' | 'analytics' | 'customers' | 'inventory' | 'reports'
+type Page = 'overview' | 'command-center' | 'analytics' | 'customers' | 'revenue' | 'operations' | 'inventory' | 'reports' | 'settings'
 type MessageKind = 'profit' | 'churn' | 'actions' | 'inventory'
 type Message = { role: 'assistant' | 'user'; content: string; kind?: MessageKind }
 
-const sidebarNav: { id: Page | 'copilot' | 'revenue' | 'operations' | 'settings'; label: string; icon: typeof LayoutDashboard }[] = [
+const sidebarNav: { id: Page | 'copilot'; label: string; icon: typeof LayoutDashboard }[] = [
   { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'analytics', label: 'Command Center', icon: Target },
+  { id: 'command-center', label: 'Command Center', icon: Target },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
   { id: 'customers', label: 'Customers', icon: Users },
   { id: 'revenue', label: 'Revenue', icon: DollarSign },
@@ -72,10 +72,14 @@ const sidebarNav: { id: Page | 'copilot' | 'revenue' | 'operations' | 'settings'
 
 const pageNames: Record<Page, string> = {
   overview: 'Command Center',
+  'command-center': 'Command Center',
   analytics: 'Performance Analytics',
   customers: 'Customer Intelligence',
+  revenue: 'Revenue Management',
+  operations: 'Operations Hub',
   inventory: 'Inventory Planning',
   reports: 'Executive Reports',
+  settings: 'Settings',
 }
 
 const priorityItems = [
@@ -181,15 +185,14 @@ function Sidebar({ page, onNavigate, onCopilot }: { page: Page; onNavigate: (pag
         {sidebarNav.map(({ id, label, icon: Icon }) => (
           <button
             key={label}
-            className={id !== 'copilot' && id !== 'revenue' && id !== 'operations' && id !== 'settings' && page === id ? 'active' : ''}
-            aria-current={id !== 'copilot' && id !== 'revenue' && id !== 'operations' && id !== 'settings' && page === id ? 'page' : undefined}
+            className={id !== 'copilot' && page === id ? 'active' : ''}
+            aria-current={id !== 'copilot' && page === id ? 'page' : undefined}
             onClick={() => {
               if (id === 'copilot') onCopilot()
-              else if (id === 'revenue' || id === 'operations' || id === 'settings') onNavigate('analytics')
               else onNavigate(id)
             }}
           >
-            {id === 'copilot' ? <Sparkles size={18} strokeWidth={1.7} /> : <Icon size={18} strokeWidth={1.7} />}
+            {id === 'copilot' ? <Sparkles size={16} strokeWidth={1.7} /> : <Icon size={16} strokeWidth={1.7} />}
             {label}
           </button>
         ))}
@@ -245,10 +248,9 @@ function MobileNavigation({ open, page, onClose, onNavigate, onCopilot }: { open
           {sidebarNav.map(({ id, label, icon: Icon }) => (
             <button
               key={label}
-              className={id !== 'copilot' && id !== 'revenue' && id !== 'operations' && id !== 'settings' && page === id ? 'active' : ''}
+              className={id !== 'copilot' && page === id ? 'active' : ''}
               onClick={() => {
                 if (id === 'copilot') onCopilot()
-                else if (id === 'revenue' || id === 'operations' || id === 'settings') onNavigate('analytics')
                 else onNavigate(id)
                 onClose()
               }}
@@ -279,10 +281,6 @@ function TopHeader({ page, dateRange, mobileOpen, notificationsOpen, onDateChang
         <button className="mobile-menu-button" onClick={onMenu} aria-label="Open navigation" aria-expanded={mobileOpen} aria-controls="mobile-navigation">
           <Menu size={18} />
         </button>
-        <div className="header-breadcrumb">
-          <Search size={14} />
-          <span>/ {pageNames[page]}</span>
-        </div>
         <label className="header-search">
           <Search size={15} />
           <input placeholder="Search anything..." aria-label="Search" />
@@ -295,11 +293,14 @@ function TopHeader({ page, dateRange, mobileOpen, notificationsOpen, onDateChang
           <Sparkles size={15} /> Ask Insight
         </button>
         <button className="header-icon notification-trigger" onClick={onNotifications} aria-label="Open notifications" aria-expanded={notificationsOpen}>
-          <Bell size={17} /><span className="notification-dot" />
+          <Bell size={16} /><span className="notification-dot" />
         </button>
-        <button className="header-icon" aria-label="Toggle theme">
-          <Moon size={17} />
-        </button>
+        <span className="header-avatar" aria-label="User profile">
+          <Users size={16} />
+        </span>
+      </div>
+      <div className="header-breadcrumb">
+        <span>/ {pageNames[page]}</span>
       </div>
     </header>
   )
@@ -494,14 +495,22 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
               <h2>Actual vs projected revenue</h2>
             </div>
             <div className="chart-controls">
-              <div className="chart-legend">
-                <span><i className="actual" /> Actual</span>
-                <span><i className="forecast" /> Forecast</span>
+              <div className="chart-filter-tabs">
+                <button className="active">Actual</button>
+                <button>Forecast</button>
+                <button>Monthly <ChevronDown size={11} /></button>
               </div>
             </div>
           </div>
 
           <div className="revenue-chart-container" aria-label="Actual and forecast revenue from April to December">
+            <div className="chart-y-axis">
+              <span>200K</span>
+              <span>150K</span>
+              <span>100K</span>
+              <span>50K</span>
+              <span>0</span>
+            </div>
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="Revenue rises from 94k TND in April to a forecast 171.2k TND in December">
               <defs>
                 <linearGradient id="actual-fill" x1="0" y1="0" x2="0" y2="1">
@@ -631,6 +640,349 @@ function StatStrip({ items }: { items: { label: string; value: string; note: str
         </div>
       ))}
     </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Command Center Page
+   ═══════════════════════════════════════════════════════════════ */
+
+function CommandCenterPage({ dateRange, onNavigate, onCopilot }: { dateRange: string; onNavigate: (p: Page) => void; onCopilot: () => void }) {
+  const pageRef = useRef<HTMLElement>(null)
+  useReveal(pageRef)
+  return (
+    <section ref={pageRef} className="workspace-page" aria-labelledby="cc-title">
+      <header className="workspace-header">
+        <div>
+          <h1 id="cc-title">Command Center</h1>
+          <p className="workspace-subtitle">Real-time operational intelligence and priority actions</p>
+        </div>
+        <div className="workspace-actions">
+          <button className="btn btn--outline" onClick={onCopilot}><Sparkles size={15} /> Ask AI</button>
+        </div>
+      </header>
+      <div className="cards-grid-3 reveal-group">
+        {priorityItems.map((item, i) => (
+          <div key={i} className={`workspace-card priority-card--${item.tone} reveal-item`}>
+            <div className="workspace-card-header">
+              <span className={`priority-badge priority-badge--${item.tone}`}>{item.type}</span>
+              <span className="badge-muted">{item.urgency}</span>
+            </div>
+            <h3>{item.title}</h3>
+            <p className="text-muted">{item.evidence}</p>
+            <p className="text-muted" style={{ fontSize: 'var(--text-xs)', marginTop: '4px' }}><strong>Root cause:</strong> {item.cause}</p>
+            <div className="workspace-card-footer">
+              <span className="impact-value">{item.impact}</span>
+              <button className="btn btn--primary btn--sm" onClick={() => onNavigate(item.page)}>{item.action} <ArrowRight size={13} /></button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="cards-grid-2 reveal-group" style={{ marginTop: 'var(--sp-4)' }}>
+        <div className="workspace-card reveal-item">
+          <h3>Quick Actions</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: 'var(--sp-3)' }}>
+            <button className="btn btn--outline" style={{ justifyContent: 'flex-start' }} onClick={() => onNavigate('analytics')}><BarChart3 size={15} /> View Analytics Dashboard</button>
+            <button className="btn btn--outline" style={{ justifyContent: 'flex-start' }} onClick={() => onNavigate('customers')}><Users size={15} /> Customer Intelligence</button>
+            <button className="btn btn--outline" style={{ justifyContent: 'flex-start' }} onClick={() => onNavigate('revenue')}><DollarSign size={15} /> Revenue Breakdown</button>
+            <button className="btn btn--outline" style={{ justifyContent: 'flex-start' }} onClick={() => onNavigate('inventory')}><Boxes size={15} /> Inventory Planning</button>
+            <button className="btn btn--outline" style={{ justifyContent: 'flex-start' }} onClick={() => onNavigate('reports')}><FileText size={15} /> Generate Reports</button>
+          </div>
+        </div>
+        <div className="workspace-card reveal-item">
+          <h3>System Overview</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)', marginTop: 'var(--sp-3)' }}>
+            {healthSystems.map((s) => (
+              <div key={s.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border-faint)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: s.color }} />
+                  <span style={{ fontWeight: 500, fontSize: 'var(--text-sm)' }}>{s.label}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)' }}>
+                  <span style={{ fontWeight: 700, fontSize: 'var(--text-md)', fontVariantNumeric: 'tabular-nums' }}>{s.score}</span>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-muted)' }}>/100</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Revenue Page
+   ═══════════════════════════════════════════════════════════════ */
+
+function RevenuePage({ dateRange, onCopilot }: { dateRange: string; onCopilot: () => void }) {
+  const pageRef = useRef<HTMLElement>(null)
+  useReveal(pageRef)
+  const totalRevenue = revenueData.reduce((sum, d) => sum + d.revenue, 0)
+  const totalExpenses = expenses.reduce((sum, e) => sum + e.current, 0)
+  return (
+    <section ref={pageRef} className="workspace-page" aria-labelledby="rev-title">
+      <header className="workspace-header">
+        <div>
+          <h1 id="rev-title">Revenue Management</h1>
+          <p className="workspace-subtitle">Track income streams, margins, and financial health — {dateRange}</p>
+        </div>
+        <div className="workspace-actions">
+          <button className="btn btn--outline" onClick={onCopilot}><Sparkles size={15} /> Revenue Insights</button>
+        </div>
+      </header>
+      <div className="cards-grid-4 reveal-group">
+        <div className="workspace-card reveal-item">
+          <span className="section-label">Total Revenue</span>
+          <p className="kpi-value">{(totalRevenue / 1000).toFixed(0)}K <small className="text-sm">TND</small></p>
+          <span className="badge badge--green">+14.2%</span>
+        </div>
+        <div className="workspace-card reveal-item">
+          <span className="section-label">Net Profit</span>
+          <p className="kpi-value">{((totalRevenue / 1000) - totalExpenses).toFixed(0)}K <small className="text-sm">TND</small></p>
+          <span className="badge badge--green">+6.7%</span>
+        </div>
+        <div className="workspace-card reveal-item">
+          <span className="section-label">Avg. Order Value</span>
+          <p className="kpi-value">284 <small className="text-sm">TND</small></p>
+          <span className="badge badge--green">+3.1%</span>
+        </div>
+        <div className="workspace-card reveal-item">
+          <span className="section-label">Total Expenses</span>
+          <p className="kpi-value">{totalExpenses.toFixed(1)}K <small className="text-sm">TND</small></p>
+          <span className="badge badge--amber">+4.2%</span>
+        </div>
+      </div>
+      <div className="cards-grid-2 reveal-group" style={{ marginTop: 'var(--sp-4)' }}>
+        <div className="workspace-card reveal-item">
+          <h3>Monthly Revenue Trend</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: 'var(--sp-3)' }}>
+            {revenueData.map((d) => (
+              <div key={d.month} style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)' }}>
+                <span style={{ width: 36, fontSize: 'var(--text-xs)', color: 'var(--ink-muted)' }}>{d.month}</span>
+                <div style={{ flex: 1, height: 22, background: 'var(--surface-secondary)', borderRadius: 4, overflow: 'hidden' }}>
+                  <div style={{ width: `${(d.revenue / 175000) * 100}%`, height: '100%', background: 'linear-gradient(90deg, var(--teal), var(--gold))', borderRadius: 4, transition: 'width 0.6s ease' }} />
+                </div>
+                <span style={{ width: 60, textAlign: 'right', fontSize: 'var(--text-xs)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{(d.revenue / 1000).toFixed(1)}K</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="workspace-card reveal-item">
+          <h3>Channel Revenue</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)', marginTop: 'var(--sp-3)' }}>
+            {channelData.map((ch) => (
+              <div key={ch.channel} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid var(--border-faint)' }}>
+                <div>
+                  <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)' }}>{ch.channel}</span>
+                  <span style={{ display: 'block', fontSize: 'var(--text-xs)', color: 'var(--ink-muted)', marginTop: 2 }}>{ch.revenue}K TND revenue</span>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ fontWeight: 700, fontSize: 'var(--text-md)', fontVariantNumeric: 'tabular-nums' }}>{ch.revenue}K</span>
+                  <span style={{ display: 'block', fontSize: 'var(--text-xs)', color: ch.growth >= 0 ? 'var(--green)' : 'var(--risk)' }}>{ch.growth >= 0 ? '+' : ''}{ch.growth}%</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="workspace-card reveal-item" style={{ marginTop: 'var(--sp-4)' }}>
+        <h3>Expense Breakdown</h3>
+        <div className="table-scroll" style={{ marginTop: 'var(--sp-3)' }}>
+          <table>
+            <thead><tr><th>Category</th><th>Current (K TND)</th><th>Previous (K TND)</th><th>Change</th></tr></thead>
+            <tbody>
+              {expenses.map((e) => {
+                const change = ((e.current - e.previous) / e.previous * 100)
+                return (
+                  <tr key={e.name}>
+                    <td style={{ fontWeight: 500 }}>{e.name}</td>
+                    <td style={{ fontVariantNumeric: 'tabular-nums' }}>{e.current.toFixed(1)}</td>
+                    <td style={{ fontVariantNumeric: 'tabular-nums' }}>{e.previous.toFixed(1)}</td>
+                    <td><span className={`badge badge--${change > 0 ? 'red' : 'green'}`}>{change > 0 ? '↑' : '↓'} {Math.abs(change).toFixed(1)}%</span></td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Operations Page
+   ═══════════════════════════════════════════════════════════════ */
+
+function OperationsPage({ onCopilot }: { onCopilot: () => void }) {
+  const pageRef = useRef<HTMLElement>(null)
+  useReveal(pageRef)
+  const opsMetrics = [
+    { label: 'Order Fulfillment Rate', value: '96.4%', trend: '+1.2%', good: true },
+    { label: 'Avg. Processing Time', value: '2.1 days', trend: '-0.3d', good: true },
+    { label: 'Return Rate', value: '3.8%', trend: '-0.5%', good: true },
+    { label: 'Stock Turnover', value: '6.4×', trend: '+0.2×', good: true },
+  ]
+  const processes = [
+    { name: 'Order Processing', status: 'Healthy', score: 94, color: '#2C956A' },
+    { name: 'Warehouse Ops', status: 'Good', score: 87, color: '#2C956A' },
+    { name: 'Shipping & Logistics', status: 'Attention', score: 72, color: '#B79A70' },
+    { name: 'Quality Control', status: 'Healthy', score: 91, color: '#2C956A' },
+    { name: 'Supplier Management', status: 'Good', score: 83, color: '#2F6F6D' },
+  ]
+  return (
+    <section ref={pageRef} className="workspace-page" aria-labelledby="ops-title">
+      <header className="workspace-header">
+        <div>
+          <h1 id="ops-title">Operations Hub</h1>
+          <p className="workspace-subtitle">Monitor supply chain, fulfillment, and operational efficiency</p>
+        </div>
+        <div className="workspace-actions">
+          <button className="btn btn--outline" onClick={onCopilot}><Sparkles size={15} /> Ops Insights</button>
+        </div>
+      </header>
+      <div className="cards-grid-4 reveal-group">
+        {opsMetrics.map((m) => (
+          <div key={m.label} className="workspace-card reveal-item">
+            <span className="section-label">{m.label}</span>
+            <p className="kpi-value">{m.value}</p>
+            <span className={`badge badge--${m.good ? 'green' : 'red'}`}>{m.trend}</span>
+          </div>
+        ))}
+      </div>
+      <div className="cards-grid-2 reveal-group" style={{ marginTop: 'var(--sp-4)' }}>
+        <div className="workspace-card reveal-item">
+          <h3>Process Health</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)', marginTop: 'var(--sp-3)' }}>
+            {processes.map((p) => (
+              <div key={p.name} style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)' }}>
+                <span style={{ flex: 1, fontWeight: 500, fontSize: 'var(--text-sm)' }}>{p.name}</span>
+                <div style={{ width: 120, height: 6, background: 'var(--surface-secondary)', borderRadius: 3, overflow: 'hidden' }}>
+                  <div style={{ width: `${p.score}%`, height: '100%', background: p.color, borderRadius: 3 }} />
+                </div>
+                <span style={{ width: 28, textAlign: 'right', fontWeight: 700, fontSize: 'var(--text-xs)', fontVariantNumeric: 'tabular-nums' }}>{p.score}</span>
+                <span className={`badge badge--${p.score >= 85 ? 'green' : 'amber'}`} style={{ minWidth: 65 }}>{p.status}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="workspace-card reveal-item">
+          <h3>Supply Chain Alerts</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)', marginTop: 'var(--sp-3)' }}>
+            {[
+              { alert: 'Shipping delay — Eastern region carrier reporting 48h delays', severity: 'warning' },
+              { alert: 'Supplier A batch quality inspection pending — 340 units held', severity: 'warning' },
+              { alert: 'Warehouse B utilization at 91% — nearing capacity', severity: 'critical' },
+              { alert: 'New supplier onboarded — Smart POS components verified', severity: 'info' },
+            ].map((a, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--sp-2)', padding: '8px 10px', borderRadius: 'var(--radius-sm)', background: a.severity === 'critical' ? 'var(--risk-light)' : a.severity === 'warning' ? 'rgba(183,154,112,0.08)' : 'var(--teal-faint)' }}>
+                <AlertTriangle size={14} style={{ flexShrink: 0, marginTop: 2, color: a.severity === 'critical' ? 'var(--risk)' : a.severity === 'warning' ? 'var(--gold)' : 'var(--teal)' }} />
+                <span style={{ fontSize: 'var(--text-xs)', lineHeight: 'var(--leading-relaxed)' }}>{a.alert}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Settings Page
+   ═══════════════════════════════════════════════════════════════ */
+
+function SettingsPage({ onToast }: { onToast: (msg: string) => void }) {
+  const pageRef = useRef<HTMLElement>(null)
+  useReveal(pageRef)
+  return (
+    <section ref={pageRef} className="workspace-page" aria-labelledby="settings-title">
+      <header className="workspace-header">
+        <div>
+          <h1 id="settings-title">Settings</h1>
+          <p className="workspace-subtitle">Manage your profile, notifications, and system preferences</p>
+        </div>
+      </header>
+      <div className="cards-grid-2 reveal-group">
+        <div className="workspace-card reveal-item">
+          <h3>Profile</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)', marginTop: 'var(--sp-3)' }}>
+            {[
+              { label: 'Name', value: 'Amine Bali' },
+              { label: 'Email', value: 'amine@atlasyn.com' },
+              { label: 'Role', value: 'Admin' },
+              { label: 'Organization', value: 'ATLASYN Corp.' },
+              { label: 'Timezone', value: 'Africa/Tunis (GMT+1)' },
+            ].map((f) => (
+              <div key={f.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border-faint)' }}>
+                <span style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-muted)' }}>{f.label}</span>
+                <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600 }}>{f.value}</span>
+              </div>
+            ))}
+            <button className="btn btn--primary btn--sm" onClick={() => onToast('Profile updated successfully.')}>Save Changes</button>
+          </div>
+        </div>
+        <div className="workspace-card reveal-item">
+          <h3>Notifications</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)', marginTop: 'var(--sp-3)' }}>
+            {[
+              { label: 'Email alerts', desc: 'Receive risk alerts via email', enabled: true },
+              { label: 'Slack integration', desc: 'Push notifications to Slack channels', enabled: false },
+              { label: 'Weekly digest', desc: 'Summary of key metrics every Monday', enabled: true },
+              { label: 'Real-time anomalies', desc: 'Immediate alerts for anomalies', enabled: true },
+            ].map((n) => (
+              <div key={n.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border-faint)' }}>
+                <div>
+                  <span style={{ fontSize: 'var(--text-sm)', fontWeight: 500 }}>{n.label}</span>
+                  <span style={{ display: 'block', fontSize: 'var(--text-xs)', color: 'var(--ink-muted)', marginTop: 2 }}>{n.desc}</span>
+                </div>
+                <span className={`badge badge--${n.enabled ? 'green' : 'muted'}`}>{n.enabled ? 'On' : 'Off'}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="cards-grid-2 reveal-group" style={{ marginTop: 'var(--sp-4)' }}>
+        <div className="workspace-card reveal-item">
+          <h3>Integrations</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)', marginTop: 'var(--sp-3)' }}>
+            {[
+              { name: 'ERP System', status: 'Connected', connected: true },
+              { name: 'CRM Platform', status: 'Connected', connected: true },
+              { name: 'Payment Gateway', status: 'Connected', connected: true },
+              { name: 'Marketing Suite', status: 'Not configured', connected: false },
+              { name: 'Warehouse API', status: 'Connected', connected: true },
+            ].map((int) => (
+              <div key={int.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-secondary)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                  <Database size={14} />
+                  <span style={{ fontSize: 'var(--text-sm)', fontWeight: 500 }}>{int.name}</span>
+                </div>
+                <span className={`badge badge--${int.connected ? 'green' : 'muted'}`}>{int.status}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="workspace-card reveal-item">
+          <h3>Data Management</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)', marginTop: 'var(--sp-3)' }}>
+            <div style={{ padding: '12px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-secondary)' }}>
+              <span className="section-label">Last data sync</span>
+              <p style={{ margin: '4px 0 0', fontWeight: 600, fontSize: 'var(--text-sm)' }}>Today at 14:02 — All sources healthy</p>
+            </div>
+            <div style={{ padding: '12px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-secondary)' }}>
+              <span className="section-label">Storage usage</span>
+              <p style={{ margin: '4px 0 0', fontWeight: 600, fontSize: 'var(--text-sm)' }}>2.4 GB / 10 GB (24%)</p>
+              <div style={{ marginTop: 6, height: 4, background: 'var(--border)', borderRadius: 2, overflow: 'hidden' }}>
+                <div style={{ width: '24%', height: '100%', background: 'var(--teal)', borderRadius: 2 }} />
+              </div>
+            </div>
+            <button className="btn btn--outline" onClick={() => onToast('Data export initiated. You will receive a download link shortly.')}><Download size={14} /> Export All Data</button>
+            <button className="btn btn--outline" onClick={() => onToast('Sync triggered for all connected sources.')}><UploadCloud size={14} /> Sync Now</button>
+          </div>
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -1357,10 +1709,14 @@ export default function App() {
           onNotifications={() => setNotificationsOpen((v) => !v)}
         />
         {page === 'overview' && <OverviewDashboard dateRange={dateRange} onNavigate={navigate} onCopilot={() => setCopilotOpen(true)} onExport={() => { void exportReport() }} />}
+        {page === 'command-center' && <CommandCenterPage dateRange={dateRange} onNavigate={navigate} onCopilot={() => setCopilotOpen(true)} />}
         {page === 'analytics' && <AnalyticsPage dateRange={dateRange} onDateChange={setDateRange} onExport={() => { void exportReport() }} onCopilot={() => setCopilotOpen(true)} />}
         {page === 'customers' && <CustomersPage onCopilot={() => setCopilotOpen(true)} />}
+        {page === 'revenue' && <RevenuePage dateRange={dateRange} onCopilot={() => setCopilotOpen(true)} />}
+        {page === 'operations' && <OperationsPage onCopilot={() => setCopilotOpen(true)} />}
         {page === 'inventory' && <InventoryPage onPlan={() => setCopilotOpen(true)} onExport={() => { void exportReport() }} onToast={setToast} />}
         {page === 'reports' && <ReportsPage onGenerate={() => { void exportReport() }} onUpload={(name) => setToast(`${name} is staged for the document-processing connector.`)} onShare={() => { void shareReport() }} />}
+        {page === 'settings' && <SettingsPage onToast={setToast} />}
       </div>
       <NotificationPanel open={notificationsOpen} onClose={() => setNotificationsOpen(false)} onToast={setToast} />
       <Copilot open={copilotOpen} onClose={closeCopilot} dateRange={dateRange} onToast={setToast} />
