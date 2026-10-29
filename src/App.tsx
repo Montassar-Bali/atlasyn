@@ -718,7 +718,8 @@ function CommandCenterPage({ dateRange, onNavigate, onCopilot }: { dateRange: st
 function RevenuePage({ dateRange, onCopilot }: { dateRange: string; onCopilot: () => void }) {
   const pageRef = useRef<HTMLElement>(null)
   useReveal(pageRef)
-  const totalRevenue = revenueData.reduce((sum, d) => sum + d.revenue, 0)
+  const actualMonths = revenueData.filter((d) => d.actual != null)
+  const totalRevenue = actualMonths.reduce((sum, d) => sum + (d.actual ?? 0), 0)
   const totalExpenses = expenses.reduce((sum, e) => sum + e.current, 0)
   return (
     <section ref={pageRef} className="workspace-page" aria-labelledby="rev-title">
@@ -734,12 +735,12 @@ function RevenuePage({ dateRange, onCopilot }: { dateRange: string; onCopilot: (
       <div className="cards-grid-4 reveal-group">
         <div className="workspace-card reveal-item">
           <span className="section-label">Total Revenue</span>
-          <p className="kpi-value">{(totalRevenue / 1000).toFixed(0)}K <small className="text-sm">TND</small></p>
+          <p className="kpi-value">{totalRevenue.toFixed(1)}K <small className="text-sm">TND</small></p>
           <span className="badge badge--green">+14.2%</span>
         </div>
         <div className="workspace-card reveal-item">
           <span className="section-label">Net Profit</span>
-          <p className="kpi-value">{((totalRevenue / 1000) - totalExpenses).toFixed(0)}K <small className="text-sm">TND</small></p>
+          <p className="kpi-value">{(totalRevenue - totalExpenses).toFixed(1)}K <small className="text-sm">TND</small></p>
           <span className="badge badge--green">+6.7%</span>
         </div>
         <div className="workspace-card reveal-item">
@@ -756,16 +757,32 @@ function RevenuePage({ dateRange, onCopilot }: { dateRange: string; onCopilot: (
       <div className="cards-grid-2 reveal-group" style={{ marginTop: 'var(--sp-4)' }}>
         <div className="workspace-card reveal-item">
           <h3>Monthly Revenue Trend</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: 'var(--sp-3)' }}>
-            {revenueData.map((d) => (
-              <div key={d.month} style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)' }}>
-                <span style={{ width: 36, fontSize: 'var(--text-xs)', color: 'var(--ink-muted)' }}>{d.month}</span>
-                <div style={{ flex: 1, height: 22, background: 'var(--surface-secondary)', borderRadius: 4, overflow: 'hidden' }}>
-                  <div style={{ width: `${(d.revenue / 175000) * 100}%`, height: '100%', background: 'linear-gradient(90deg, var(--teal), var(--gold))', borderRadius: 4, transition: 'width 0.6s ease' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: 'var(--sp-3)' }}>
+            {revenueData.map((d) => {
+              const val = d.actual ?? d.forecast ?? 0
+              const isForecast = d.actual == null
+              return (
+                <div key={d.month} style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)' }}>
+                  <span style={{ width: 36, fontSize: 'var(--text-xs)', color: 'var(--ink-muted)' }}>{d.month}</span>
+                  <div style={{ flex: 1, height: 22, background: 'var(--surface-secondary)', borderRadius: 4, overflow: 'hidden' }}>
+                    <div
+                      style={{
+                        width: `${(val / 200) * 100}%`,
+                        height: '100%',
+                        background: isForecast
+                          ? 'repeating-linear-gradient(45deg, rgba(196,166,106,0.6), rgba(196,166,106,0.6) 4px, rgba(196,166,106,0.15) 4px, rgba(196,166,106,0.15) 8px)'
+                          : 'linear-gradient(90deg, var(--teal), var(--gold))',
+                        borderRadius: 4,
+                        transition: 'width 0.6s ease',
+                      }}
+                    />
+                  </div>
+                  <span style={{ width: 80, textAlign: 'right', fontSize: 'var(--text-xs)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+                    {val.toFixed(1)}K {isForecast ? '(fc)' : ''}
+                  </span>
                 </div>
-                <span style={{ width: 60, textAlign: 'right', fontSize: 'var(--text-xs)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{(d.revenue / 1000).toFixed(1)}K</span>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
         <div className="workspace-card reveal-item">
