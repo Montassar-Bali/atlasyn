@@ -29,6 +29,7 @@ from database import (
     update_conversation_title,
 )
 from ollama_client import OllamaClient
+from workforce import ALLOWED_ORIGINS, init_workforce_db, router as workforce_router
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("atlasyn_api")
@@ -40,6 +41,7 @@ active_model = "qwen2.5:3b"
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
+    init_workforce_db()
     logger.info("ATLASYN SQLite database initialized.")
     status = await ollama.get_status()
     if status.get("online"):
@@ -57,9 +59,10 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Credentialed requests are only allowed from known front-end origins (a "*" here would let any site use a signed-in session).
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -91,6 +94,9 @@ class MemoryCreateRequest(BaseModel):
     key: str = Field(..., min_length=1)
     value: str = Field(..., min_length=1)
     category: Optional[str] = "user_preference"
+
+
+app.include_router(workforce_router)
 
 
 # ── Endpoints ──

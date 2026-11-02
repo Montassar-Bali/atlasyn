@@ -4,13 +4,14 @@ Handles conversations, message history, and long-term semantic memory.
 """
 
 import json
+import os
 import sqlite3
 import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-DB_PATH = Path(__file__).parent / "atlasyn_ai.db"
+DB_PATH = Path(os.getenv("ATLASYN_DB_PATH", Path(__file__).parent / "atlasyn_ai.db"))
 
 
 def get_db():

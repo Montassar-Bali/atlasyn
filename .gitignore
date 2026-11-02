@@ -6,3 +6,9 @@ dist/
 *.tsbuildinfo
 vite.config.js
 vite.config.d.ts
+
+# Backend secrets and local data
+backend/.admin-initial-password
+backend/*.db
+backend/venv/
+backend/__pycache__/

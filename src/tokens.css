@@ -1,85 +1,108 @@
 /* ═══════════════════════════════════════════════════════════════
    ATLASYN INSIGHT — Design Tokens
-   Premium Executive Intelligence Platform
+   "Prism" — luminous light theme with iridescent accents
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
+  color-scheme: light;
+
   /* ── Color: Surfaces ── */
-  --canvas: #F8F7F4;
-  --surface: #FFFFFF;
-  --surface-secondary: #F2F1ED;
+  --canvas: #F5F4FB;
+  --canvas-raised: #FBFAFF;
+  --surface: rgba(255, 255, 255, 0.66);
+  --surface-solid: #FFFFFF;
+  --surface-secondary: rgba(91, 75, 255, 0.05);
   --surface-raised: #FFFFFF;
-  --surface-hover: #FAFAF8;
+  --surface-hover: rgba(91, 75, 255, 0.04);
 
   /* ── Color: Text ── */
-  --ink: #171923;
-  --ink-secondary: #697386;
-  --ink-muted: #8B95A5;
-  --ink-faint: #A0A8B4;
+  --ink: #12123A;
+  --ink-secondary: #4B4F72;
+  --ink-muted: #73789A;
+  --ink-faint: #9CA0BC;
 
   /* ── Color: Brand ── */
-  --navy: #1D202B;
-  --teal: #2F6F6D;
-  --teal-light: #3A8583;
-  --teal-faint: rgba(47, 111, 109, 0.08);
-  --gold: #B79A70;
-  --gold-light: #C9AE88;
-  --gold-faint: rgba(183, 154, 112, 0.1);
-  --sand: #C4A66A;
-  --sand-light: #D4BC8A;
-  --sand-faint: rgba(196, 166, 106, 0.1);
+  --navy: #12123A;
+  --indigo: #5B4BFF;
+  --teal: #5B4BFF;
+  --teal-light: #8A7DFF;
+  --teal-deep: #3D2FE0;
+  --teal-faint: rgba(91, 75, 255, 0.08);
+  --blue: #2F7BFF;
+  --cyan: #12C2E9;
+  --magenta: #FF4FA3;
+  --coral: #FF8A4C;
+  --mint: #16C79A;
+  --gold: #F5A524;
+  --gold-light: #FFC870;
+  --gold-faint: rgba(245, 165, 36, 0.12);
+  --sand: #F5A524;
+  --sand-light: #FFC870;
+  --sand-faint: rgba(245, 165, 36, 0.12);
+  --violet: #8B5CF6;
+
+  /* ── Gradients ── */
+  --grad-brand: linear-gradient(120deg, #5B4BFF 0%, #2F7BFF 50%, #12C2E9 100%);
+  --grad-lux: linear-gradient(120deg, #5B4BFF 0%, #C04BFF 45%, #FF4FA3 75%, #FF8A4C 100%);
+  --grad-text: linear-gradient(100deg, #5B4BFF 0%, #C04BFF 40%, #FF4FA3 70%, #FF8A4C 100%);
+  --grad-iris: conic-gradient(from 180deg, #5B4BFF, #12C2E9, #16C79A, #FFC870, #FF8A4C, #FF4FA3, #5B4BFF);
 
   /* ── Color: Semantic ── */
-  --success: #2C956A;
-  --success-bg: rgba(44, 149, 106, 0.08);
-  --success-light: #34A876;
-  --warning: #D4A72C;
-  --warning-bg: rgba(212, 167, 44, 0.08);
-  --risk: #E76B68;
-  --risk-bg: rgba(231, 107, 104, 0.06);
-  --risk-light: #FEF2F2;
-  --purple: #7C5CFC;
-  --purple-bg: rgba(124, 92, 252, 0.08);
+  --success: #0FB67F;
+  --success-bg: rgba(15, 182, 127, 0.1);
+  --success-light: #3DD9A4;
+  --green: var(--success);
+  --warning: #E39A0B;
+  --warning-bg: rgba(245, 165, 36, 0.13);
+  --risk: #F0446B;
+  --risk-bg: rgba(240, 68, 107, 0.09);
+  --risk-light: rgba(240, 68, 107, 0.06);
+  --purple: #8B5CF6;
+  --purple-bg: rgba(139, 92, 246, 0.1);
 
   /* ── Color: Borders & Lines ── */
-  --border: #E9E7E3;
-  --border-strong: #D5D3CF;
-  --border-faint: #F0EEEA;
+  --border: rgba(18, 18, 58, 0.07);
+  --border-strong: rgba(18, 18, 58, 0.13);
+  --border-faint: rgba(18, 18, 58, 0.05);
+  --border-glass: rgba(255, 255, 255, 0.85);
+  --highlight: inset 0 1px 0 rgba(255, 255, 255, 0.95);
 
   /* ── Color: Interactive ── */
-  --focus-ring: var(--teal);
-  --hover-bg: rgba(0, 0, 0, 0.02);
-  --active-bg: rgba(0, 0, 0, 0.04);
-  --selected-bg: rgba(47, 111, 109, 0.04);
+  --focus-ring: var(--indigo);
+  --hover-bg: rgba(91, 75, 255, 0.045);
+  --active-bg: rgba(91, 75, 255, 0.08);
+  --selected-bg: rgba(91, 75, 255, 0.06);
 
   /* ── Color: Sidebar ── */
-  --sidebar-bg: #FFFFFF;
-  --sidebar-active: #1D202B;
-  --sidebar-active-text: #FFFFFF;
-  --sidebar-text: #697386;
-  --sidebar-hover: #F4F3F0;
-  --sidebar-border: #EEECEA;
+  --sidebar-bg: rgba(255, 255, 255, 0.55);
+  --sidebar-active: rgba(91, 75, 255, 0.1);
+  --sidebar-active-text: #12123A;
+  --sidebar-text: #5D6283;
+  --sidebar-hover: rgba(91, 75, 255, 0.05);
+  --sidebar-border: rgba(255, 255, 255, 0.8);
 
-  /* ── Color: Copilot (dark surface) ── */
-  --copilot-bg: #17243A;
-  --copilot-surface: #1E2E44;
-  --copilot-surface-raised: #253850;
-  --copilot-border: rgba(255, 255, 255, 0.1);
-  --copilot-border-strong: rgba(255, 255, 255, 0.16);
-  --copilot-text: #E8ECF0;
-  --copilot-text-muted: #9BA8B8;
-  --copilot-text-faint: #6E7F92;
+  /* ── Color: Copilot ── */
+  --copilot-bg: #FBFAFF;
+  --copilot-surface: #FFFFFF;
+  --copilot-surface-raised: #F4F2FF;
+  --copilot-border: rgba(18, 18, 58, 0.08);
+  --copilot-border-strong: rgba(18, 18, 58, 0.14);
+  --copilot-text: #12123A;
+  --copilot-text-muted: #5D6283;
+  --copilot-text-faint: #9CA0BC;
 
   /* ── Color: Floating Cards ── */
-  --glass-bg: rgba(23, 25, 35, 0.78);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-text: #FFFFFF;
-  --glass-text-muted: rgba(255, 255, 255, 0.7);
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-border: rgba(255, 255, 255, 0.9);
+  --glass-text: #12123A;
+  --glass-text-muted: #73789A;
 
   /* ── Typography ── */
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --font-display: 'Manrope', var(--font-body);
-  --font-mono: 'SF Mono', SFMono-Regular, ui-monospace, 'Cascadia Code', Menlo, monospace;
+  --font-body: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-sans: var(--font-body);
+  --font-display: 'Geist', var(--font-body);
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'Geist Mono', 'SF Mono', SFMono-Regular, ui-monospace, Menlo, monospace;
 
   --text-xs: 0.6875rem;    /* 11px */
   --text-sm: 0.75rem;      /* 12px */
@@ -97,7 +120,7 @@
   --leading-normal: 1.5;
   --leading-relaxed: 1.65;
 
-  --tracking-tight: -0.02em;
+  --tracking-tight: -0.03em;
   --tracking-normal: 0;
   --tracking-wide: 0.02em;
 
@@ -115,23 +138,24 @@
   --sp-16: 64px;
   --sp-20: 80px;
 
-  /* ── Shadows ── */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.03);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
-  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.02);
-  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
-  --shadow-float: 0 24px 48px rgba(0, 0, 0, 0.15), 0 6px 18px rgba(0, 0, 0, 0.08);
+  /* ── Shadows (tinted, never grey) ── */
+  --shadow-xs: 0 1px 2px rgba(40, 30, 120, 0.06);
+  --shadow-sm: 0 2px 8px rgba(40, 30, 120, 0.06);
+  --shadow-md: 0 12px 30px -12px rgba(40, 30, 120, 0.18);
+  --shadow-lg: 0 24px 50px -20px rgba(40, 30, 120, 0.25);
+  --shadow-xl: 0 40px 90px -30px rgba(40, 30, 120, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.7);
+  --shadow-card: var(--highlight), 0 1px 2px rgba(40, 30, 120, 0.04), 0 12px 32px -18px rgba(40, 30, 120, 0.18);
+  --shadow-card-hover: var(--highlight), 0 2px 4px rgba(40, 30, 120, 0.04), 0 28px 60px -24px rgba(91, 75, 255, 0.35);
+  --shadow-float: 0 30px 60px -18px rgba(40, 30, 120, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.8);
+  --glow-teal: 0 10px 30px -8px rgba(91, 75, 255, 0.55);
 
   /* ── Radius ── */
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 18px;
-  --radius-2xl: 24px;
+  --radius-xs: 6px;
+  --radius-sm: 9px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 26px;
+  --radius-2xl: 34px;
   --radius-full: 9999px;
 
   /* ── Transitions ── */
@@ -144,9 +168,9 @@
   --duration-slower: 600ms;
 
   /* ── Layout ── */
-  --sidebar-width: 160px;
+  --sidebar-width: 240px;
   --sidebar-collapsed: 72px;
-  --header-height: 52px;
-  --content-max: 1440px;
-  --hero-height: 340px;
+  --header-height: 68px;
+  --content-max: 1480px;
+  --hero-height: 440px;
 }

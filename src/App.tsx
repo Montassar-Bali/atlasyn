@@ -1,6 +1,10 @@
 import {
+  Component,
   CSSProperties,
   FormEvent,
+  Fragment,
+  lazy,
+  Suspense,
   ReactNode,
   useCallback,
   useEffect,
@@ -24,6 +28,9 @@ import {
   Database,
   Download,
   FileText,
+  Fingerprint,
+  LogOut,
+  Video,
   LayoutDashboard,
   LineChart,
   Menu,
@@ -50,30 +57,40 @@ import { anomalies, channelData, customers, expenses, inventory, products, reven
 import { downloadExecutiveReport } from './report'
 import { PwaAnnouncementModal, isRunningInPwa } from './PwaAnnouncementModal'
 import { AtlasynCopilot } from './components/AtlasynCopilot'
+import { useAuth } from './workforce/AuthGate'
+import { AttendancePage, usePresenceHeartbeat } from './workforce/AttendancePage'
+import { TeamPage } from './workforce/TeamPage'
+import { AttendanceStatus, api, formatMinutes } from './workforce/api'
+import { MeetPage } from './meet/MeetPage'
+
+const HeroScene = lazy(() => import('./hero3d/HeroScene'))
 
 /* ═══════════════════════════════════════════════════════════════
    Types
    ═══════════════════════════════════════════════════════════════ */
 
-type Page = 'overview' | 'command-center' | 'analytics' | 'customers' | 'revenue' | 'operations' | 'inventory' | 'reports' | 'settings'
+type Page = 'overview' | 'command-center' | 'analytics' | 'customers' | 'revenue' | 'operations' | 'inventory' | 'reports' | 'attendance' | 'meetings' | 'team' | 'settings'
 type MessageKind = 'profit' | 'churn' | 'actions' | 'inventory'
 type Message = { role: 'assistant' | 'user'; content: string; kind?: MessageKind }
 
-const sidebarNav: { id: Page | 'copilot'; label: string; icon: typeof LayoutDashboard }[] = [
-  { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'command-center', label: 'Command Center', icon: Target },
-  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-  { id: 'customers', label: 'Customers', icon: Users },
-  { id: 'revenue', label: 'Revenue', icon: DollarSign },
-  { id: 'operations', label: 'Operations', icon: Activity },
-  { id: 'inventory', label: 'Inventory', icon: Boxes },
-  { id: 'reports', label: 'Reports', icon: FileText },
-  { id: 'copilot', label: 'AI Insights', icon: Sparkles },
-  { id: 'settings', label: 'Settings', icon: Settings },
+const sidebarNav: { id: Page | 'copilot'; label: string; icon: typeof LayoutDashboard; group: string; badge?: string; adminOnly?: boolean }[] = [
+  { id: 'overview', label: 'Dashboard', icon: LayoutDashboard, group: 'Overview' },
+  { id: 'command-center', label: 'Command Center', icon: Target, group: 'Overview', badge: '3' },
+  { id: 'analytics', label: 'Analytics', icon: BarChart3, group: 'Intelligence' },
+  { id: 'customers', label: 'Customers', icon: Users, group: 'Intelligence' },
+  { id: 'revenue', label: 'Revenue', icon: DollarSign, group: 'Intelligence' },
+  { id: 'operations', label: 'Operations', icon: Activity, group: 'Intelligence' },
+  { id: 'inventory', label: 'Inventory', icon: Boxes, group: 'Intelligence' },
+  { id: 'attendance', label: 'Attendance', icon: Fingerprint, group: 'People' },
+  { id: 'meetings', label: 'Meetings', icon: Video, group: 'People', badge: 'Live' },
+  { id: 'team', label: 'Team & CEO console', icon: ShieldCheck, group: 'People', adminOnly: true },
+  { id: 'reports', label: 'Reports', icon: FileText, group: 'Workspace' },
+  { id: 'copilot', label: 'AI Insights', icon: Sparkles, group: 'Workspace', badge: 'AI' },
+  { id: 'settings', label: 'Settings', icon: Settings, group: 'Workspace' },
 ]
 
 const pageNames: Record<Page, string> = {
-  overview: 'Command Center',
+  overview: 'Dashboard',
   'command-center': 'Command Center',
   analytics: 'Performance Analytics',
   customers: 'Customer Intelligence',
@@ -81,6 +98,9 @@ const pageNames: Record<Page, string> = {
   operations: 'Operations Hub',
   inventory: 'Inventory Planning',
   reports: 'Executive Reports',
+  attendance: 'Attendance',
+  meetings: 'Meetings',
+  team: 'Team & attendance',
   settings: 'Settings',
 }
 
@@ -91,11 +111,11 @@ const priorityItems = [
 ]
 
 const healthSystems = [
-  { label: 'Revenue', score: 91, factor: '14.2% monthly growth', color: '#2C956A' },
-  { label: 'Customers', score: 76, factor: '17 accounts require attention', color: '#7C5CFC' },
-  { label: 'Inventory', score: 88, factor: '92% lines in healthy range', color: '#2C956A' },
-  { label: 'Cash flow', score: 71, factor: '4.2% above operating plan', color: '#B79A70' },
-  { label: 'Operations', score: 84, factor: '6.4× stock turnover', color: '#2F6F6D' },
+  { label: 'Revenue', score: 91, factor: '14.2% monthly growth', color: '#5B4BFF' },
+  { label: 'Customers', score: 76, factor: '17 accounts require attention', color: '#FF4FA3' },
+  { label: 'Inventory', score: 88, factor: '92% lines in healthy range', color: '#12C2E9' },
+  { label: 'Cash flow', score: 71, factor: '4.2% above operating plan', color: '#F5A524' },
+  { label: 'Operations', score: 84, factor: '6.4× stock turnover', color: '#16C79A' },
 ]
 
 /* ═══════════════════════════════════════════════════════════════
@@ -123,6 +143,83 @@ function useReveal(containerRef: React.RefObject<HTMLElement | null>) {
   }, [containerRef])
 }
 
+const spotlightSelector = '.kpi-card, .revenue-panel, .health-panel, .workspace-card, .editorial-panel, .relationship-brief, .inventory-order-panel, .reports-console > section, .stat-strip > div'
+
+/** Feeds the pointer position to the hovered panel so its CSS spotlight follows the cursor. */
+function useSpotlight() {
+  useEffect(() => {
+    if (!window.matchMedia('(hover: hover)').matches) return
+    function move(event: PointerEvent) {
+      const panel = (event.target as Element | null)?.closest<HTMLElement>(spotlightSelector)
+      if (!panel) return
+      const rect = panel.getBoundingClientRect()
+      const x = event.clientX - rect.left
+      const y = event.clientY - rect.top
+      panel.style.setProperty('--mx', `${x}px`)
+      panel.style.setProperty('--my', `${y}px`)
+      panel.style.setProperty('--ry', `${((x / rect.width) - 0.5) * 7}deg`)
+      panel.style.setProperty('--rx', `${(0.5 - (y / rect.height)) * 7}deg`)
+    }
+    document.addEventListener('pointermove', move, { passive: true })
+    return () => document.removeEventListener('pointermove', move)
+  }, [])
+}
+
+/** Animates the leading number in a formatted string (e.g. "142,500" or "1.12M") up from zero. */
+function CountUp({ value, duration = 1400 }: { value: string; duration?: number }) {
+  const match = value.match(/^([\d,]*\.?\d+)(.*)$/)
+  const target = match ? parseFloat(match[1].replace(/,/g, '')) : 0
+  const decimals = match?.[1].includes('.') ? match[1].split('.')[1].length : 0
+  const grouped = match?.[1].includes(',') ?? false
+  const [current, setCurrent] = useState(target)
+  useEffect(() => {
+    if (!match || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setCurrent(target); return }
+    let frame = 0
+    const start = performance.now()
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration)
+      setCurrent(target * (1 - Math.pow(1 - t, 4)))
+      if (t < 1) frame = requestAnimationFrame(tick)
+    }
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
+  if (!match) return <>{value}</>
+  const text = current.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals, useGrouping: grouped })
+  return <>{text}{match[2]}</>
+}
+
+/** Smooth line + area paths through the values, in a w×h box. */
+function sparkPaths(values: number[], w = 120, h = 40) {
+  const min = Math.min(...values); const max = Math.max(...values)
+  const pts = values.map((v, i) => [(i / (values.length - 1)) * w, h - 4 - ((v - min) / (max - min || 1)) * (h - 10)])
+  let line = `M ${pts[0][0]} ${pts[0][1]}`
+  for (let i = 1; i < pts.length; i++) {
+    const [x0, y0] = pts[i - 1]; const [x1, y1] = pts[i]; const mx = (x0 + x1) / 2
+    line += ` C ${mx} ${y0} ${mx} ${y1} ${x1} ${y1}`
+  }
+  return { line, area: `${line} L ${w} ${h} L 0 ${h} Z` }
+}
+
+function Sparkline({ id, values, color }: { id: string; values: number[]; color: string }) {
+  const { line, area } = sparkPaths(values)
+  return (
+    <div className="kpi-sparkline" aria-hidden="true">
+      <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id={`spark-${id}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={color} stopOpacity=".32" />
+            <stop offset="1" stopColor={color} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path d={area} fill={`url(#spark-${id})`} />
+        <path className="line" d={line} stroke={color} />
+      </svg>
+    </div>
+  )
+}
+
 /* ═══════════════════════════════════════════════════════════════
    Shared Components
    ═══════════════════════════════════════════════════════════════ */
@@ -135,7 +232,7 @@ function BrandLockup({ compact = false }: { compact?: boolean }) {
   return (
     <span className={`brand-lockup ${compact ? 'brand-lockup--compact' : ''}`}>
       <img src="/atlasyn-logo.png" alt="" />
-      {!compact && <span><strong>ATLASYN</strong><small>INSIGHT</small></span>}
+      {!compact && <span><strong>ATLASYN</strong><small>Insight</small></span>}
     </span>
   )
 }
@@ -177,43 +274,55 @@ function DateControl({ value, onChange }: { value: string; onChange: (value: str
    Sidebar Navigation (New Premium Layout)
    ═══════════════════════════════════════════════════════════════ */
 
+/** Navigation items this user may see (the CEO console is admin-only). */
+function useNavItems() {
+  const { user } = useAuth()
+  return sidebarNav.filter((item) => !item.adminOnly || user.role === 'admin')
+}
+
 function Sidebar({ page, onNavigate, onCopilot }: { page: Page; onNavigate: (page: Page) => void; onCopilot: () => void }) {
+  const { user, signOut } = useAuth()
+  const navItems = useNavItems()
   return (
     <aside className="sidebar" aria-label="Primary navigation">
       <div className="sidebar-brand">
         <BrandLockup />
       </div>
       <nav className="sidebar-nav">
-        {sidebarNav.map(({ id, label, icon: Icon }) => (
-          <button
-            key={label}
-            className={id !== 'copilot' && page === id ? 'active' : ''}
-            aria-current={id !== 'copilot' && page === id ? 'page' : undefined}
-            onClick={() => {
-              if (id === 'copilot') onCopilot()
-              else onNavigate(id)
-            }}
-          >
-            {id === 'copilot' ? <Sparkles size={16} strokeWidth={1.7} /> : <Icon size={16} strokeWidth={1.7} />}
-            {label}
-          </button>
+        {navItems.map(({ id, label, icon: Icon, group, badge }, index) => (
+          <Fragment key={label}>
+            {navItems[index - 1]?.group !== group && <span className="sidebar-group-label">{group}</span>}
+            <button
+              className={id !== 'copilot' && page === id ? 'active' : ''}
+              aria-current={id !== 'copilot' && page === id ? 'page' : undefined}
+              onClick={() => {
+                if (id === 'copilot') onCopilot()
+                else onNavigate(id)
+              }}
+            >
+              <Icon size={16} strokeWidth={1.7} />
+              {label}
+              {badge && <span className="nav-badge">{badge}</span>}
+            </button>
+          </Fragment>
         ))}
       </nav>
 
-      {/* Promo card */}
       <div className="sidebar-promo">
-        <h3>Turn data into growth.</h3>
-        <p>Smarter insights for a stronger tomorrow.</p>
-        <button aria-label="Learn more"><ArrowRight size={16} /></button>
+        <Sparkles size={18} />
+        <h3>Ask ATLASYN anything</h3>
+        <p>Evidence-backed answers across ERP, CRM and finance.</p>
+        <button onClick={onCopilot}>Open Copilot <kbd>⌘K</kbd></button>
       </div>
 
       {/* User */}
       <div className="sidebar-user">
-        <span className="sidebar-avatar">AB</span>
+        <span className="sidebar-avatar">{user.initials}</span>
         <div className="sidebar-user-info">
-          <strong>Amine</strong>
-          <span>Admin</span>
+          <strong>{user.name}</strong>
+          <span>{user.role === 'admin' ? 'Admin' : user.title || 'Employee'}</span>
         </div>
+        <button className="sidebar-signout" onClick={() => void signOut()} aria-label="Sign out" title="Sign out"><LogOut size={15} /></button>
       </div>
     </aside>
   )
@@ -221,6 +330,7 @@ function Sidebar({ page, onNavigate, onCopilot }: { page: Page; onNavigate: (pag
 
 function MobileNavigation({ open, page, onClose, onNavigate, onCopilot }: { open: boolean; page: Page; onClose: () => void; onNavigate: (page: Page) => void; onCopilot: () => void }) {
   const panelRef = useRef<HTMLElement>(null)
+  const navItems = useNavItems()
   useEffect(() => {
     if (!open) return
     const previous = document.activeElement as HTMLElement | null
@@ -247,7 +357,7 @@ function MobileNavigation({ open, page, onClose, onNavigate, onCopilot }: { open
         </header>
         <p>Nexa Trade / workspace</p>
         <nav>
-          {sidebarNav.map(({ id, label, icon: Icon }) => (
+          {navItems.map(({ id, label, icon: Icon }) => (
             <button
               key={label}
               className={id !== 'copilot' && page === id ? 'active' : ''}
@@ -284,7 +394,11 @@ function TopHeader({
   onCopilot,
   onNotifications,
   onPwaClick,
+  attendance,
+  onAttendance,
 }: {
+  attendance: AttendanceStatus | null
+  onAttendance: () => void
   page: Page
   dateRange: string
   mobileOpen: boolean
@@ -302,9 +416,12 @@ function TopHeader({
         <button className="mobile-menu-button" onClick={onMenu} aria-label="Open navigation" aria-expanded={mobileOpen} aria-controls="mobile-navigation">
           <Menu size={18} />
         </button>
+        <div className="header-breadcrumb">
+          <span>Nexa Trade</span><i>/</i><b>{pageNames[page]}</b>
+        </div>
         <label className="header-search">
           <Search size={15} />
-          <input placeholder="Search anything..." aria-label="Search" />
+          <input placeholder="Search metrics, customers, SKUs…" aria-label="Search" />
           <kbd>⌘ K</kbd>
         </label>
       </div>
@@ -315,6 +432,10 @@ function TopHeader({
             <span>v1.2 App</span>
           </button>
         )}
+        <button className={`header-presence ${attendance?.today?.status === 'checked_in' ? 'in' : ''}`} onClick={onAttendance} title="Attendance">
+          <Fingerprint size={15} />
+          <span>{attendance?.today?.status === 'checked_in' ? `On site · ${formatMinutes(attendance.today.verified_minutes)}` : attendance?.today ? 'Checked out' : 'Check in'}</span>
+        </button>
         <DateControl value={dateRange} onChange={onDateChange} />
         <button className="ask-insight-btn" onClick={onCopilot}>
           <Sparkles size={15} /> Ask Insight
@@ -322,80 +443,97 @@ function TopHeader({
         <button className="header-icon notification-trigger" onClick={onNotifications} aria-label="Open notifications" aria-expanded={notificationsOpen}>
           <Bell size={16} /><span className="notification-dot" />
         </button>
-        <span className="header-avatar" aria-label="User profile">
-          <Users size={16} />
-        </span>
-      </div>
-      <div className="header-breadcrumb">
-        <span>/ {pageNames[page]}</span>
+        <HeaderAvatar />
       </div>
     </header>
   )
 }
 
+function HeaderAvatar() {
+  const { user } = useAuth()
+  return <span className="header-avatar" aria-label={`Signed in as ${user.name}`} title={user.email}>{user.initials}</span>
+}
+
 /* ═══════════════════════════════════════════════════════════════
-   Floating Analytics Cards (Hero)
+   Hero: 3D assistant avatar
    ═══════════════════════════════════════════════════════════════ */
 
-function FloatingCards() {
+function canRender3D() {
+  try {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false
+    const canvas = document.createElement('canvas')
+    return Boolean(canvas.getContext('webgl2') || canvas.getContext('webgl'))
+  } catch { return false }
+}
+
+/** Swaps in the fallback if the WebGL scene throws (lost context, driver issues). */
+class SceneBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+  static getDerivedStateFromError() { return { failed: true } }
+  render() { return this.state.failed ? this.props.fallback : this.props.children }
+}
+
+const emoteLines: Record<string, string> = {
+  Wave: "Hi! I'm Atlas, your ops assistant. Three decisions need you today.",
+  Yes: 'Got it, pulling the latest signals for that area.',
+  ThumbsUp: 'Revenue is up 14.2%. Nice work, team!',
+  Jump: 'Smart POS demand just jumped 19%. Worth a reorder.',
+}
+
+/** Animated 3D assistant avatar; a soft placeholder shows while it loads or when WebGL is unavailable. */
+function HeroVisual({ reactKey }: { reactKey: number }) {
+  const [webgl] = useState(canRender3D)
+  const [line, setLine] = useState(emoteLines.Wave)
+  const fallback = <div className="avatar-placeholder" aria-hidden="true"><span /></div>
   return (
-    <div className="floating-cards">
-      {/* Revenue Card */}
-      <div className="float-card float-card--revenue">
-        <span className="float-card-label">Revenue</span>
-        <span className="float-card-change"><TrendingUp size={12} /> +14.2%</span>
-        <div className="float-card-mini-chart">
-          <i style={{ height: '40%' }} />
-          <i style={{ height: '55%' }} />
-          <i style={{ height: '45%' }} />
-          <i style={{ height: '65%' }} />
-          <i style={{ height: '60%' }} />
-          <i style={{ height: '80%' }} />
-          <i style={{ height: '95%' }} />
-        </div>
-      </div>
-
-      {/* Customers Card */}
-      <div className="float-card float-card--customers">
-        <span className="float-card-label">Customers</span>
-        <span className="float-card-value">1,284</span>
-        <span className="float-card-change"><TrendingUp size={12} /> +98 this month</span>
-      </div>
-
-      {/* Profit Margin Card */}
-      <div className="float-card float-card--profit">
-        <span className="float-card-label">Profit Margin</span>
-        <span className="float-card-value">26.9%</span>
-        <div className="float-card-mini-line">
-          <svg viewBox="0 0 100 30">
-            <path d="M0 25 C15 22 25 18 35 20 S55 10 70 12 S85 5 100 3" />
-          </svg>
-        </div>
-      </div>
-    </div>
+    <>
+      {webgl ? (
+        <SceneBoundary fallback={fallback}>
+          <Suspense fallback={fallback}>
+            <HeroScene reactKey={reactKey} onEmote={(name) => setLine(emoteLines[name] ?? line)} />
+          </Suspense>
+        </SceneBoundary>
+      ) : fallback}
+      <p className="avatar-bubble" key={line} role="status">{line}</p>
+      {webgl && <span className="avatar-hint">Click Atlas to react</span>}
+    </>
   )
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Overview Dashboard (Redesigned)
+   Overview Dashboard
    ═══════════════════════════════════════════════════════════════ */
+
+function greeting() {
+  const hour = new Date().getHours()
+  return hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
+}
 
 function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
   dateRange: string; onNavigate: (page: Page) => void; onCopilot: () => void; onExport: () => void
 }) {
   const [selectedSystem, setSelectedSystem] = useState(0)
   const [selectedPoint, setSelectedPoint] = useState(5)
+  const [alertDismissed, setAlertDismissed] = useState(false)
+  const { user } = useAuth()
   const dashRef = useRef<HTMLElement>(null)
   useReveal(dashRef)
 
   const metrics = useMemo(() =>
     dateRange === 'Year to date'
-      ? { revenue: '1.12M TND', profit: '302,800 TND', customers: '1,284', expenses: '817,200 TND' }
+      ? { revenue: '1.12M', profit: '302,800', customers: '1,284', expenses: '817,200' }
       : dateRange === 'Last quarter'
-        ? { revenue: '375,100 TND', profit: '101,640 TND', customers: '1,284', expenses: '259,900 TND' }
-        : { revenue: '142,500 TND', profit: '38,420 TND', customers: '1,284', expenses: '97,680 TND' },
+        ? { revenue: '375,100', profit: '101,640', customers: '1,284', expenses: '259,900' }
+        : { revenue: '142,500', profit: '38,420', customers: '1,284', expenses: '97,680' },
     [dateRange]
   )
+
+  const kpis = [
+    { id: 'revenue', label: 'Net revenue', icon: LineChart, value: metrics.revenue, unit: 'TND', badge: '+14.2%', tone: 'positive', note: '↗ 14.2% vs previous period', color: '#5B4BFF', values: [94, 101, 98, 112, 118, 116, 128, 136, 142] },
+    { id: 'profit', label: 'Gross profit', icon: DollarSign, value: metrics.profit, unit: 'TND', badge: '+6.7%', tone: 'neutral', note: '26.9% margin · 1.8 pts above target', color: '#F5A524', values: [30, 32, 31, 33, 35, 34, 36, 37, 38.4] },
+    { id: 'customers', label: 'Active customers', icon: Users, value: metrics.customers, unit: '', badge: '+98', tone: 'positive', note: '98 added this month', color: '#FF4FA3', values: [1120, 1138, 1150, 1162, 1190, 1205, 1230, 1262, 1284] },
+    { id: 'expense', label: 'Operating expense', icon: Zap, value: metrics.expenses, unit: 'TND', badge: '+4.2%', tone: 'negative', note: '4.2% over operating plan', color: '#12C2E9', values: [88, 89, 91, 90, 93, 94, 95, 96, 97.7] },
+  ]
 
   const system = healthSystems[selectedSystem]
 
@@ -415,6 +553,7 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
   const forecastPath = points.slice(5).map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ')
 
   const topPriority = priorityItems[0]
+  const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
 
   return (
     <main className="dashboard" ref={dashRef}>
@@ -423,98 +562,73 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
         <div className="hero-content">
           <div className="hero-live-badge">
             <span className="live-dot" />
-            Live · 4 sources connected
+            Live · 4 sources synced 2 min ago
           </div>
-          <h1>Good morning, <em>Amine.</em></h1>
-          <p>Revenue is accelerating, but retention and campaign efficiency need decisions today.</p>
+          <span className="hero-eyebrow">{today} · Executive brief</span>
+          <h1>{greeting()},<br /><em>{user.name.split(' ')[0]}.</em></h1>
+          <p>Revenue is <strong>accelerating 14.2%</strong>, but retention and campaign efficiency need a decision today.</p>
           <div className="hero-actions">
             <button className="primary-action" onClick={onExport}><Download size={15} /> Export brief</button>
             <button className="text-action" onClick={onCopilot}><Sparkles size={15} /> Ask a question</button>
           </div>
+          <div className="hero-ticker">
+            <div><span>Forecast · Oct</span><strong>155.9K<em>+9.4%</em></strong></div>
+            <div><span>Margin</span><strong>26.9%<em>+1.8</em></strong></div>
+            <div><span>Model confidence</span><strong>87%</strong></div>
+          </div>
         </div>
         <div className="hero-scene">
-          <img src="/hero-avatar.jpg" alt="ATLASYN Intelligence" />
-          <FloatingCards />
+          <HeroVisual reactKey={selectedSystem} />
+          <div className="scene-legend">
+            {healthSystems.map((item, index) => (
+              <button key={item.label} className={selectedSystem === index ? 'active' : ''} onClick={() => setSelectedSystem(index)}>
+                <i style={{ background: item.color }} />
+                <span>{item.label}</span>
+                <b>{item.score}</b>
+              </button>
+            ))}
+          </div>
+          <div className="hero-score">
+            <div className="hero-score-ring" style={{ '--v': 82 } as CSSProperties}><b><CountUp value="82" /></b></div>
+            <div>
+              <span>Health index</span>
+              <strong>{system.label} · {system.score}/100</strong>
+              <em>Healthy · +3 this week</em>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Priority Alert */}
-      <div className="priority-alert reveal" data-delay="1">
-        <AlertTriangle size={18} />
-        <div className="priority-alert-content">
-          <span>Priority · {topPriority.urgency}</span>
-          <strong>{topPriority.title} — {topPriority.impact}</strong>
+      {!alertDismissed && (
+        <div className="priority-alert reveal" data-delay="1">
+          <AlertTriangle size={18} />
+          <div className="priority-alert-content">
+            <span>Priority · {topPriority.urgency}</span>
+            <strong>{topPriority.title} — {topPriority.impact}</strong>
+          </div>
+          <button onClick={() => onNavigate(topPriority.page)}>{topPriority.action} <ArrowRight size={13} /></button>
+          <button className="alert-close" aria-label="Dismiss alert" onClick={() => setAlertDismissed(true)}><X size={14} /></button>
         </div>
-        <button onClick={() => onNavigate(topPriority.page)}>{topPriority.action} <ArrowRight size={13} /></button>
-        <button className="alert-close" aria-label="Dismiss alert"><X size={14} /></button>
-      </div>
+      )}
 
       {/* KPI Metric Cards */}
       <div className="kpi-grid reveal" data-delay="2">
-        <div className="kpi-card">
-          <div className="kpi-header">
-            <span><LineChart size={14} /> Net revenue</span>
-            <span className="kpi-badge positive">+14.2%</span>
+        {kpis.map(({ id, label, icon: Icon, value, unit, badge, tone, note, color, values }) => (
+          <div className="kpi-card" key={id} style={{ '--kpi-color': color, '--kpi-glow': `${color}66` } as CSSProperties}>
+            <div className="kpi-header">
+              <span><Icon size={14} /> {label}</span>
+              <span className={`kpi-badge ${tone}`}>{badge}</span>
+            </div>
+            <strong className="kpi-value"><CountUp key={value} value={value} />{unit && <small>{unit}</small>}</strong>
+            <span className="kpi-subtitle">{note}</span>
+            <Sparkline id={id} values={values} color={color} />
           </div>
-          <strong className="kpi-value">{metrics.revenue.split(' ')[0]} <small>TND</small></strong>
-          <span className="kpi-subtitle">↗ 14.2% vs previous</span>
-          <div className="kpi-sparkline">
-            <svg viewBox="0 0 120 32">
-              <path className="area" d="M0 28 L15 24 L30 26 L45 20 L60 22 L75 16 L90 18 L105 10 L120 8 L120 32 L0 32 Z" fill="rgba(44,149,106,0.08)" />
-              <path className="line" d="M0 28 L15 24 L30 26 L45 20 L60 22 L75 16 L90 18 L105 10 L120 8" stroke="#2C956A" />
-            </svg>
-          </div>
-        </div>
-
-        <div className="kpi-card">
-          <div className="kpi-header">
-            <span><DollarSign size={14} /> Gross profit</span>
-            <span className="kpi-badge neutral">+6.7%</span>
-          </div>
-          <strong className="kpi-value">{metrics.profit.split(' ')[0]} <small>TND</small></strong>
-          <span className="kpi-subtitle">↗ 6.7% · 26.9% margin</span>
-          <div className="kpi-sparkline">
-            <svg viewBox="0 0 120 32">
-              <path className="area" d="M0 26 L20 22 L40 24 L60 18 L80 20 L100 14 L120 12 L120 32 L0 32 Z" fill="rgba(183,154,112,0.08)" />
-              <path className="line" d="M0 26 L20 22 L40 24 L60 18 L80 20 L100 14 L120 12" stroke="#B79A70" />
-            </svg>
-          </div>
-        </div>
-
-        <div className="kpi-card">
-          <div className="kpi-header">
-            <span><Users size={14} /> Active customers</span>
-            <span className="kpi-badge positive">+98</span>
-          </div>
-          <strong className="kpi-value">{metrics.customers}</strong>
-          <span className="kpi-subtitle">↗ 98 added this month</span>
-          <div className="kpi-sparkline">
-            <svg viewBox="0 0 120 32">
-              <path className="area" d="M0 30 L15 28 L30 24 L45 26 L60 20 L75 22 L90 16 L105 14 L120 10 L120 32 L0 32 Z" fill="rgba(124,92,252,0.08)" />
-              <path className="line" d="M0 30 L15 28 L30 24 L45 26 L60 20 L75 22 L90 16 L105 14 L120 10" stroke="#7C5CFC" />
-            </svg>
-          </div>
-        </div>
-
-        <div className="kpi-card">
-          <div className="kpi-header">
-            <span><Zap size={14} /> Operating expense</span>
-            <span className="kpi-badge negative">+4.2%</span>
-          </div>
-          <strong className="kpi-value">{metrics.expenses.split(' ')[0]} <small>TND</small></strong>
-          <span className="kpi-subtitle">↗ 4.2% over plan</span>
-          <div className="kpi-sparkline">
-            <svg viewBox="0 0 120 32">
-              <path className="area" d="M0 24 L20 22 L40 20 L60 18 L80 16 L100 12 L120 10 L120 32 L0 32 Z" fill="rgba(231,107,104,0.08)" />
-              <path className="line" d="M0 24 L20 22 L40 20 L60 18 L80 16 L100 12 L120 10" stroke="#E76B68" />
-            </svg>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Revenue + Health Grid */}
       <div className="dashboard-content reveal" data-delay="3">
-        {/* Revenue Chart */}
         <div className="revenue-panel">
           <div className="revenue-panel-header">
             <div>
@@ -522,10 +636,13 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
               <h2>Actual vs projected revenue</h2>
             </div>
             <div className="chart-controls">
+              <div className="chart-legend">
+                <span><i className="actual" /> Actual</span>
+                <span><i className="forecast" /> Forecast</span>
+              </div>
               <div className="chart-filter-tabs">
-                <button className="active">Actual</button>
-                <button>Forecast</button>
-                <button>Monthly <ChevronDown size={11} /></button>
+                <button className="active">Monthly</button>
+                <button>Quarterly</button>
               </div>
             </div>
           </div>
@@ -538,27 +655,32 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
               <span>50K</span>
               <span>0</span>
             </div>
+            <div className="chart-crosshair" style={{ '--cross-x': currentPoint.x / 100 } as CSSProperties} />
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="Revenue rises from 94k TND in April to a forecast 171.2k TND in December">
               <defs>
                 <linearGradient id="actual-fill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#171923" stopOpacity=".06" />
-                  <stop offset="1" stopColor="#171923" stopOpacity="0" />
+                  <stop offset="0" stopColor="#5B4BFF" stopOpacity=".26" />
+                  <stop offset="1" stopColor="#12C2E9" stopOpacity="0" />
                 </linearGradient>
                 <linearGradient id="forecast-fill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#B79A70" stopOpacity=".08" />
-                  <stop offset="1" stopColor="#B79A70" stopOpacity="0" />
+                  <stop offset="0" stopColor="#FF4FA3" stopOpacity=".12" />
+                  <stop offset="1" stopColor="#FF8A4C" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="actual-stroke" x1="0" y1="0" x2="100" y2="0" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stopColor="#5B4BFF" />
+                  <stop offset="1" stopColor="#12C2E9" />
+                </linearGradient>
+                <linearGradient id="forecast-stroke" x1="0" y1="0" x2="100" y2="0" gradientUnits="userSpaceOnUse">
+                  <stop offset=".55" stopColor="#FF4FA3" />
+                  <stop offset="1" stopColor="#FF8A4C" />
                 </linearGradient>
               </defs>
-              {/* Grid lines */}
               {[20, 40, 60, 80].map((y) => (
-                <line key={y} className="chart-grid-line" x1="4" y1={y} x2="96" y2={y} />
+                <line key={y} className="chart-grid-line" x1="0" y1={y} x2="100" y2={y} />
               ))}
-              {/* Confidence band */}
               <path className="confidence-band" d="M61 42 L72 30 L83 20 L94 8 L94 30 L83 38 L72 46 L61 55 Z" />
-              {/* Areas */}
-              <path className="actual-area" d={`${actualPath} L ${points[5].x} 92 L ${points[0].x} 92 Z`} fill="url(#actual-fill)" />
-              <path className="forecast-area" d={`${forecastPath} L ${points[8].x} 92 L ${points[5].x} 92 Z`} fill="url(#forecast-fill)" />
-              {/* Lines */}
+              <path className="actual-area" d={`${actualPath} L ${points[5].x} 100 L ${points[0].x} 100 Z`} fill="url(#actual-fill)" />
+              <path className="forecast-area" d={`${forecastPath} L ${points[8].x} 100 L ${points[5].x} 100 Z`} fill="url(#forecast-fill)" />
               <path className="actual-line" d={actualPath} />
               <path className="forecast-line" d={forecastPath} />
             </svg>
@@ -578,8 +700,8 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
                 </button>
               ))}
             </div>
-            <div className="chart-tooltip" style={{ '--tooltip-x': `${currentPoint.x}%`, '--tooltip-y': `${currentPoint.y}%` } as CSSProperties}>
-              <span>{currentPoint.month} / {currentPoint.forecastPoint ? 'Forecast' : 'Actual'}</span>
+            <div className="chart-tooltip" style={{ '--tooltip-xf': currentPoint.x / 100, '--tooltip-y': `${currentPoint.y}%` } as CSSProperties}>
+              <span>{currentPoint.month} · {currentPoint.forecastPoint ? 'Forecast' : 'Actual'}</span>
               <strong>{currentPoint.value.toFixed(currentPoint.value % 1 ? 1 : 0)}k TND</strong>
               <p>{currentPoint.forecastPoint ? 'Projection based on order velocity and 18 months of sales history.' : 'Posted revenue from ERP sales ledgers.'}</p>
             </div>
@@ -596,13 +718,12 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
             </div>
             <div className="forecast-actions">
               <button className="ghost-action" onClick={() => onNavigate('analytics')}>
-                <LineChart size={14} /> View detailed analysis <ArrowRight size={13} />
+                View detailed analysis <ArrowRight size={13} />
               </button>
             </div>
           </div>
         </div>
 
-        {/* Health Panel */}
         <div className="health-panel">
           <div className="health-panel-header">
             <div>
@@ -611,8 +732,6 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
             </div>
             <div className="health-score">
               <strong>82</strong><small>/100</small>
-              <span className="health-dot" />
-              <span className="health-label">Healthy</span>
             </div>
           </div>
           <div className="system-list">
@@ -622,16 +741,17 @@ function OverviewDashboard({ dateRange, onNavigate, onCopilot, onExport }: {
                 className={`system-item ${selectedSystem === index ? 'active' : ''}`}
                 onClick={() => setSelectedSystem(index)}
               >
-                <i style={{ background: item.color }} />
+                <i style={{ background: item.color, color: item.color }} />
                 <span>{item.label}</span>
                 <strong>{item.score}</strong>
                 <ChevronRight size={14} />
+                <u style={{ color: item.color }}><b style={{ '--score': `${item.score}%` } as CSSProperties} /></u>
               </button>
             ))}
           </div>
           <div className="health-signal">
             <TrendingUp size={14} />
-            Contributing signal: {system.factor}
+            <span><b>{system.label}:</b> {system.factor}</span>
           </div>
         </div>
       </div>
@@ -938,6 +1058,7 @@ function OperationsPage({ onCopilot }: { onCopilot: () => void }) {
 
 function SettingsPage({ onToast }: { onToast: (msg: string) => void }) {
   const pageRef = useRef<HTMLElement>(null)
+  const { user } = useAuth()
   useReveal(pageRef)
   return (
     <section ref={pageRef} className="workspace-page" aria-labelledby="settings-title">
@@ -952,9 +1073,9 @@ function SettingsPage({ onToast }: { onToast: (msg: string) => void }) {
           <h3>Profile</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)', marginTop: 'var(--sp-3)' }}>
             {[
-              { label: 'Name', value: 'Amine Bali' },
-              { label: 'Email', value: 'amine@atlasyn.com' },
-              { label: 'Role', value: 'Admin' },
+              { label: 'Name', value: user.name },
+              { label: 'Email', value: user.email },
+              { label: 'Role', value: user.role === 'admin' ? 'Admin' : user.title || 'Employee' },
               { label: 'Organization', value: 'ATLASYN Corp.' },
               { label: 'Timezone', value: 'Africa/Tunis (GMT+1)' },
             ].map((f) => (
@@ -1529,8 +1650,18 @@ function Toast({ message, onClose }: { message: string; onClose: () => void }) {
    App Root
    ═══════════════════════════════════════════════════════════════ */
 
+/** ?meet=<code> invite links open the meeting lobby with the code filled in. */
+function readInviteCode() {
+  const code = new URLSearchParams(window.location.search).get('meet')
+  if (code) window.history.replaceState(null, '', window.location.pathname)
+  return code ?? undefined
+}
+
 export default function App() {
-  const [page, setPage] = useState<Page>('overview')
+  const { user } = useAuth()
+  const [inviteCode] = useState(readInviteCode)
+  const [page, setPage] = useState<Page>(inviteCode ? 'meetings' : 'overview')
+  const [attendance, setAttendance] = useState<AttendanceStatus | null>(null)
   const [dateRange, setDateRange] = useState('Last 30 days')
   const [copilotOpen, setCopilotOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -1542,6 +1673,14 @@ export default function App() {
     try { return sessionStorage.getItem('atlasyn-boot-seen') !== '1' } catch { return true }
   })
 
+  useSpotlight()
+
+  const refreshAttendance = useCallback(() => {
+    void api<AttendanceStatus>('/attendance/status').then(setAttendance).catch(() => undefined)
+  }, [])
+  useEffect(() => { refreshAttendance() }, [refreshAttendance])
+  // Keep crediting verified on-site time on every page, not only while the attendance page is open.
+  usePresenceHeartbeat(attendance?.today?.status === 'checked_in', refreshAttendance)
   const closeCopilot = useCallback(() => setCopilotOpen(false), [])
   const closeMobile = useCallback(() => setMobileOpen(false), [])
 
@@ -1598,6 +1737,8 @@ export default function App() {
           onCopilot={() => setCopilotOpen(true)}
           onNotifications={() => setNotificationsOpen((v) => !v)}
           onPwaClick={() => setPwaModalOpen(true)}
+          attendance={attendance}
+          onAttendance={() => navigate('attendance')}
         />
         {page === 'overview' && <OverviewDashboard dateRange={dateRange} onNavigate={navigate} onCopilot={() => setCopilotOpen(true)} onExport={() => { void exportReport() }} />}
         {page === 'command-center' && <CommandCenterPage dateRange={dateRange} onNavigate={navigate} onCopilot={() => setCopilotOpen(true)} />}
@@ -1607,11 +1748,14 @@ export default function App() {
         {page === 'operations' && <OperationsPage onCopilot={() => setCopilotOpen(true)} />}
         {page === 'inventory' && <InventoryPage onPlan={() => setCopilotOpen(true)} onExport={() => { void exportReport() }} onToast={setToast} />}
         {page === 'reports' && <ReportsPage onGenerate={() => { void exportReport() }} onUpload={(name) => setToast(`${name} is staged for the document-processing connector.`)} onShare={() => { void shareReport() }} />}
+        {page === 'attendance' && <AttendancePage onToast={setToast} onStatus={setAttendance} />}
+        {page === 'meetings' && <MeetPage initialCode={inviteCode} onToast={setToast} />}
+        {page === 'team' && <TeamPage onToast={setToast} />}
         {page === 'settings' && <SettingsPage onToast={setToast} />}
       </div>
       <NotificationPanel open={notificationsOpen} onClose={() => setNotificationsOpen(false)} onToast={setToast} />
       <Copilot open={copilotOpen} onClose={closeCopilot} dateRange={dateRange} onToast={setToast} />
-      <PwaAnnouncementModal forceOpen={pwaModalOpen} onClose={() => setPwaModalOpen(false)} />
+      <PwaAnnouncementModal forceOpen={pwaModalOpen} onClose={() => setPwaModalOpen(false)} userName={user.name} />
       {toast && <Toast message={toast} onClose={() => setToast('')} />}
     </div>
   )

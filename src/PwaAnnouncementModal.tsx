@@ -46,9 +46,43 @@ export function isRunningInPwa(): boolean {
 interface PwaAnnouncementModalProps {
   forceOpen?: boolean
   onClose?: () => void
+  /** Signed-in person's name, used to personalise the invitation. */
+  userName?: string
 }
 
-export function PwaAnnouncementModal({ forceOpen, onClose }: PwaAnnouncementModalProps) {
+/** Phone and tablet drawn in code, so the preview always matches the live interface. */
+function DevicePreview({ firstName }: { firstName?: string }) {
+  return (
+    <div className="pwa-devices">
+      <div className="pwa-tablet">
+        <div className="pwa-screen">
+          <div className="pwa-ui-top"><i /><span>Atlasyn</span><b /></div>
+          <div className="pwa-ui-hero"><small>Executive brief</small><strong>Revenue +14.2%</strong></div>
+          <div className="pwa-ui-kpis">
+            <div><small>Revenue</small><strong>142.5K</strong><svg viewBox="0 0 60 20"><path d="M0 16 C10 14 16 15 24 10 S40 8 46 5 S56 3 60 2" /></svg></div>
+            <div><small>Margin</small><strong>26.9%</strong><svg viewBox="0 0 60 20"><path d="M0 14 C12 15 18 11 28 12 S44 6 60 4" /></svg></div>
+            <div><small>Customers</small><strong>1,284</strong><svg viewBox="0 0 60 20"><path d="M0 18 C10 16 20 14 30 11 S48 6 60 3" /></svg></div>
+          </div>
+          <div className="pwa-ui-chart"><svg viewBox="0 0 200 60" preserveAspectRatio="none"><path className="area" d="M0 50 C30 46 50 40 80 36 S130 22 160 18 S190 8 200 6 L200 60 L0 60 Z" /><path d="M0 50 C30 46 50 40 80 36 S130 22 160 18 S190 8 200 6" /></svg></div>
+        </div>
+      </div>
+      <div className="pwa-phone">
+        <div className="pwa-screen">
+          <span className="pwa-notch" />
+          <div className="pwa-ui-greet"><small>Good morning,</small><strong>{firstName ?? 'there'}.</strong></div>
+          <div className="pwa-ui-presence"><span className="dot" /> At the office · HQ network</div>
+          <div className="pwa-ui-ring"><div><strong>3h 20m</strong><small>verified</small></div></div>
+          <div className="pwa-ui-checkout">Check out</div>
+          <div className="pwa-ui-meet"><i>SM</i><i>MB</i><span>Team sync · live</span></div>
+        </div>
+      </div>
+      <div className="pwa-float-chip chip-a"><Check size={13} /> Checked in · 08:57</div>
+      <div className="pwa-float-chip chip-b"><Smartphone size={13} /> Works offline</div>
+    </div>
+  )
+}
+
+export function PwaAnnouncementModal({ forceOpen, onClose, userName }: PwaAnnouncementModalProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [view, setView] = useState<'announcement' | 'guide'>('announcement')
   const [activeTab, setActiveTab] = useState<PlatformTab>(detectDefaultPlatform())
@@ -124,6 +158,8 @@ export function PwaAnnouncementModal({ forceOpen, onClose }: PwaAnnouncementModa
     return null
   }
 
+  const firstName = userName?.split(' ')[0]
+
   return (
     <div
       className="pwa-modal-backdrop"
@@ -136,107 +172,57 @@ export function PwaAnnouncementModal({ forceOpen, onClose }: PwaAnnouncementModa
     >
       <div className="pwa-modal-wrapper">
         <div className="pwa-reference-card">
-          {/* Close button in top-right */}
-          <button
-            className="pwa-clean-close-btn"
-            onClick={handleClose}
-            aria-label="Close Announcement"
-          >
+          <button className="pwa-clean-close-btn" onClick={handleClose} aria-label="Close announcement">
             <X size={17} />
           </button>
 
           {view === 'announcement' ? (
-            /* ════════════ VIEW 1: EXACT REFERENCE ANNOUNCEMENT ════════════ */
             <div className="pwa-split-container">
-              {/* Left Column: Typography, Value Pillars, CTA */}
               <div className="pwa-content-column">
-                {/* Badges */}
                 <div className="pwa-badges-row">
-                  <div className="pwa-whats-new-badge">
-                    <span className="pwa-green-dot" />
-                    <span>WHAT'S NEW</span>
-                  </div>
+                  <div className="pwa-whats-new-badge"><span className="pwa-green-dot" /><span>What's new</span></div>
                   <div className="pwa-version-tag">v1.2</div>
                 </div>
 
-                {/* Main Heading */}
                 <h2 id="pwa-modal-title" className="pwa-reference-heading">
-                  Atlasyn Insight<br />
-                  is now <strong>available</strong><br />
-                  as a <span className="pwa-gold-highlight">PWA App</span>
+                  {firstName ? <>{firstName}, take Atlasyn</> : <>Take Atlasyn</>}<br />
+                  <em>everywhere you work.</em>
                 </h2>
 
-                {/* Subtitle */}
                 <p className="pwa-reference-desc">
-                  Get a faster, more focused experience. Install <strong>Atlasyn Insight</strong> on your device and access it instantly, even offline.
+                  Install <strong>Atlasyn Insight v1.2</strong> on your phone or tablet. Check in when you arrive, join meetings and follow your numbers in one tap, even on a weak connection.
                 </p>
 
-                {/* 3 Feature Rows */}
                 <div className="pwa-feature-rows">
                   <div className="pwa-feature-row">
-                    <div className="pwa-feature-icon-box">
-                      <Zap size={17} className="text-amber-600" />
-                    </div>
-                    <div className="pwa-feature-texts">
-                      <strong>Instant Access</strong>
-                      <span>Open the app directly from your device without a browser.</span>
-                    </div>
+                    <div className="pwa-feature-icon-box tone-indigo"><Zap size={17} /></div>
+                    <div className="pwa-feature-texts"><strong>One-tap check-in</strong><span>Open the app from your home screen and check in at the office in seconds.</span></div>
                   </div>
-
                   <div className="pwa-feature-row">
-                    <div className="pwa-feature-icon-box">
-                      <Layout size={17} className="text-amber-600" />
-                    </div>
-                    <div className="pwa-feature-texts">
-                      <strong>Clean Workspace</strong>
-                      <span>A dedicated, distraction-free experience.</span>
-                    </div>
+                    <div className="pwa-feature-icon-box tone-pink"><Layout size={17} /></div>
+                    <div className="pwa-feature-texts"><strong>Full-screen workspace</strong><span>No browser bars. Meetings, attendance and insights in a focused app.</span></div>
                   </div>
-
                   <div className="pwa-feature-row">
-                    <div className="pwa-feature-icon-box">
-                      <Home size={17} className="text-amber-600" />
-                    </div>
-                    <div className="pwa-feature-texts">
-                      <strong>Dock & Home Screen</strong>
-                      <span>Install it on your desktop or mobile device for one-tap access.</span>
-                    </div>
+                    <div className="pwa-feature-icon-box tone-cyan"><Home size={17} /></div>
+                    <div className="pwa-feature-texts"><strong>Phone, tablet and desktop</strong><span>Installs from the browser in seconds. No App Store needed.</span></div>
                   </div>
                 </div>
 
-                {/* Action Buttons Row */}
                 <div className="pwa-buttons-row">
-                  <button
-                    className="pwa-btn-install-primary"
-                    onClick={handleAddToHomeScreen}
-                  >
-                    <Download size={16} />
-                    <span>Add to Home Screen</span>
-                    <ArrowRight size={15} />
+                  <button className="pwa-btn-install-primary" onClick={handleAddToHomeScreen}>
+                    <Download size={16} /><span>Install the app</span><ArrowRight size={15} />
                   </button>
-
-                  <button
-                    className="pwa-btn-maybe-later"
-                    onClick={handleClose}
-                  >
-                    Maybe Later
-                  </button>
+                  <button className="pwa-btn-maybe-later" onClick={handleClose}>Maybe later</button>
                 </div>
 
-                {/* Security & Convenience Footer */}
                 <div className="pwa-reference-footer">
                   <ShieldCheck size={14} className="pwa-shield-icon" />
-                  <span>Free update · Installs in seconds · No App Store required</span>
+                  <span>Free update · Same secure sign-in · Works offline</span>
                 </div>
               </div>
 
-              {/* Right Column: 3D Laptop & iPhone Mockup on Desk */}
-              <div className="pwa-visual-column">
-                <img
-                  src="/pwa-mockup-clean.png"
-                  alt="Atlasyn Insight Laptop and Phone Preview"
-                  className="pwa-mockup-image"
-                />
+              <div className="pwa-visual-column" aria-hidden="true">
+                <DevicePreview firstName={firstName} />
               </div>
             </div>
           ) : (
@@ -248,11 +234,11 @@ export function PwaAnnouncementModal({ forceOpen, onClose }: PwaAnnouncementModa
                   onClick={() => setView('announcement')}
                 >
                   <ArrowLeft size={16} />
-                  <span>Back to Overview</span>
+                  <span>Back</span>
                 </button>
                 <div className="pwa-guide-heading">
-                  <h3>How to Install Atlasyn v1.2</h3>
-                  <p>Choose your platform below for simple 3-step instructions</p>
+                  <h3>Install Atlasyn v1.2</h3>
+                  <p>Pick your device. It takes three taps.</p>
                 </div>
               </div>
 
@@ -319,7 +305,7 @@ export function PwaAnnouncementModal({ forceOpen, onClose }: PwaAnnouncementModa
                           <CheckCircle2 size={14} />
                           <span>Tap "Add"</span>
                         </div>
-                        <p>Tap <strong>"Add"</strong> in the top-right. Atlasyn will install as a standalone native app!</p>
+                        <p>Tap <strong>"Add"</strong> in the top-right. Atlasyn opens full screen like a native app.</p>
                       </div>
                     </div>
                   </div>
@@ -448,7 +434,7 @@ export function PwaAnnouncementModal({ forceOpen, onClose }: PwaAnnouncementModa
                     }}
                   >
                     <Download size={16} />
-                    <span>Trigger 1-Click Direct Install</span>
+                    <span>Install now</span>
                   </button>
                 </div>
               )}
@@ -464,7 +450,7 @@ export function PwaAnnouncementModal({ forceOpen, onClose }: PwaAnnouncementModa
               <div className="pwa-guide-footer-actions">
                 <button className="pwa-btn-install-primary" onClick={handleClose}>
                   <Check size={16} />
-                  <span>Got It, I'll Add It</span>
+                  <span>Got it</span>
                 </button>
               </div>
             </div>

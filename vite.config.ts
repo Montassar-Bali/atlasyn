@@ -2,12 +2,19 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// Point the dev proxy at another backend with ATLASYN_API_TARGET (defaults to the local API on :8000).
+const apiTarget = (globalThis as { process?: { env: Record<string, string | undefined> } }).process?.env.ATLASYN_API_TARGET ?? 'http://127.0.0.1:8000'
+
 export default defineConfig({
+  optimizeDeps: {
+    include: ['three', '@react-three/fiber', '@react-three/drei'],
+  },
   server: {
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000',
+        target: apiTarget,
         changeOrigin: true,
+        ws: true,
       },
     },
   },
