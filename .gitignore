@@ -12,3 +12,5 @@ backend/.admin-initial-password
 backend/*.db
 backend/venv/
 backend/__pycache__/
+.vercel
+.env*

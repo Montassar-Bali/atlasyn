@@ -2,7 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// Point the dev proxy at another backend with ATLASYN_API_TARGET (defaults to the local API on :8000).
+// The local Python service powers only the AI Copilot. Everything else under /api is a Vercel function
+// (run them locally with `npx vercel dev`). Point at another backend with ATLASYN_API_TARGET.
 const apiTarget = (globalThis as { process?: { env: Record<string, string | undefined> } }).process?.env.ATLASYN_API_TARGET ?? 'http://127.0.0.1:8000'
 
 export default defineConfig({
@@ -11,10 +12,9 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': {
+      '^/api/(health|models|conversations|chat|memories)': {
         target: apiTarget,
         changeOrigin: true,
-        ws: true,
       },
     },
   },
@@ -27,8 +27,8 @@ export default defineConfig({
         name: 'ATLASYN Insight',
         short_name: 'ATLASYN',
         description: 'Executive intelligence platform for operational decision-making',
-        theme_color: '#17243A',
-        background_color: '#F5F3EE',
+        theme_color: '#F5F4FB',
+        background_color: '#F5F4FB',
         display: 'standalone',
         orientation: 'any',
         scope: '/',
@@ -55,6 +55,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // API calls must always reach the network (attendance is verified live, never from cache).
+        navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

@@ -38,7 +38,7 @@ export function TeamPage({ onToast }: { onToast: (msg: string) => void }) {
 
   async function update(user: User, body: { active?: boolean; reset_password?: boolean }) {
     try {
-      const data = await api<{ user: User; temporary_password: string | null }>(`/admin/users/${user.id}`, { method: 'PATCH', body })
+      const data = await api<{ user: User; temporary_password: string | null }>(`/admin/users?id=${encodeURIComponent(user.id)}`, { method: 'PATCH', body })
       if (data.temporary_password) setSecret({ name: user.name, email: user.email, password: data.temporary_password })
       else onToast(`${user.name} is now ${data.user.active ? 'active' : 'deactivated'}.`)
       void load()

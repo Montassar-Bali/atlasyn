@@ -1,0 +1,6 @@
+# Local-only: the Python Copilot service, its virtualenv and data, internship report, secrets
+backend/
+rapport-stage/
+.env*
+*.db
+.claude/

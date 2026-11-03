@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import type { RealtimeChannel } from '@supabase/supabase-js'
+import { supabase } from '../lib/supabase'
 import { api } from '../workforce/api'
 
 export type PeerState = { mic: boolean; cam: boolean; screen: boolean; hand: boolean }
@@ -15,10 +17,12 @@ export type Participant = {
 export type ChatMessage = { id: string; from: string; name: string; text: string; at: string }
 export type Reaction = { key: string; emoji: string; name: string }
 
-type ServerPeer = Omit<Participant, 'stream' | 'speaking'>
+type PresenceMeta = Omit<Participant, 'stream' | 'speaking'> & { joined_at: string }
+export type SelfInfo = { name: string; initials: string; role: string; title: string }
 type Signal = { sdp?: RTCSessionDescriptionInit; candidate?: RTCIceCandidateInit }
 
 const SPEAKING_THRESHOLD = 0.04
+const MAX_ROOM_SIZE = 8
 
 /** Microphone + camera, degrading gracefully when either is unavailable or refused. */
 export async function openLocalMedia(): Promise<{ stream: MediaStream; error: string }> {
@@ -43,10 +47,12 @@ export async function openLocalMedia(): Promise<{ stream: MediaStream; error: st
 }
 
 /**
- * Mesh WebRTC meeting over the Atlasyn signaling socket. Newcomers send offers to everyone
- * already in the room; existing members only answer, which avoids offer collisions.
+ * Mesh WebRTC meeting signaled over a private Supabase Realtime channel ("meet:<code>").
+ * Presence says who is in the room (and their mic/camera state); broadcast carries the
+ * WebRTC handshake, chat and reactions. Whoever joined later sends the offer, which avoids
+ * offer collisions. Only active employees can open the channel (row-level security on realtime.messages).
  */
-export function useMeeting(code: string, localStream: MediaStream, initial: { mic: boolean; cam: boolean }) {
+export function useMeeting(code: string, localStream: MediaStream, initial: { mic: boolean; cam: boolean }, me: SelfInfo) {
   const [selfId, setSelfId] = useState('')
   const [title, setTitle] = useState('')
   const [startedAt, setStartedAt] = useState<string>(new Date().toISOString())
@@ -58,7 +64,9 @@ export function useMeeting(code: string, localStream: MediaStream, initial: { mi
   const [screenStream, setScreenStream] = useState<MediaStream | null>(null)
   const [localSpeaking, setLocalSpeaking] = useState(false)
 
-  const ws = useRef<WebSocket | null>(null)
+  const channelRef = useRef<RealtimeChannel | null>(null)
+  const peerId = useRef(crypto.randomUUID())
+  const joinedAt = useRef(new Date().toISOString())
   const pcs = useRef(new Map<string, RTCPeerConnection>())
   const pendingIce = useRef(new Map<string, RTCIceCandidateInit[]>())
   const remoteStreams = useRef(new Map<string, MediaStream>())
@@ -67,9 +75,14 @@ export function useMeeting(code: string, localStream: MediaStream, initial: { mi
   localRef.current = local
   const screenTrack = useRef<MediaStreamTrack | null>(null)
 
-  const send = useCallback((message: unknown) => {
-    if (ws.current?.readyState === WebSocket.OPEN) ws.current.send(JSON.stringify(message))
+  const send = useCallback((message: { type: string } & Record<string, unknown>) => {
+    void channelRef.current?.send({ type: 'broadcast', event: message.type, payload: { ...message, from: peerId.current } })
   }, [])
+
+  /** Publishes our name and mic/camera/hand state to everyone in the room. */
+  const track = useCallback((state: PeerState) => {
+    void channelRef.current?.track({ id: peerId.current, ...me, state, joined_at: joinedAt.current } satisfies PresenceMeta)
+  }, [me])
 
   const patchPeer = useCallback((id: string, patch: Partial<Participant>) => {
     setPeers((current) => current[id] ? { ...current, [id]: { ...current[id], ...patch } } : current)
@@ -138,58 +151,82 @@ export function useMeeting(code: string, localStream: MediaStream, initial: { mi
   // Connect once per meeting.
   useEffect(() => {
     let cancelled = false
+    const self = peerId.current
     async function connect() {
       try {
-        iceServers.current = (await api<{ iceServers: RTCIceServer[] }>('/meetings/ice-config')).iceServers
+        iceServers.current = (await api<{ iceServers: RTCIceServer[] }>('/meet/ice')).iceServers
       } catch { iceServers.current = [{ urls: 'stun:stun.l.google.com:19302' }] }
+      const { data: meeting } = await supabase.from('meetings').select('title').eq('code', code).maybeSingle()
       if (cancelled) return
+      if (!meeting) { setStatus('error'); return }
+      setTitle(meeting.title)
+      setSelfId(self)
       localStream.getAudioTracks().forEach((t) => { t.enabled = initial.mic })
       localStream.getVideoTracks().forEach((t) => { t.enabled = initial.cam })
 
-      const socket = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/api/meetings/${encodeURIComponent(code)}/ws`)
-      ws.current = socket
-      socket.onmessage = async (event) => {
-        const msg = JSON.parse(event.data)
-        if (msg.type === 'welcome') {
-          setSelfId(msg.self)
-          setTitle(msg.title)
-          setStartedAt(msg.started_at)
-          setStatus('live')
-          send({ type: 'state', state: localRef.current })
-          const initialPeers: Record<string, Participant> = {}
-          msg.peers.forEach((p: ServerPeer) => { initialPeers[p.id] = { ...p, stream: null, speaking: false } })
-          setPeers(initialPeers)
-          for (const p of msg.peers as ServerPeer[]) {
-            const pc = createPeerConnection(p.id, true)
-            const offer = await pc.createOffer()
-            await pc.setLocalDescription(offer)
-            send({ type: 'signal', to: p.id, data: { sdp: pc.localDescription } })
-          }
-        } else if (msg.type === 'peer-joined') {
-          setPeers((current) => ({ ...current, [msg.peer.id]: { ...msg.peer, stream: null, speaking: false } }))
-        } else if (msg.type === 'peer-left') {
-          closePeer(msg.id)
-        } else if (msg.type === 'peer-state') {
-          patchPeer(msg.id, { state: msg.state })
-        } else if (msg.type === 'signal') {
-          await handleSignal(msg.from, msg.data)
-        } else if (msg.type === 'chat') {
-          setMessages((current) => [...current, msg].slice(-200))
-        } else if (msg.type === 'reaction') {
-          const key = `${Date.now()}-${Math.random()}`
-          setReactions((current) => [...current, { key, emoji: msg.emoji, name: msg.name }])
-          window.setTimeout(() => setReactions((current) => current.filter((r) => r.key !== key)), 3200)
+      // Private channels authorize with the user's access token.
+      await supabase.realtime.setAuth()
+      const channel = supabase.channel(`meet:${code}`, {
+        config: { private: true, broadcast: { self: true }, presence: { key: self } },
+      })
+      channelRef.current = channel
+
+      channel.on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState<PresenceMeta>()
+        const metas = Object.values(state).map((list) => list[0]).filter(Boolean)
+        const ordered = [...metas].sort((a, b) => a.joined_at.localeCompare(b.joined_at) || a.id.localeCompare(b.id))
+        // Over capacity: the most recent arrivals step back out.
+        if (ordered.findIndex((m) => m.id === self) >= MAX_ROOM_SIZE) {
+          setStatus('full')
+          void channel.untrack()
+          return
         }
-      }
-      socket.onclose = (event) => {
+        if (ordered[0]) setStartedAt(ordered[0].joined_at)
+        const others = ordered.filter((m) => m.id !== self).slice(0, MAX_ROOM_SIZE - 1)
+        const present = new Set(others.map((m) => m.id))
+        pcs.current.forEach((_, id) => { if (!present.has(id)) closePeer(id) })
+        setPeers((current) => {
+          const next: Record<string, Participant> = {}
+          for (const m of others) next[m.id] = { ...current[m.id], id: m.id, name: m.name, initials: m.initials, role: m.role, title: m.title, state: m.state, stream: current[m.id]?.stream ?? null, speaking: current[m.id]?.speaking ?? false }
+          return next
+        })
+        // The later arrival offers; ties broken by id so exactly one side starts.
+        for (const m of others) {
+          const iAmLater = joinedAt.current > m.joined_at || (joinedAt.current === m.joined_at && self > m.id)
+          if (iAmLater && !pcs.current.has(m.id)) {
+            const pc = createPeerConnection(m.id, true)
+            void pc.createOffer().then(async (offer) => {
+              await pc.setLocalDescription(offer)
+              send({ type: 'signal', to: m.id, data: { sdp: pc.localDescription } })
+            })
+          }
+        }
+      })
+      channel.on('broadcast', { event: 'signal' }, ({ payload }) => {
+        if (payload.to === self && payload.from !== self) void handleSignal(payload.from, payload.data)
+      })
+      channel.on('broadcast', { event: 'chat' }, ({ payload }) => {
+        const text = String(payload.text ?? '').trim().slice(0, 1000)
+        if (text) setMessages((current) => [...current, { id: payload.id, from: payload.from, name: payload.name, text, at: payload.at }].slice(-200))
+      })
+      channel.on('broadcast', { event: 'reaction' }, ({ payload }) => {
+        const key = `${Date.now()}-${Math.random()}`
+        setReactions((current) => [...current, { key, emoji: payload.emoji, name: payload.name }])
+        window.setTimeout(() => setReactions((current) => current.filter((r) => r.key !== key)), 3200)
+      })
+      channel.subscribe((status) => {
         if (cancelled) return
-        setStatus(event.code === 4429 ? 'full' : event.code >= 4400 ? 'error' : 'ended')
-      }
+        if (status === 'SUBSCRIBED') { setStatus('live'); track(localRef.current) }
+        else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') setStatus('error')
+        else if (status === 'CLOSED') setStatus((s) => (s === 'full' ? s : 'ended'))
+      })
     }
     void connect()
     return () => {
       cancelled = true
-      ws.current?.close()
+      const channel = channelRef.current
+      channelRef.current = null
+      if (channel) { void channel.untrack(); void supabase.removeChannel(channel) }
       pcs.current.forEach((pc) => pc.close())
       pcs.current.clear()
       screenTrack.current?.stop()
@@ -241,10 +278,10 @@ export function useMeeting(code: string, localStream: MediaStream, initial: { mi
   const updateLocal = useCallback((patch: Partial<PeerState>) => {
     setLocal((current) => {
       const next = { ...current, ...patch }
-      send({ type: 'state', state: next })
+      track(next)
       return next
     })
-  }, [send])
+  }, [track])
 
   const toggleMic = useCallback(() => {
     const on = !localRef.current.mic
@@ -287,8 +324,8 @@ export function useMeeting(code: string, localStream: MediaStream, initial: { mi
   }, [stopScreenShare, swapOutgoingVideo, updateLocal])
 
   const toggleHand = useCallback(() => updateLocal({ hand: !localRef.current.hand }), [updateLocal])
-  const sendChat = useCallback((text: string) => send({ type: 'chat', text }), [send])
-  const sendReaction = useCallback((emoji: string) => send({ type: 'reaction', emoji }), [send])
+  const sendChat = useCallback((text: string) => send({ type: 'chat', text: text.trim().slice(0, 1000), id: crypto.randomUUID(), name: me.name, at: new Date().toISOString() }), [send, me.name])
+  const sendReaction = useCallback((emoji: string) => send({ type: 'reaction', emoji, name: me.name }), [send, me.name])
 
   return {
     selfId, title, startedAt, status, local, localSpeaking, screenStream,

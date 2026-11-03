@@ -3,13 +3,21 @@ import {
   Copy, Hand, Link2, Loader2, MessageSquare, Mic, MicOff, MonitorUp, PhoneOff, Plus, SendHorizontal,
   SmilePlus, Users, Video, VideoOff, X,
 } from 'lucide-react'
-import { api } from '../workforce/api'
+import { supabase } from '../lib/supabase'
 import { useAuth } from '../workforce/AuthGate'
 import { Participant, PeerState, openLocalMedia, useMeeting } from './useMeeting'
 
 type MeetingSummary = { code: string; title: string; host: string; created_at: string; participants: { id: string; name: string; initials: string }[] }
 
 const REACTIONS = ['👍', '👏', '🎉', '❤️', '😂', '😮']
+
+/** Meet-style code like "abc-defg-hij", from a cryptographically random source. */
+function newMeetingCode() {
+  const alphabet = 'abcdefghijkmnpqrstuvwxyz'
+  const bytes = crypto.getRandomValues(new Uint8Array(10))
+  const letters = Array.from(bytes, (b) => alphabet[b % alphabet.length]).join('')
+  return `${letters.slice(0, 3)}-${letters.slice(3, 7)}-${letters.slice(7)}`
+}
 
 function MediaVideo({ stream, muted, mirrored, className }: { stream: MediaStream | null; muted?: boolean; mirrored?: boolean; className?: string }) {
   const ref = useRef<HTMLVideoElement>(null)
@@ -40,7 +48,13 @@ export function MeetPage({ initialCode, onToast }: { initialCode?: string; onToa
   }, [])
 
   const loadMeetings = useCallback(() => {
-    void api<{ meetings: MeetingSummary[] }>('/meetings').then((d) => setMeetings(d.meetings)).catch(() => undefined)
+    void supabase.from('meetings').select('code, title, created_at, host:profiles!meetings_host_id_fkey(name)')
+      .order('created_at', { ascending: false }).limit(20)
+      .then(({ data }) => setMeetings((data ?? []).map((m) => ({
+        code: m.code, title: m.title, created_at: m.created_at,
+        host: (Array.isArray(m.host) ? m.host[0]?.name : (m.host as { name?: string } | null)?.name) ?? 'Atlasyn',
+        participants: [],
+      }))))
   }, [])
   useEffect(() => { loadMeetings(); const t = window.setInterval(loadMeetings, 10_000); return () => window.clearInterval(t) }, [loadMeetings])
 
@@ -51,8 +65,10 @@ export function MeetPage({ initialCode, onToast }: { initialCode?: string; onToa
     event.preventDefault()
     setBusy(true)
     try {
-      const data = await api<{ code: string }>('/meetings', { body: { title } })
-      setJoined(data.code)
+      const code = newMeetingCode()
+      const { error: insertError } = await supabase.from('meetings').insert({ code, title: title.trim() || 'Team sync', host_id: user.id })
+      if (insertError) throw new Error('Could not start the meeting.')
+      setJoined(code)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not start the meeting.')
     } finally { setBusy(false) }
@@ -64,7 +80,8 @@ export function MeetPage({ initialCode, onToast }: { initialCode?: string; onToa
     setBusy(true)
     setError('')
     try {
-      await api(`/meetings/${encodeURIComponent(clean)}`)
+      const { data } = await supabase.from('meetings').select('code').eq('code', clean).maybeSingle()
+      if (!data) throw new Error('No meeting with that code.')
       setJoined(clean)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Meeting not found.')
@@ -122,7 +139,7 @@ export function MeetPage({ initialCode, onToast }: { initialCode?: string; onToa
             <span><strong>{m.title}</strong><small>{m.code} · hosted by {m.host}</small></span>
             <span className="meeting-people">
               {m.participants.slice(0, 4).map((p) => <i key={p.id} title={p.name}>{p.initials}</i>)}
-              {m.participants.length ? <small>{m.participants.length} in call</small> : <small>Empty</small>}
+              {m.participants.length ? <small>{m.participants.length} in call</small> : <small>{new Date(m.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</small>}
             </span>
             <button className={m.participants.length ? 'primary-action' : 'secondary-action'} disabled={!media} onClick={() => void join(m.code)}>Join</button>
           </div>
@@ -163,7 +180,8 @@ function ParticipantTile({ tile, large }: { tile: Tile; large?: boolean }) {
 
 function MeetingRoom({ code, localStream, initial, onLeave, onToast }: { code: string; localStream: MediaStream; initial: { mic: boolean; cam: boolean }; onLeave: () => void; onToast: (msg: string) => void }) {
   const { user } = useAuth()
-  const meeting = useMeeting(code, localStream, initial)
+  const self = useMemo(() => ({ name: user.name, initials: user.initials, role: user.role, title: user.title }), [user])
+  const meeting = useMeeting(code, localStream, initial, self)
   const [panel, setPanel] = useState<'chat' | 'people' | null>(null)
   const [reactionsOpen, setReactionsOpen] = useState(false)
   const [draft, setDraft] = useState('')
